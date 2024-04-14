@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
-from apartments.models import User, Flat, ECabinet, Complaint
+from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item
 import cloudinary
 
 
@@ -15,8 +15,14 @@ class FlatAdmin(admin.ModelAdmin):
         }
 
 
+class ECabinetAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'active']
+    search_fields = ['name']
+
+
 class ComplaintAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'active', 'created_date', 'updated_date']
+    search_fields = ['title']
     readonly_fields = ['my_image']
 
     def my_image(self, complaint):
@@ -26,7 +32,14 @@ class ComplaintAdmin(admin.ModelAdmin):
             return mark_safe(f"<img width='300' src='/static/{complaint.image.title}' />")
 
 
-admin.site.register(User)
+class ReceiptAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'status', 'created_date', 'updated_date']
+    search_fields = ['name', 'status']
+
+
 admin.site.register(Flat, FlatAdmin)
-admin.site.register(ECabinet)
+admin.site.register(ECabinet, ECabinetAdmin)
 admin.site.register(Complaint, ComplaintAdmin)
+admin.site.register(Tag)
+admin.site.register(Receipt, ReceiptAdmin)
+admin.site.register(Item)

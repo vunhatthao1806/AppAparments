@@ -6,7 +6,7 @@ from django.utils import timezone
 
 
 class User(AbstractUser):
-    pass
+    avatar = CloudinaryField(null=True)
 
 
 class BaseModel(models.Model):
@@ -16,7 +16,14 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['-id']
+        ordering = ['id']
+
+
+class Tag(BaseModel):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
 
 class ECabinet(BaseModel):
@@ -26,12 +33,22 @@ class ECabinet(BaseModel):
         return self.name
 
 
-class Flat(BaseModel):
+class Item(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField()
+
+    e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class Flat(models.Model):
     floor = models.CharField(max_length=20)
     block = models.CharField(max_length=20)
     apartment_number = models.CharField(max_length=20, unique=True)
 
-    e_cabinet = models.OneToOneField(ECabinet, on_delete=models.CASCADE)
+    e_cabinet = models.OneToOneField(ECabinet, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.apartment_number
@@ -41,7 +58,52 @@ class Complaint(BaseModel):
     title = models.CharField(max_length=255)
     content = RichTextField()
     image = CloudinaryField()
+    tag = models.ManyToManyField(Tag)
 
     def __str__(self):
         return self.title
 
+
+class CarCard(BaseModel):
+    type = models.CharField(max_length=255)
+    number_plate = models.CharField(max_length=50)
+
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
+
+
+class Survey(BaseModel):
+    title = models.CharField(max_length=255)
+    content = RichTextField()
+
+    user = models.ManyToManyField(User)
+
+    def __str__(self):
+        return self.title
+
+
+class Receipt(BaseModel):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField()
+
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name
+
+
+class Interaction(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE) # user mà xóa thì interaction giữ lại cũng ko có ý nghĩa gì
+    complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class Like(Interaction):
+    class Meta:
+        unique_together = ('complaint', 'user')
+
+
+class Comment(Interaction):
+    content = models.CharField(max_length=255)

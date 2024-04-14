@@ -37,8 +37,20 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apartments.apps.ApartmentsConfig'
+    'apartments.apps.ApartmentsConfig',
+    'ckeditor',
+    'ckeditor_uploader'
 ]
+
+CKEDITOR_UPLOAD_PATH = "ckeditors/images/"
+
+import cloudinary
+
+cloudinary.config(
+    cloud_name="dps7wzdje",
+    api_key="617746798111338",
+    api_secret="fd9RqNR0zX5GfzbJd-Rcp1tA8Yo"
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

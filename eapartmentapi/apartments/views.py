@@ -1,5 +1,7 @@
-from rest_framework import viewsets, generics
-from apartments.models import Flat, ECabinet, Item, Receipt
+from rest_framework import viewsets, generics, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from apartments.models import Flat, ECabinet, Item, Receipt, Complaint
 from apartments import serializers, paginators
 
 
@@ -12,9 +14,28 @@ class ECabinetViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = ECabinet.objects.filter(active=True)
     serializer_class = serializers.ECabinetSerializer
 
+    # tìm kiếm tủ đồ
+    def get_queryset(self):
+        queryset = self.queryset
+
+        # lọc ecabit theo ten ecabit ma khong anh huong den item trong ecabit
+        if self.action.__eq__('list'):
+            q = self.request.query_params.get('q')
+            if q:
+                queryset = queryset.filter(name__icontains=q)
+
+        return queryset
+
+    # lấy items trong tủ đồ điện tử /ecabinet/{ecabinet_id}/items/
+    @action(methods=['get'], url_path='items', detail=True)
+    def get_items(self, request, pk):
+        items = self.get_object().item_set.all()
+
+        return Response(serializers.ItemSerializer(items, many=True).data, status=status.HTTP_200_OK)
+
 
 class ItemViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = Item.objects.filter(status=False)
+    queryset = Item.objects.all()
     serializer_class = serializers.ItemSerializer
     pagination_class = paginators.ItemPaginator
 
@@ -38,3 +59,8 @@ class ReceiptViewSet(viewsets.ViewSet, generics.ListAPIView):
             queryset = queryset.filter(flat_id=flat_id)
 
         return queryset
+
+
+class ComplaintViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Complaint.objects.all()
+    serializer_class = serializers.ComplaintSerializer

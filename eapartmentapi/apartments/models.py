@@ -5,10 +5,6 @@ from cloudinary.models import CloudinaryField
 from django.utils import timezone
 
 
-class User(AbstractUser):
-    avatar = CloudinaryField(null=True)
-
-
 class BaseModel(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(default=timezone.now)
@@ -19,25 +15,8 @@ class BaseModel(models.Model):
         ordering = ['id']
 
 
-class Tag(BaseModel):
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-
 class ECabinet(BaseModel):
     name = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Item(models.Model):
-    name = models.CharField(max_length=255)
-    status = models.BooleanField()
-
-    e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -54,21 +33,46 @@ class Flat(models.Model):
         return self.apartment_number
 
 
-class Complaint(BaseModel):
-    title = models.CharField(max_length=255)
-    content = RichTextField()
-    image = CloudinaryField()
-    tag = models.ManyToManyField(Tag)
-
-    def __str__(self):
-        return self.title
-
-
 class CarCard(BaseModel):
     type = models.CharField(max_length=255)
     number_plate = models.CharField(max_length=50)
 
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
+
+
+class User(AbstractUser):
+    avatar = CloudinaryField(null=True)
+
+
+class Tag(BaseModel):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class Item(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField()
+
+    e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    def status_text(self):
+        return "received" if self.status else "dismissed"
+
+
+class Complaint(BaseModel):
+    title = models.CharField(max_length=255)
+    content = RichTextField()
+    image = CloudinaryField()
+    tag = models.ManyToManyField(Tag)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title
 
 
 class Survey(BaseModel):

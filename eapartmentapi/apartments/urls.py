@@ -9,6 +9,7 @@ r.register('ecabinets', views.ECabinetViewSet, 'ecabinets')
 r.register('items', views.ItemViewSet, 'items')
 r.register('receipts', views.ReceiptViewSet, 'receipts')
 r.register('complaints', views.ComplaintViewSet, 'complaints')
+r.register('users', views.UserViewSet, 'users')
 
 urlpatterns = [
     path('', include(r.urls))

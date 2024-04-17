@@ -48,6 +48,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
 
 class ComplaintDetailSerializer(ComplaintSerializer):
     tag = TagSerializer(many=True)
+
     class Meta:
         model = ComplaintSerializer.Meta.model
         fields = ComplaintSerializer.Meta.fields + ['content', 'tag']
@@ -69,7 +70,6 @@ class UserSerializer(serializers.ModelSerializer):
             req['avatar'] = instance.avatar.url
 
         return req
-
 
     class Meta:
         model = User

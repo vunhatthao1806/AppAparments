@@ -1,4 +1,4 @@
-from rest_framework import viewsets, generics, status, parsers
+from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User
@@ -68,6 +68,13 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     @action(methods=['get'], url_path='comments', detail=True)
     def get_comments(self, request, pk):
         comment = self.get_object().comment_set.select_related('user').all()
+
+        paginator = paginators.CommentPaginator()
+        page = paginator.paginate_queryset(comment, request)
+        if page is not None:
+            serializer = serializers.CommentSerializer(page, many=True)
+            return paginator.get_paginated_response(serializer.data)
+
         return Response(serializers.CommentSerializer(comment, many=True).data, status=status.HTTP_200_OK)
 
 
@@ -75,4 +82,20 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser, ]
+
+    def get_permissions(self):
+        if self.action in ['current_user']:
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.AllowAny()]
+
+    # get and update profile
+    @action(methods=['get', 'patch'], url_path='current_user', detail=False) # khong cho truyen id user khac len vi nguy hiem
+    def current_user(self, request):
+        user = request.user
+        if request.method.__eq__('PATCH'): # vi tri cap nhat
+            for k, v in request.data.items():
+                setattr(user, k, v)
+            user.save()
+        return Response(serializers.UserSerializer(request.user).data)
 

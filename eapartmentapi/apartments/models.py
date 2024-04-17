@@ -28,6 +28,7 @@ class Flat(models.Model):
     apartment_number = models.CharField(max_length=20, unique=True)
 
     e_cabinet = models.OneToOneField(ECabinet, on_delete=models.PROTECT)
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.apartment_number

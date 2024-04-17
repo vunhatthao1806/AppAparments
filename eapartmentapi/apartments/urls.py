@@ -10,6 +10,7 @@ r.register('items', views.ItemViewSet, 'items')
 r.register('receipts', views.ReceiptViewSet, 'receipts')
 r.register('complaints', views.ComplaintViewSet, 'complaints')
 r.register('users', views.UserViewSet, 'users')
+r.register('comments', views.CommentViewSet, 'comments')
 
 urlpatterns = [
     path('', include(r.urls))

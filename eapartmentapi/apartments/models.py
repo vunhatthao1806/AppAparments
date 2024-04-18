@@ -15,8 +15,13 @@ class BaseModel(models.Model):
         ordering = ['id']
 
 
+class User(AbstractUser):
+    avatar = CloudinaryField(null=True)
+
+
 class ECabinet(BaseModel):
     name = models.CharField(max_length=255, unique=True)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
@@ -39,10 +44,6 @@ class CarCard(BaseModel):
     number_plate = models.CharField(max_length=50)
 
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
-
-
-class User(AbstractUser):
-    avatar = CloudinaryField(null=True)
 
 
 class Tag(BaseModel):

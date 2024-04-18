@@ -16,14 +16,13 @@ class FlatAdmin(admin.ModelAdmin):
 
 
 class ECabinetAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'active']
+    list_display = ['id', 'name', 'user', 'active']
     search_fields = ['name']
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'status_text']
+    list_display = ['id', 'name', 'e_cabinet', 'status_text']
     search_fields = ['name']
-
 
 
 class ComplaintAdmin(admin.ModelAdmin):

@@ -11,13 +11,20 @@ class FlatSerializer(serializers.ModelSerializer):
 class ECabinetSerializer(serializers.ModelSerializer):
     class Meta:
         model = ECabinet
-        fields = ['id', 'name', 'active']
+        fields = ['id', 'name', 'user', 'active']
 
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = '__all__'
+
+
+class ECabinetDetailSerializer(ECabinetSerializer):
+
+    class Meta:
+        model = ECabinetSerializer.Meta.model
+        fields = ECabinetSerializer.Meta.fields
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -33,7 +40,6 @@ class ReceiptSerializer(serializers.ModelSerializer):
 
 
 class ComplaintSerializer(serializers.ModelSerializer):
-
     # chỉnh đường dẫn trực tiếp cloudinary cho ảnh
     def to_representation(self, instance):
         req = super().to_representation(instance)
@@ -44,14 +50,6 @@ class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:
         model = Complaint
         fields = ['id', 'title']
-
-
-class ComplaintDetailSerializer(ComplaintSerializer):
-    tag = TagSerializer(many=True)
-
-    class Meta:
-        model = ComplaintSerializer.Meta.model
-        fields = ComplaintSerializer.Meta.fields + ['content', 'tag']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -87,3 +85,27 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'content', 'created_date', 'updated_date', 'user']
+
+
+class ComplaintDetailSerializer(ComplaintSerializer):
+    tag = TagSerializer(many=True)
+    # comments = CommentSerializer()
+
+    class Meta:
+        model = ComplaintSerializer.Meta.model
+        fields = ComplaintSerializer.Meta.fields + ['content', 'tag']
+
+
+class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):
+    liked = serializers.SerializerMethodField()
+
+    def get_liked(self, complaint):
+        request = self.context.get('request')
+        if request:
+            return complaint.like_set.filter(user=request.user, active=True).exists()
+
+    class Meta:
+        model = ComplaintDetailSerializer.Meta.model
+        fields = ComplaintDetailSerializer.Meta.fields + ['liked']
+
+

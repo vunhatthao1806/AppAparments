@@ -1,9 +1,8 @@
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment
+from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like
 from apartments import serializers, paginators, perms
-
 
 
 class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -11,11 +10,12 @@ class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = serializers.FlatSerializer
 
 
-class ECabinetViewSet(viewsets.ViewSet, generics.ListAPIView):
+class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = ECabinet.objects.filter(active=True)
-    serializer_class = serializers.ECabinetSerializer
+    serializer_class = serializers.ECabinetDetailSerializer
+    permission_classes = [perms.EcabinetOwner]
 
-    # tìm kiếm tủ đồ
+    # tìm kiếm tủ đồs
     def get_queryset(self):
         queryset = self.queryset
 
@@ -27,7 +27,12 @@ class ECabinetViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return queryset
 
-    # lấy items trong tủ đồ điện tử /ecabinet/{ecabinet_id}/items/
+    # lấy items trong tủ đồ điện tử /ecabinets/{ecabinet_id}/items/
+    # def get_permissions(self):
+    #     if self.action in ['get_items']:
+    #         return [permissions.IsAuthenticated()]
+    #     return [permissions.AllowAny()]
+
     @action(methods=['get'], url_path='items', detail=True)
     def get_items(self, request, pk):
         items = self.get_object().item_set.all()
@@ -66,8 +71,14 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = Complaint.objects.prefetch_related('tag').filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
     serializer_class = serializers.ComplaintDetailSerializer
 
+    def get_serializer_class(self):
+        if self.request.user.is_authenticated:
+            return serializers.AuthenticatedComplaintDetailSerializer
+
+        return self.serializer_class
+
     def get_permissions(self):
-        if self.action in ['add_comment']:
+        if self.action in ['add_comment', 'like']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
@@ -87,6 +98,16 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     def add_comment(self, request, pk): # chỉ chứng thực mới được vô
         c = self.get_object().comment_set.create(user=request.user, content=request.data.get('content')) # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
         return Response(serializers.CommentSerializer(c).data, status=status.HTTP_201_CREATED)
+
+    @action(methods=['post'], url_path='like', detail=True)
+    def like(self, request, pk):
+        li, created = Like.objects.get_or_create(complaint=self.get_object(), user=request.user)
+
+        if not created:
+            li.active = not li.active
+            li.save()
+
+        return Response(serializers.AuthenticatedComplaintDetailSerializer(self.get_object()).data)
 
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):

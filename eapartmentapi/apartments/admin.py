@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
-from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item, User, Comment
+from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item, User, Comment, Survey, Question, Choice
 import cloudinary
 
 

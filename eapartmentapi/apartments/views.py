@@ -1,7 +1,8 @@
+import djf_surveys.models
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like
+from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Survey, Choice, Question
 from apartments import serializers, paginators, perms
 
 
@@ -15,7 +16,7 @@ class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     serializer_class = serializers.ECabinetDetailSerializer
     permission_classes = [perms.EcabinetOwner]
 
-    # tìm kiếm tủ đồs
+    # tìm kiếm tủ đồ
     def get_queryset(self):
         queryset = self.queryset
 
@@ -24,7 +25,6 @@ class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             q = self.request.query_params.get('q')
             if q:
                 queryset = queryset.filter(name__icontains=q)
-
         return queryset
 
     # lấy items trong tủ đồ điện tử /ecabinets/{ecabinet_id}/items/
@@ -82,21 +82,23 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
-    @action(methods=['get'], url_path='comments', detail=True)
+    @action(methods=['get'], url_path='comment', detail=True)
     def get_comments(self, request, pk):
-        comment = self.get_object().comment_set.select_related('user').all()
+        comments = self.get_object().comment_set.select_related('user').all()
 
         paginator = paginators.CommentPaginator()
-        page = paginator.paginate_queryset(comment, request)
+        page = paginator.paginate_queryset(comments, request)
         if page is not None:
             serializer = serializers.CommentSerializer(page, many=True)
             return paginator.get_paginated_response(serializer.data)
 
-        return Response(serializers.CommentSerializer(comment, many=True).data, status=status.HTTP_200_OK)
+        return Response(serializers.CommentSerializer(comments, many=True).data,
+                        status=status.HTTP_200_OK)
 
     @action(methods=['post'], url_path='comments', detail=True)
-    def add_comment(self, request, pk): # chỉ chứng thực mới được vô
-        c = self.get_object().comment_set.create(user=request.user, content=request.data.get('content')) # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
+    def add_comment(self, request, pk):  # chỉ chứng thực mới được vô
+        c = self.get_object().comment_set.create(user=request.user, content=request.data.get(
+            'content'))  # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
         return Response(serializers.CommentSerializer(c).data, status=status.HTTP_201_CREATED)
 
     @action(methods=['post'], url_path='like', detail=True)
@@ -108,6 +110,12 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             li.save()
 
         return Response(serializers.AuthenticatedComplaintDetailSerializer(self.get_object()).data)
+
+
+class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateAPIView, generics.ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = serializers.CommentSerializer
+    permission_classes = [perms.CommentOwner]
 
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
@@ -132,7 +140,21 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
         return Response(serializers.UserSerializer(request.user).data)
 
 
-class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = serializers.CommentSerializer
-    permission_classes = [perms.CommentOwner]
+class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+    queryset = djf_surveys.models.Survey.objects.all()
+    serializer_class = serializers.SurveySerializer
+
+    @action(methods=['get'], url_path='questions', detail=True)
+    def get_surveys(self, request, pk):
+        questions = self.get_object().question_set.all()
+
+        return Response(serializers.QuestionSerializer(questions, many=True).data, status=status.HTTP_200_OK)
+    # @action(methods=['get'], url_path='items', detail=True)
+    # def get_items(self, request, pk):
+    #     items = self.get_object().item_set.all()
+    #
+    #     return Response(serializers.ItemSerializer(items, many=True).data, status=status.HTTP_200_OK)
+
+
+
+

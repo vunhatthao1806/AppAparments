@@ -1,3 +1,4 @@
+import djf_surveys.models
 from rest_framework import serializers
 from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment
 
@@ -71,7 +72,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'username', 'password', 'avatar']
+        fields = ['id', 'username', 'password', 'avatar']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -84,12 +85,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['id', 'content', 'created_date', 'updated_date', 'user']
+        fields = ['id', 'content', 'created_date', 'updated_date', 'user', 'complaint']
 
 
 class ComplaintDetailSerializer(ComplaintSerializer):
     tag = TagSerializer(many=True)
-    # comments = CommentSerializer()
 
     class Meta:
         model = ComplaintSerializer.Meta.model
@@ -109,3 +109,13 @@ class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):
         fields = ComplaintDetailSerializer.Meta.fields + ['liked']
 
 
+class SurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = djf_surveys.models.Survey
+        fields = ['id', 'name', 'description']
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = djf_surveys.models.Survey
+        fields = ['id', 'name', 'description']

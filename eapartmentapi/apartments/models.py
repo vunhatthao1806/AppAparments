@@ -77,22 +77,13 @@ class Complaint(BaseModel):
         return self.title
 
 
-class Survey(BaseModel):
-    title = models.CharField(max_length=255)
-    content = RichTextField()
-
-    user = models.ManyToManyField(User)
-
-    def __str__(self):
-        return self.title
-
-
 class Receipt(BaseModel):
     name = models.CharField(max_length=255)
     status = models.BooleanField()
 
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return self.name
@@ -113,3 +104,30 @@ class Like(Interaction):
 
 class Comment(Interaction):
     content = models.CharField(max_length=255)
+
+
+class Survey(BaseModel):
+    title = models.CharField(max_length=255)
+    content = RichTextField()
+
+    user = models.ManyToManyField(User)
+
+    def __str__(self):
+        return self.title
+
+
+class Question(BaseModel):
+    name = models.CharField(max_length=255)
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Choice(models.Model):
+    name = models.CharField(max_length=255)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.name
+

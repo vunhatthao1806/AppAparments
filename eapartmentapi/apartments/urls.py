@@ -11,6 +11,8 @@ r.register('receipts', views.ReceiptViewSet, 'receipts')
 r.register('complaints', views.ComplaintViewSet, 'complaints')
 r.register('users', views.UserViewSet, 'users')
 r.register('comments', views.CommentViewSet, 'comments')
+r.register('surveys', views.SurveyViewSet, 'surveys')
+r.register('admins', views.AdminViewSet, 'admins')
 
 urlpatterns = [
     path('', include(r.urls))

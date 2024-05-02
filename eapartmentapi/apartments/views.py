@@ -1,4 +1,5 @@
 import djf_surveys.models
+from django.db.models import Count
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -118,7 +119,7 @@ class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateA
     permission_classes = [perms.CommentOwner]
 
 
-class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
+class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser, ]
@@ -129,7 +130,6 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
 
         return [permissions.AllowAny()]
 
-    # get and update profile
     @action(methods=['get', 'patch'], url_path='current_user', detail=False) # khong cho truyen id user khac len vi nguy hiem
     def current_user(self, request):
         user = request.user
@@ -140,21 +140,35 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
         return Response(serializers.UserSerializer(request.user).data)
 
 
+class AdminViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+    parser_classes = [parsers.MultiPartParser, ]
+
+    def get_permissions(self):
+        if self.action == 'update':
+            return [permissions.IsAdminUser()]
+        return [permissions.AllowAny()]
+
+    def update(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return Response({"error": "Only admin can update user information."},
+                            status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
 class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = djf_surveys.models.Survey.objects.all()
     serializer_class = serializers.SurveySerializer
 
     @action(methods=['get'], url_path='questions', detail=True)
     def get_surveys(self, request, pk):
-        questions = self.get_object().question_set.all()
+        questions = self.get_object().questions.all()
 
         return Response(serializers.QuestionSerializer(questions, many=True).data, status=status.HTTP_200_OK)
-    # @action(methods=['get'], url_path='items', detail=True)
-    # def get_items(self, request, pk):
-    #     items = self.get_object().item_set.all()
-    #
-    #     return Response(serializers.ItemSerializer(items, many=True).data, status=status.HTTP_200_OK)
 
+    @action(methods=['get'], url_path='questions_count', detail=True)
+    def get_survey_questions_count(self, request, pk):
+        survey = self.get_object()
+        question_count = survey.questions.count()
 
-
-
+        return Response({'question_count': question_count}, status=status.HTTP_200_OK)

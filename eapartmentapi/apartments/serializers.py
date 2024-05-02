@@ -72,7 +72,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'avatar']
+        fields = ['id', 'first_name', 'last_name', 'username', 'password', 'avatar', 'is_active']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -117,5 +117,5 @@ class SurveySerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = djf_surveys.models.Survey
-        fields = ['id', 'name', 'description']
+        model = djf_surveys.models.Question
+        fields = ['id', 'label', 'type_field']

@@ -43,12 +43,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'oauth2_provider',
+    'djf_surveys',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-    )
+        'rest_framework.authentication.TokenAuthentication'
+   )
 }
 
 CKEDITOR_UPLOAD_PATH = "ckeditors/images/"
@@ -84,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'djf_surveys.context_processors.surveys_context'
             ],
         },
     },
@@ -145,7 +148,6 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CLIENT_ID = '7A6jLdzQVeU8QzyAQASVLBe1CKBQAeH343TzS3YX'
+CLIENT_ID = 'fhMtP55ZMIzLDC9XTECK6wCC5h8HEnAMRn1E61tM'
 
-CLIENT_SECRET = 'I1gUznAAtYv8UxdGPfPUSuRgDdJNKS2YZW368JMLq1ifLRLrgiu0YYdpDRiq9tS1yt2CRRkhevl9PoSMdjs26XqpIXeMbNJuMD10hjR7sKD9cBx7H20xzgHZfUdVTji3'
-
+CLIENT_SECRET = 'ZdKdYn2cm5Plq3zAxWV2vlX4qQJNtmZOCbvNJCRNSRA3iqJQQH1wN64ZmKnpkFN8lPUKTRl4CNsmTmngialDqGueBfS2p0JB265YNJsRH3v8QhdTiU5m6d6hhYtKEHu4'

@@ -144,17 +144,8 @@ class AdminViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIV
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser, ]
+    permission_classes = [perms.AdminOwner]
 
-    def get_permissions(self):
-        if self.action == 'update':
-            return [permissions.IsAdminUser()]
-        return [permissions.AllowAny()]
-
-    def update(self, request, *args, **kwargs):
-        if not request.user.is_staff:
-            return Response({"error": "Only admin can update user information."},
-                            status=status.HTTP_403_FORBIDDEN)
-        return super().update(request, *args, **kwargs)
 
 class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = djf_surveys.models.Survey.objects.all()

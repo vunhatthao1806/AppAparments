@@ -17,6 +17,10 @@ class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     serializer_class = serializers.ECabinetDetailSerializer
     permission_classes = [perms.EcabinetOwner]
 
+    def get_permissions(self):
+        if self.action in ['add_items']:
+            return [permissions.IsAdminUser()]
+
     # tìm kiếm tủ đồ
     def get_queryset(self):
         queryset = self.queryset
@@ -28,23 +32,24 @@ class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
                 queryset = queryset.filter(name__icontains=q)
         return queryset
 
-    # lấy items trong tủ đồ điện tử /ecabinets/{ecabinet_id}/items/
-    # def get_permissions(self):
-    #     if self.action in ['get_items']:
-    #         return [permissions.IsAuthenticated()]
-    #     return [permissions.AllowAny()]
-
     @action(methods=['get'], url_path='items', detail=True)
     def get_items(self, request, pk):
         items = self.get_object().item_set.all()
 
         return Response(serializers.ItemSerializer(items, many=True).data, status=status.HTTP_200_OK)
 
+    @action(methods=['post'], url_path='add_item', detail=True)
+    def add_items(self, request, pk):
+        item = self.get_object().item_set.create(name=request.data.get('name'), status=False)
 
-class ItemViewSet(viewsets.ViewSet, generics.ListAPIView):
+        return Response(serializers.ItemSerializer(item).data, status=status.HTTP_201_CREATED)
+
+
+class ItemViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIView):
     queryset = Item.objects.all()
     serializer_class = serializers.ItemSerializer
     pagination_class = paginators.ItemPaginator
+    permission_classes = [perms.AdminOwner]
 
 
 class ReceiptViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -68,7 +73,7 @@ class ReceiptViewSet(viewsets.ViewSet, generics.ListAPIView):
         return queryset
 
 
-class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.CreateAPIView):
     queryset = Complaint.objects.prefetch_related('tag').filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
     serializer_class = serializers.ComplaintDetailSerializer
 

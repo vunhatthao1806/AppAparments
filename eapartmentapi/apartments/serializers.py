@@ -15,12 +15,6 @@ class ECabinetSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'user', 'active']
 
 
-class ItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Item
-        fields = '__all__'
-
-
 class ECabinetDetailSerializer(ECabinetSerializer):
 
     class Meta:
@@ -80,6 +74,12 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
 
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+        fields = ['id', 'name', 'status', 'e_cabinet']
+
+
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
 
@@ -118,4 +118,4 @@ class SurveySerializer(serializers.ModelSerializer):
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = djf_surveys.models.Question
-        fields = ['id', 'label', 'type_field']
+        fields = ['id', 'label', 'type_field', 'choices']

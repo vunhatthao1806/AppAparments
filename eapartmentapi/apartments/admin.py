@@ -1,7 +1,19 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
-from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item, User, Comment, Survey, Question, Choice
+from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item, User, Comment, Survey, Question, Choice, \
+    CarCard
 import cloudinary
+
+
+class ApartmentAppAdminSite(admin.AdminSite):
+    site_header = "HỆ THỐNG QUẢN LÝ CHUNG CƯ"
+
+
+admin_site = ApartmentAppAdminSite('myapartment')
+
+
+class TagAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
 
 
 class FlatAdmin(admin.ModelAdmin):
@@ -21,7 +33,7 @@ class ECabinetAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'e_cabinet', 'status_text']
+    list_display = ['id', 'name', 'e_cabinet', 'status_tag']
     search_fields = ['name']
 
 
@@ -38,15 +50,20 @@ class ComplaintAdmin(admin.ModelAdmin):
 
 
 class ReceiptAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'status', 'created_date', 'updated_date']
-    search_fields = ['name', 'status']
+    list_display = ['id', 'title', 'status', 'created_date', 'updated_date']
+    search_fields = ['title', 'status']
+
+
+class CarCardAdmin(admin.ModelAdmin):
+    list_display = ['id', 'type', 'number_plate', 'flat']
 
 
 admin.site.register(Flat, FlatAdmin)
 admin.site.register(ECabinet, ECabinetAdmin)
 admin.site.register(Complaint, ComplaintAdmin)
-admin.site.register(Tag)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(User)
 admin.site.register(Comment)
+admin.site.register(CarCard, CarCardAdmin)

@@ -1,6 +1,8 @@
 import djf_surveys.models
 from rest_framework import serializers
-from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment
+from rest_framework.exceptions import ValidationError
+
+from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard
 
 
 class FlatSerializer(serializers.ModelSerializer):
@@ -15,13 +17,6 @@ class ECabinetSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'user', 'active']
 
 
-class ECabinetDetailSerializer(ECabinetSerializer):
-
-    class Meta:
-        model = ECabinetSerializer.Meta.model
-        fields = ECabinetSerializer.Meta.fields
-
-
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -31,6 +26,20 @@ class TagSerializer(serializers.ModelSerializer):
 class ReceiptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receipt
+        fields = ['title', 'created_date']
+
+
+class ReceiptDetailSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(many= True)
+
+    class Meta:
+        model = ReceiptSerializer.Meta.model
+        fields = ReceiptSerializer.Meta.fields + ['tags', 'total']
+
+
+class CarCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarCard
         fields = '__all__'
 
 
@@ -38,13 +47,23 @@ class ComplaintSerializer(serializers.ModelSerializer):
     # chỉnh đường dẫn trực tiếp cloudinary cho ảnh
     def to_representation(self, instance):
         req = super().to_representation(instance)
-        req['image'] = instance.image.url
+        if instance.image:
+            req['image'] = instance.image.url
 
         return req
 
     class Meta:
         model = Complaint
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'user']
+
+
+class ComplaintDetailSerializer(ComplaintSerializer):
+    status_tag = TagSerializer()
+    complaint_tag = TagSerializer()
+
+    class Meta:
+        model = ComplaintSerializer.Meta.model
+        fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -75,9 +94,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
+    status_tag = TagSerializer()
+
     class Meta:
         model = Item
-        fields = ['id', 'name', 'status', 'e_cabinet']
+        fields = ['id', 'name', 'status', 'e_cabinet', 'status_tag']
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -86,14 +107,6 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'content', 'created_date', 'updated_date', 'user', 'complaint']
-
-
-class ComplaintDetailSerializer(ComplaintSerializer):
-    tag = TagSerializer(many=True)
-
-    class Meta:
-        model = ComplaintSerializer.Meta.model
-        fields = ComplaintSerializer.Meta.fields + ['content', 'tag']
 
 
 class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):

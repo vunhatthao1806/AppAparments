@@ -12,7 +12,7 @@ r.register('complaints', views.ComplaintViewSet, 'complaints')
 r.register('users', views.UserViewSet, 'users')
 r.register('comments', views.CommentViewSet, 'comments')
 r.register('surveys', views.SurveyViewSet, 'surveys')
-r.register('admins', views.AdminViewSet, 'admins')
+r.register('carcards', views.CarCardViewSet, 'carcards')
 
 urlpatterns = [
     path('', include(r.urls))

@@ -42,8 +42,31 @@ class Flat(models.Model):
 class CarCard(BaseModel):
     type = models.CharField(max_length=255)
     number_plate = models.CharField(max_length=50)
+    image_mrc_m1 = CloudinaryField(null=True)
+    image_mrc_m2 = CloudinaryField(null=True)
+    image_idcard_m1 = CloudinaryField(null=True)
+    image_idcard_m2 = CloudinaryField(null=True)
 
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.number_plate
+
+
+class Item(BaseModel):
+    name = models.CharField(max_length=255)
+    status = models.BooleanField()
+    image = CloudinaryField(null=True)
+
+    e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
+    status_tag = models.ForeignKey('Tag', on_delete=models.PROTECT, null=True)
+
+    def __str__(self):
+        return self.name
+
+    def status_text(self):
+        return "received" if self.status else "dismissed"
 
 
 class Tag(BaseModel):
@@ -53,24 +76,13 @@ class Tag(BaseModel):
         return self.name
 
 
-class Item(models.Model):
-    name = models.CharField(max_length=255)
-    status = models.BooleanField()
-
-    e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
-
-    def status_text(self):
-        return "received" if self.status else "dismissed"
-
-
 class Complaint(BaseModel):
     title = models.CharField(max_length=255)
     content = RichTextField()
     image = CloudinaryField()
-    tag = models.ManyToManyField(Tag)
+
+    status_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='status_tag')
+    complaint_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='complaint_tag')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -78,15 +90,16 @@ class Complaint(BaseModel):
 
 
 class Receipt(BaseModel):
-    name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
+    total = models.CharField(max_length=255, null=True)
     status = models.BooleanField()
 
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.PROTECT)
+    tag = models.ForeignKey(Tag, on_delete=models.PROTECT, null=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class Interaction(BaseModel):

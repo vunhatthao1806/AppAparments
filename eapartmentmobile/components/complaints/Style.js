@@ -1,12 +1,13 @@
 import { StyleSheet } from "react-native";
+import { Line } from "react-native-svg";
 
 export default StyleSheet.create({
     searchbar: {
-        margin: 5,
-        fontSize: 12
+        marginBottom: 5,
+        marginRight: 5
     },
     cates: {
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: "bold"
     }, 
     cardContent: {
@@ -28,5 +29,16 @@ export default StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold',
         flexWrap: 'wrap'
+    }, margin: {
+        margin: 15
+    }, marginbot: {
+        marginBottom: 10
+    },
+    readMore: {
+      color: "blue",
+      marginTop: 8,
+      textDecorationStyle: "solid"
+    }, tags:{
+        margin: 10
     }
 });

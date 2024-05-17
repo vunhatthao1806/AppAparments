@@ -9,11 +9,15 @@ export default StyleSheet.create({
         flexDirection: "row"
     }, wrap: {
         flexWrap: "wrap"
-    }, margin: {
-        marginTop: 5
     }, avatar: {
         width: 80,
         height: 80,
         borderRadius: 20
+    }, margin: {
+        margin: 5
+    },
+    statustag:{
+        backgroundColor: "red"
     }
+
 });

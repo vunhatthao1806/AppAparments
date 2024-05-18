@@ -1,16 +1,17 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Complaint from "./components/complaints/Complaint";
-import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from "@react-navigation/native";
 import { Icon } from 'react-native-paper';
+import ComplaintDetail from './components/complaints/ComplaintDetail';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const Stack = createStackNavigator();
-
+const Stack = createNativeStackNavigator();
 
 const MyStack = () => {
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Course" component={Complaint} />
+    <Stack.Navigator>
+      <Stack.Screen options={{headerShown: false}} name="Complaint" component={Complaint} />
+      <Stack.Screen options={{headerShown: true}} name="ComplaintDetail" component={ComplaintDetail} />
     </Stack.Navigator>
   );
 }

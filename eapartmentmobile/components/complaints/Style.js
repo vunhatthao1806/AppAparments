@@ -21,7 +21,7 @@ export default StyleSheet.create({
         whiteSpace: 'normal',
         wordWrap: 'break-word',
         overflow: 'hidden',
-        fontSize: 15
+        fontSize: 19
     },
     title: {
         margin: 8,
@@ -53,5 +53,8 @@ export default StyleSheet.create({
         fontSize: 15,
         fontStyle: "italic",
         marginLeft: 5
+    },
+    marginTitle: {
+        marginTop: 30
     }
 });

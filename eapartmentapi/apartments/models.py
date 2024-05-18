@@ -6,8 +6,8 @@ from django.utils import timezone
 
 
 class BaseModel(models.Model):
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now_add=True) # default=timezone.now
     active = models.BooleanField(default=True)
 
     class Meta:

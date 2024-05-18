@@ -43,29 +43,6 @@ class CarCardSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class ComplaintSerializer(serializers.ModelSerializer):
-    # chỉnh đường dẫn trực tiếp cloudinary cho ảnh
-    def to_representation(self, instance):
-        req = super().to_representation(instance)
-        if instance.image:
-            req['image'] = instance.image.url
-
-        return req
-
-    class Meta:
-        model = Complaint
-        fields = ['id', 'title', 'user']
-
-
-class ComplaintDetailSerializer(ComplaintSerializer):
-    status_tag = TagSerializer()
-    complaint_tag = TagSerializer()
-
-    class Meta:
-        model = ComplaintSerializer.Meta.model
-        fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag']
-
-
 class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         data = validated_data.copy()
@@ -85,12 +62,37 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'username', 'password', 'avatar', 'is_active']
+        fields = ['id', 'username', 'avatar', 'is_active']
         extra_kwargs = {
             'password': {
                 'write_only': True
             }
         }
+
+
+class ComplaintSerializer(serializers.ModelSerializer):
+    # chỉnh đường dẫn trực tiếp cloudinary cho ảnh
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        if instance.image:
+            req['image'] = instance.image.url
+
+        return req
+
+    user = UserSerializer()
+
+    class Meta:
+        model = Complaint
+        fields = ['id', 'title', 'user', 'created_date']
+
+
+class ComplaintDetailSerializer(ComplaintSerializer):
+    status_tag = TagSerializer()
+    complaint_tag = TagSerializer()
+
+    class Meta:
+        model = ComplaintSerializer.Meta.model
+        fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag']
 
 
 class ItemSerializer(serializers.ModelSerializer):

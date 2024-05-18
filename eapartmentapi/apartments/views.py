@@ -3,7 +3,7 @@ from django.db.models import Count
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Survey, Choice, Question, CarCard
+from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, CarCard
 from apartments import serializers, paginators, perms
 
 
@@ -103,6 +103,17 @@ class ReceiptViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAP
 class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.CreateAPIView, generics.ListAPIView):
     queryset = Complaint.objects.filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
     serializer_class = serializers.ComplaintDetailSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if self.action.__eq__('list'):
+
+            complaint_tag_id = self.request.query_params.get('complaint_tag_id')
+            if complaint_tag_id:
+                queryset = queryset.filter(complaint_tag_id=complaint_tag_id)
+
+        return queryset
 
     def get_serializer_class(self):
         if self.request.user.is_authenticated:

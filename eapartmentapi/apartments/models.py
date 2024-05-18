@@ -83,6 +83,7 @@ class Complaint(BaseModel):
 
     status_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='status_tag')
     complaint_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='complaint_tag')
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

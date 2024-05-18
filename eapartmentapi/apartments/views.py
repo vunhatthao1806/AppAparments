@@ -126,7 +126,7 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.Crea
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
-    @action(methods=['get'], url_path='comment', detail=True)
+    @action(methods=['get'], url_path='comments', detail=True)
     def get_comments(self, request, pk):
         comments = self.get_object().comment_set.select_related('user').all()
 
@@ -139,7 +139,7 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.Crea
         return Response(serializers.CommentSerializer(comments, many=True).data,
                         status=status.HTTP_200_OK)
 
-    @action(methods=['post'], url_path='comments', detail=True)
+    @action(methods=['post'], url_path='add_comment', detail=True)
     def add_comment(self, request, pk):  # chỉ chứng thực mới được vô
         c = self.get_object().comment_set.create(user=request.user, content=request.data.get('content'))
                 # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
@@ -162,7 +162,7 @@ class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateA
     permission_classes = [perms.CommentOwner]
 
 
-class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPIView):
+class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPIView, generics.ListAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser, ]

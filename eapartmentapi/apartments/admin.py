@@ -58,6 +58,10 @@ class CarCardAdmin(admin.ModelAdmin):
     list_display = ['id', 'type', 'number_plate', 'flat']
 
 
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['id', 'content', 'user', 'complaint_id']
+
+
 admin.site.register(Flat, FlatAdmin)
 admin.site.register(ECabinet, ECabinetAdmin)
 admin.site.register(Complaint, ComplaintAdmin)
@@ -65,5 +69,5 @@ admin.site.register(Tag, TagAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(User)
-admin.site.register(Comment)
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(CarCard, CarCardAdmin)

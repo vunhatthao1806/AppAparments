@@ -2,7 +2,7 @@ import { ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "r
 import MyStyle from "../../styles/MyStyle";
 import { useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
-import { ActivityIndicator, Card, Chip, List, Searchbar } from "react-native-paper";
+import { ActivityIndicator, Avatar, Card, Chip, List, Searchbar } from "react-native-paper";
 import Style from "./Style";
 import moment from "moment";
 import { Image } from "react-native";
@@ -10,23 +10,21 @@ import RenderHTML from 'react-native-render-html';
 
 const  Complaint = () => {
     const [complaints, setComplaints] = useState([]);
+    const [complaint_tagId, setComplaint_tagId] = useState("");
     const [loading,setLoading] = useState(false);
-    const [q, setQ] = useState("");
     const { width } = useWindowDimensions();
     const [showFullContent, setShowFullContent] = useState({});
 
     const loadComplaints = async () => {
         try {
-            let res = await APIs.get(endpoints['complaints']);
+            let url = `${endpoints['complaints']}?complaint_tag_id=${complaint_tagId}`;
+
+            let res = await APIs.get(url);
             setComplaints(res.data);
         } catch (ex) {
             console.error(ex);
         } 
     }
-
-    // const handleToggleContent = (id) => {
-    //     setShowFullContent(!showFullContent);
-    // };
 
     const handleToggleContent = (id) => {
         setShowFullContent((prevState) => ({
@@ -40,30 +38,44 @@ const  Complaint = () => {
     
     useEffect(() => {
         loadComplaints();
-    }, []);
+    }, [complaint_tagId]);
+
+    const search = (value, callback) => {
+        callback(value);
+    }
 
     return (
         <View style={[MyStyle.container]}>
             <Text style={[Style.cates, Style.margin]}>Bản tin góp ý</Text>
-            <View>
-                {/* <Searchbar style={[Style.searchbar, ]} placeholder="Search" onChangeText={(t) => search(t, setQ)} value={q} /> */}
-            </View>
 
-            <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
-                {complaints.map(c =>
-                    c.complaint_tag && (
-                        <Chip key={c.complaint_tag.id} style={Style.tags} icon="vacuum">{c.complaint_tag.name}</Chip>
-                    )
-                )}
+            <View style={[MyStyle.row, MyStyle.wrap]}>
+                <Chip mode={!complaint_tagId?"flat":"outlined"} 
+                onPress={() => search("", setComplaint_tagId)} style={Style.tags} icon="shape-plus">Tất cả</Chip>
+                
+                {complaints===null?<ActivityIndicator/>:<>
+                    {complaints.map(c => 
+                    <Chip mode={c.complaint_tag.id===complaint_tagId?"flat":"outlined"} 
+                    key={c.id} 
+                    onPress={() => search(c.complaint_tag.id, setComplaint_tagId)} 
+                    style={Style.tags}  
+                    icon="shape-plus">{c.complaint_tag.name}</Chip>)}
+                </>}
             </View>
 
             <ScrollView>
                 {complaints===null?<ActivityIndicator/>:<>
                 {complaints.map(c =>
                 <Card key={c.id}  style={Style.marginbot}>
-                    <Text style={Style.title}>{c.title}</Text>
 
-                    <Text>{moment(c.created_date).format("DD/MM/YYYY HH:mm")}</Text>
+                    <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
+                        <Avatar.Image size={43} source={{ uri: c.user.avatar }} />
+                        <View >
+                            <Text style={Style.username}>{c.user.username}</Text>
+                            <Text style={Style.createdDate}>{moment(c.created_date).format("DD/MM/YYYY HH:mm")}</Text>
+                        </View>
+                    </View>
+                    
+                    <Text style={Style.title}>{c.title}</Text>
 
                     <Card.Cover source={{ uri: c.image }} />
                     <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
@@ -101,19 +113,3 @@ const  Complaint = () => {
 }
 
 export default Complaint;
-
-
-            {/* <ScrollView>
-                {complaints.map(c =>
-                    <List.Item key={c.id}
-                    title={c.title} 
-                    description={
-                        // moment(c.created_date).fromNow()
-                            c.complaint_tag && (
-                                <Chip key={c.complaint_tag.id} style={Style.tags} icon="vacuum">{c.complaint_tag.name}</Chip>
-                            )
-                    } 
-                    right={() => 
-                    <Image style={MyStyle.avatar} source={{uri: c.image}} />} />
-                )}
-            </ScrollView> */}

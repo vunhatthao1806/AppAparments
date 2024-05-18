@@ -24,21 +24,34 @@ export default StyleSheet.create({
         fontSize: 15
     },
     title: {
-        margin: 10,
-        color: 'blue',
+        margin: 8,
+        // color: 'blue',
         fontSize: 25,
         fontWeight: 'bold',
         flexWrap: 'wrap'
-    }, margin: {
-        margin: 15
-    }, marginbot: {
+    },
+     margin: {
+        margin: 10
+    },
+     marginbot: {
         marginBottom: 10
     },
     readMore: {
       color: "blue",
       marginTop: 8,
       textDecorationStyle: "solid"
-    }, tags:{
-        margin: 10
+    }, 
+    tags:{
+        margin: 6
+    },
+    username: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        marginLeft: 5
+    },
+    createdDate: {
+        fontSize: 15,
+        fontStyle: "italic",
+        marginLeft: 5
     }
 });

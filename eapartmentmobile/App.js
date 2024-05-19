@@ -4,6 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Icon } from 'react-native-paper';
 import ComplaintDetail from './components/complaints/ComplaintDetail';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Surveys from './components/surveys/Surveys';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -12,6 +14,7 @@ const MyStack = () => {
     <Stack.Navigator>
       <Stack.Screen options={{headerShown: false}} name="Complaint" component={Complaint} />
       <Stack.Screen options={{headerShown: true}} name="ComplaintDetail" component={ComplaintDetail} />
+      <Stack.Screen options={{headerShown: true}} name="Surveys" component={Surveys}/>
     </Stack.Navigator>
   );
 }
@@ -20,7 +23,16 @@ const Tab = createMaterialBottomTabNavigator();
 const MyTab = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={MyStack} options={{title: "Complaint", tabBarIcon: () => <Icon source="home" size={30} color="blue" />}} />
+      <Tab.Screen 
+        name="Home" 
+        component={MyStack} 
+        options={{title: "Complaint",
+                 tabBarIcon: () => <Icon source="home" size={30} color="blue" />}} />
+      <Tab.Screen 
+        name="Surveys" 
+        component={Surveys} 
+        options={{title: "Surveys", 
+                tabBarIcon: () => <Icon source="format-list-checks" size={30} color="blue"/>}} />
     </Tab.Navigator>
   );
 }

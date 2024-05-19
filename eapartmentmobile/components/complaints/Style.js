@@ -56,5 +56,50 @@ export default StyleSheet.create({
     },
     marginTitle: {
         marginTop: 30
+    },
+    commentStyle: {
+        borderColor: '#ddd',  // Màu viền
+        borderWidth: 1,       // Độ dày viền
+        borderRadius: 5,      // Góc bo tròn viền
+        padding: 10,          // Khoảng cách bên trong viền
+        marginBottom: 10,     // Khoảng cách giữa các bình luận
+        backgroundColor: '#fff', // Màu nền
+        marginLeft: 10,
+        marginRight: 10,
+    }, 
+    commentsContainer: {
+        marginTop: 10,
+    },
+    noCommentContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 100, // Chiều cao đủ lớn để căn giữa
+    },
+    noCommentText: {
+        fontSize: 16,
+        color: 'grey',
+    },
+    buttonCommnet:{
+        width: 30,
+        height: 30
+    }, 
+    textInput: {
+        flex: 1,
+        marginRight: 0,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 5,
+        marginLeft: 10
+    },
+    buttonContainer: {
+        justifyContent: 'center',
+        marginRight: 10,
+        marginLeft: 5     
+    },
+    button: {
+        borderWidth: 1,
+        borderColor: '#000', 
+        flexDirection: 'row-reverse',  // Màu viền cho Button
     }
 });

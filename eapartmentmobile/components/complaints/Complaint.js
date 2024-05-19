@@ -91,7 +91,7 @@ const  Complaint = ({navigation}) => {
                                     contentWidth={width} 
                                     //source={{html: c.content}}
                                     source={{  html: showFullContent[c.id] ? c.content : `${c.content.slice(0, maxContentLength)}...` }}
-                                    defaultTextProps={{ style: Style.text }} 
+                                    // defaultTextProps={{ style: Style.text }} 
                                 />
 
                                 {!showFullContent[c.id] && c.content.length > maxContentLength && (

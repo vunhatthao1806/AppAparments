@@ -128,13 +128,13 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.Crea
 
     @action(methods=['get'], url_path='comments', detail=True)
     def get_comments(self, request, pk):
-        comments = self.get_object().comment_set.select_related('user').all()
+        comments = self.get_object().comment_set.all() # select_related('user').
 
-        paginator = paginators.CommentPaginator()
-        page = paginator.paginate_queryset(comments, request)
-        if page is not None:
-            serializer = serializers.CommentSerializer(page, many=True)
-            return paginator.get_paginated_response(serializer.data)
+        # paginator = paginators.CommentPaginator()
+        # page = paginator.paginate_queryset(comments, request)
+        # if page is not None:
+        #     serializer = serializers.CommentSerializer(page, many=True)
+        #     return paginator.get_paginated_response(serializer.data)
 
         return Response(serializers.CommentSerializer(comments, many=True).data,
                         status=status.HTTP_200_OK)

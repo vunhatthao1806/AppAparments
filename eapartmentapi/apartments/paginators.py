@@ -9,5 +9,5 @@ class ReceiptPaginator(pagination.PageNumberPagination):
     page_size = 10
 
 
-class CommentPaginator(pagination.PageNumberPagination):
-    page_size = 3
+# class CommentPaginator(pagination.PageNumberPagination):
+#     page_size = 3

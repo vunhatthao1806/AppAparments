@@ -5,6 +5,7 @@ import { Icon } from 'react-native-paper';
 import ComplaintDetail from './components/complaints/ComplaintDetail';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Surveys from './components/surveys/Surveys';
+import Ecabinet from './components/ecabinets/Ecabinet';
 
 
 const Stack = createNativeStackNavigator();
@@ -14,7 +15,7 @@ const MyStack = () => {
     <Stack.Navigator>
       <Stack.Screen options={{headerShown: false}} name="Complaint" component={Complaint} />
       <Stack.Screen options={{headerShown: true}} name="ComplaintDetail" component={ComplaintDetail} />
-      <Stack.Screen options={{headerShown: true}} name="Surveys" component={Surveys}/>
+      <Stack.Screen options={{headerShown: true}} name="Ecabinet" component={Ecabinet}/>
     </Stack.Navigator>
   );
 }
@@ -33,6 +34,12 @@ const MyTab = () => {
         component={Surveys} 
         options={{title: "Surveys", 
                 tabBarIcon: () => <Icon source="format-list-checks" size={30} color="blue"/>}} />
+
+      <Tab.Screen 
+              name="Ecabinet" 
+              component={Ecabinet} 
+              options={{title: "Ecabinet", 
+                      tabBarIcon: () => <Icon source="format-list-checks" size={30} color="blue"/>}} />
     </Tab.Navigator>
   );
 }

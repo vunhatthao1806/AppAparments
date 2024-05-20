@@ -20,3 +20,8 @@ class CarCardOwner(permissions.IsAuthenticated):
 class AdminOwner(permissions.IsAdminUser):
     def has_object_permission(self, request, view, ecabinet):
         return super().has_permission(request, view) and request.user.is_staff == True
+
+
+class ManageSurveys(permissions.IsAdminUser):
+    def has_object_permission(self, request, view, survey):
+        return super().has_permission(request, view) and request.user.is_staff == True

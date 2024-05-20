@@ -33,10 +33,10 @@ class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = ECabinet.objects.filter(active=True)
     serializer_class = serializers.ECabinetSerializer
 
-    def get_permissions(self):
-        if self.action in ['add_items']:
-            return [permissions.IsAdminUser()]
-        return [perms.EcabinetOwner()]
+    # def get_permissions(self):
+    #     if self.action in ['add_items']:
+    #         return [permissions.IsAdminUser()]
+    #     return [perms.EcabinetOwner()]
 
     # tìm kiếm tủ đồ
     def get_queryset(self):
@@ -188,6 +188,13 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
 
         return Response(serializers.ComplaintSerializer(complaint, many=True).data, status=status.HTTP_200_OK)
 
+    @action(methods=['get'], url_path='ecabinets', detail=False)
+    def get_ecabinets(self, request):
+        user = request.user
+
+        ecabinets =  ECabinet.objects.filter(user_id=user.id)
+        return Response(serializers.ECabinetSerializer(ecabinets, many=True).data, status=status.HTTP_200_OK);
+
 
 # class AdminViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.UpdateAPIView):
 #     queryset = User.objects.all()
@@ -199,6 +206,15 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
 class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = djf_surveys.models.Survey.objects.all()
     serializer_class = serializers.SurveySerializer
+    permission_classes = [perms.ManageSurveys]
+
+    def post(self, request):
+        if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn
+            return Response("Bạn không có quyền thực hiện thao tác này.", status=status.HTTP_403_FORBIDDEN)
+
+    def delete(self, request):
+        if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn
+            return Response("Bạn không có quyền thực hiện thao tác này.", status=status.HTTP_403_FORBIDDEN)
 
     @action(methods=['get'], url_path='questions', detail=True)
     def get_surveys(self, request, pk):

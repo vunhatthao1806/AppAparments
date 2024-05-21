@@ -1,4 +1,4 @@
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import MyStyle from "../../styles/MyStyle";
 import Style from "./Style";
 import { Avatar, Button, TextInput } from "react-native-paper";
@@ -45,62 +45,117 @@ const Login = () => {
     }
   };
   return (
-    <View style={MyStyle.container}>
-      <View>
-        <Text style={Style.subject}>Đăng nhập</Text>
-      </View>
-      <View style={Style.container}>
-        <Avatar.Image
-          style={Style.logo}
-          source={require("./TT.png")}
-          size={100}
-        ></Avatar.Image>
-        <TextInput
-          style={{
-            marginBottom: 20,
-            backgroundColor: "rgba(60,32,22,0.5)",
-          }}
-          label={
-            <Text style={{ color: "#CCCCCC", fontSize: 20 }}>
-              Tên đăng nhập
-            </Text>
-          }
-          value={username}
-          onChangeText={(username) => setusername(username)}
-          placeholder="Nhập tên..."
-          placeholderTextColor="white"
-          textColor="black"
-          cursorColor="black"
-          underlineStyle={{ backgroundColor: "rgba(60,32,22,0.8)" }}
-        />
-        <TextInput
-          style={{
-            marginBottom: 20,
-            backgroundColor: "rgba(60,32,22,0.5)",
-          }}
-          label={
-            <Text style={{ color: "#CCCCCC", fontSize: 20 }}>Mật khẩu</Text>
-          }
-          value={password}
-          onChangeText={(password) => setPassword(password)}
-          placeholder="Nhập mật khẩu..."
-          placeholderTextColor="white"
-          textColor="black"
-          cursorColor="black"
-          secureTextEntry={true}
-          underlineStyle={{ backgroundColor: "rgba(60,32,22,0.8)" }}
-        />
-        <TouchableOpacity onPress={login}>
-          <Button
-            mode="contained"
-            buttonColor="rgba(60, 32, 22, 1)"
-            style={{ width: "60%", alignSelf: "center" }}
-          >
-            Đăng nhập
-          </Button>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={Style.containerKeyBo}
+      >
+        <ScrollView
+          contentContainerStyle={Style.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View>
+          <Image
+            source={require('./apartment.webp')}
+            style={Style.imageOnTop}
+          />
+          </View>
+          <View style={Style.containerLogin}>
+            <Text style={Style.titleLogin}>Đăng nhập</Text>
+            <Avatar.Image
+              style={Style.logo}
+              source={require("./TT.png")}
+              size={100}
+            />
+            <TextInput
+              style={Style.textInput}
+              label={<Text style={Style.textLabel}>Tên đăng nhập</Text>}
+              value={username}
+              onChangeText={setusername}
+              placeholder="Nhập tên..."
+              placeholderTextColor="white"
+              textColor="black"
+              cursorColor="black"
+              underlineStyle={{ backgroundColor: "rgba(60,32,22,0.8)" }}
+            />
+            <TextInput
+              style={Style.textInput}
+              label={<Text style={Style.textLabel}>Mật khẩu</Text>}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Nhập mật khẩu..."
+              placeholderTextColor="white"
+              textColor="black"
+              cursorColor="black"
+              secureTextEntry
+              underlineStyle={{ backgroundColor: "rgba(60,32,22,0.8)" }}
+            />
+            <TouchableOpacity onPress={login}>
+              <Button
+                mode="contained"
+                buttonColor="rgba(60, 32, 22, 1)"
+                style={Style.buttonLogin}
+                labelStyle={Style.buttonText}
+              >
+                Đăng nhập
+              </Button>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
+
+    // <View style={MyStyle.container}>
+    //   <View>
+    //     <Text style={Style.subject}>Đăng nhập</Text>
+    //   </View>
+    //   <View style={Style.container}>
+    //     <Avatar.Image
+    //       style={Style.logo}
+    //       source={require("./TT.png")}
+    //       size={100}
+    //     ></Avatar.Image>
+    //     <TextInput
+    //       style={Style.textInput}
+    //       label={
+    //         <Text style={Style.textLabel}>
+    //           Tên đăng nhập
+    //         </Text>
+    //       }
+    //       value={username}
+    //       onChangeText={(username) => setusername(username)}
+    //       placeholder="Nhập tên..."
+    //       placeholderTextColor="white"
+    //       textColor="black"
+    //       cursorColor="black"
+    //       underlineStyle={{ backgroundColor: "rgba(60,32,22,0.8)" }}
+    //     />
+    //     <TextInput
+    //       style={Style.textInput}
+    //       label={
+    //         <Text style={Style.textLabel}>Mật khẩu</Text>
+    //       }
+    //       value={password}
+    //       onChangeText={(password) => setPassword(password)}
+    //       placeholder="Nhập mật khẩu..."
+    //       placeholderTextColor="white"
+    //       textColor="black"
+    //       cursorColor="black"
+    //       secureTextEntry={true}
+    //       underlineStyle={{ backgroundColor: "rgba(60,32,22,0.8)" }}
+    //     />
+    //     <TouchableOpacity onPress={login}>
+    //       <Button
+    //         mode="contained"
+    //         buttonColor="rgba(60, 32, 22, 1)"
+    //         style={Style.buttonLogin}
+    //         labelStyle={Style.buttonText}
+    //       >
+    //         Đăng nhập
+    //       </Button>
+    //     </TouchableOpacity>
+    //   </View>
+    // </View>
   );
 };
 export default Login;

@@ -83,7 +83,16 @@ const  Complaint = ({navigation}) => {
                                     <Chip key={c.complaint_tag.id} style={MyStyle.margin} icon="vacuum">{c.complaint_tag.name}</Chip>
                                 )}
                                 {c.status_tag && (
-                                    <Chip key={c.status_tag.id} style={[MyStyle.margin, MyStyle.statustag]} selectedColor="white" >{c.status_tag.name}</Chip>
+                                    <Chip 
+                                        key={c.status_tag.id} 
+                                        style={{
+                                            ...MyStyle.margin, 
+                                            ...MyStyle.statustag, 
+                                            backgroundColor: c.status_tag.name === "Chưa xử lý" ? "#FF8F8F" : "#B0EBB4"
+                                        }}
+                                        >
+                                            {c.status_tag.name}
+                                    </Chip>
                                 )}
                             </View>
                             <Card.Content style={Style.cardContent}>

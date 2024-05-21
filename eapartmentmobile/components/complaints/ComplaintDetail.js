@@ -63,10 +63,20 @@ const ComplaintDetail = ({route}) => {
                         <Card.Cover source={{ uri: complaint.image }} />
                         <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
                             {complaint.complaint_tag && (
-                                <Chip key={complaint.complaint_tag.id} style={MyStyle.margin} icon="vacuum">{complaint.complaint_tag.name}</Chip>
+                                <Chip 
+                                    key={complaint.complaint_tag.id} 
+                                    style={MyStyle.margin} 
+                                    icon="vacuum">{complaint.complaint_tag.name}</Chip>
                             )}
                             {complaint.status_tag && (
-                                <Chip key={complaint.status_tag.id} style={[MyStyle.margin, MyStyle.statustag]} selectedColor="white" >{complaint.status_tag.name}</Chip>
+                                <Chip 
+                                    key={complaint.status_tag.id} 
+                                    style={{
+                                        ...MyStyle.margin, 
+                                        ...MyStyle.statustag, 
+                                        backgroundColor: complaint.status_tag.name === "Chưa xử lý" ? "#FF8F8F" : "#B0EBB4"
+                                    }}
+                                    >{complaint.status_tag.name}</Chip>
                             )}
                         </View>
                         <Card.Content>

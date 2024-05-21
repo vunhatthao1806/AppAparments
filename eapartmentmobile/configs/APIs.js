@@ -10,11 +10,23 @@ export const endpoints = {
     'complaints': '/complaints/',
     'complaint-detail': (complaintId) => `/complaints/${complaintId}/`,
     'comments': (complaintId) => `/complaints/${complaintId}/comments/`,
-    'ecabinets': (ecabinetId) => `/ecabinets/${ecabinetId}/`,
+    'ecabinet': "/users/ecabinets/",
     'items': (ecabinetId) => `/ecabinets/${ecabinetId}/items/`,
     'surveys': '/surveys/',
     'login': '/o/token/'
 };
+
+export const authAPI = (accessToken) =>
+    axios.create({
+      baseURL: BASE_URL,
+      headers: {
+        Authorization: `bearer ${
+          accessToken === null
+            ? AsyncStorage.getItem("access-token")
+            : accessToken
+        }`,
+      },
+    });
 
 export default axios.create({
     baseURL: BASE_URL

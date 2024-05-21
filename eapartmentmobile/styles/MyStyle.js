@@ -15,9 +15,12 @@ export default StyleSheet.create({
         borderRadius: 20
     }, margin: {
         margin: 5
-    },
-    statustag:{
+    }, statustag:{
         backgroundColor: "red"
+    }, containercomplaint: {
+        flex: 1,
+        marginTop: 30,
+        marginLeft: 10,
     }
 
 });

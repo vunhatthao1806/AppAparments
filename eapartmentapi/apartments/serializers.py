@@ -12,9 +12,13 @@ class FlatSerializer(serializers.ModelSerializer):
 
 
 class ECabinetSerializer(serializers.ModelSerializer):
+    count_items = serializers.SerializerMethodField()
     class Meta:
         model = ECabinet
-        fields = ['id', 'name', 'user', 'active']
+        fields = ['id', 'name', 'user', 'active', 'count_items']
+
+    def get_count_items(self, obj):
+        return obj.item_set.count()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -96,11 +100,17 @@ class ComplaintDetailSerializer(ComplaintSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        if instance.image:
+            req['image'] = instance.image.url
+
+        return req
     status_tag = TagSerializer()
 
     class Meta:
         model = Item
-        fields = ['id', 'name', 'status', 'e_cabinet', 'status_tag']
+        fields = ['id', 'name', 'status', 'e_cabinet', 'status_tag', 'image']
 
 
 class CommentSerializer(serializers.ModelSerializer):

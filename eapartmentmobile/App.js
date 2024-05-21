@@ -6,17 +6,34 @@ import ComplaintDetail from './components/complaints/ComplaintDetail';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Surveys from './components/surveys/Surveys';
 import Ecabinet from './components/ecabinets/Ecabinet';
+import MyContext from './configs/MyContext';
+import { useReducer } from 'react';
+import MyUserReducer from './reducers/MyUserReducer';
 
 
 const Stack = createNativeStackNavigator();
 
 const MyStack = () => {
+  const [user, dispatch] = useReducer(MyUserReducer, null);
+
   return (
-    <Stack.Navigator>
-      <Stack.Screen options={{headerShown: false}} name="Complaint" component={Complaint} />
-      <Stack.Screen options={{headerShown: true}} name="ComplaintDetail" component={ComplaintDetail} />
-      <Stack.Screen options={{headerShown: true}} name="Ecabinet" component={Ecabinet}/>
-    </Stack.Navigator>
+    <MyContext.Provider value={[user, dispatch]}>
+      <Stack.Navigator>
+        <Stack.Screen 
+          options={{headerShown: false}} 
+          name="Complaint" 
+          component={Complaint} />
+        <Stack.Screen 
+          options={{headerShown: true}} 
+          name="ComplaintDetail" 
+          component={ComplaintDetail} />
+        <Stack.Screen 
+          options={{headerShown: true}} 
+          name="Ecabinet" 
+          component={Ecabinet}/>
+      </Stack.Navigator>
+    </MyContext.Provider>
+    
   );
 }
 

@@ -33,10 +33,10 @@ class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = ECabinet.objects.filter(active=True)
     serializer_class = serializers.ECabinetSerializer
 
-    # def get_permissions(self):
-    #     if self.action in ['add_items']:
-    #         return [permissions.IsAdminUser()]
-    #     return [perms.EcabinetOwner()]
+    def get_permissions(self):
+        if self.action in ['add_items']:
+            return [permissions.IsAdminUser()]
+        return [perms.EcabinetOwner()]
 
     # tìm kiếm tủ đồ
     def get_queryset(self):

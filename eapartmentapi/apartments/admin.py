@@ -33,7 +33,7 @@ class ECabinetAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'e_cabinet', 'status_tag']
+    list_display = ['id', 'name', 'e_cabinet', 'status_tag','image']
     search_fields = ['name']
 
 

@@ -61,7 +61,7 @@ class Item(BaseModel):
 
     e_cabinet = models.ForeignKey(ECabinet, on_delete=models.CASCADE)
     status_tag = models.ForeignKey('Tag', on_delete=models.PROTECT, null=True)
-s
+
     def __str__(self):
         return self.name
 

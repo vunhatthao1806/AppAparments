@@ -2,7 +2,7 @@ import { ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "r
 import MyStyle from "../../styles/MyStyle";
 import { useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
-import { ActivityIndicator, Avatar, Card, Chip, List, Searchbar } from "react-native-paper";
+import { ActivityIndicator, Avatar, Card, Chip, List, Searchbar, Button } from "react-native-paper";
 import Style from "./Style";
 import moment from "moment";
 import RenderHTML from 'react-native-render-html';
@@ -65,7 +65,7 @@ const  Complaint = ({navigation}) => {
                 {complaints===null?<ActivityIndicator/>:<>
                 {complaints.map(c => (
                     <TouchableOpacity key={c.id} onPress={() => navigation.navigate('ComplaintDetail', {'complaintId': c.id})} >
-                        <Card key={c.id}  style={Style.marginbot}>
+                        <Card key={c.id} >
 
                             <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
                                 <Avatar.Image size={43} source={{ uri: c.user.avatar }} />
@@ -115,9 +115,10 @@ const  Complaint = ({navigation}) => {
                                 )}
                             </Card.Content>
                         </Card> 
-                </TouchableOpacity>
-            ))}
-                </>}
+
+                    </TouchableOpacity>
+                ))}
+            </>}
             </ScrollView>
         </View>
     );

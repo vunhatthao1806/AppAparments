@@ -2,9 +2,9 @@ import axios from "axios";
 
 // const BASE_URL = 'http://192.168.2.5:8000/';
 
-// const BASE_URL = 'http://192.168.1.8:8000/';
+const BASE_URL = 'http://192.168.1.8:8000/';
 
-const BASE_URL = 'http://10.17.65.72:8000/';
+// const BASE_URL = 'http://10.17.65.72:8000/';
 
 export const endpoints = {
     'complaints': '/complaints/',
@@ -16,7 +16,8 @@ export const endpoints = {
     'login': '/o/token/',
     'current_user': "/users/current_user/",
     'liked': (complaintId) => `/complaints/${complaintId}/like/`,
-    'get_likes': (complaintId) => `/complaints/${complaintId}/get_likes/`
+    'get_likes': (complaintId) => `/complaints/${complaintId}/get_likes/`, 
+    'add_comment': (complaintId) => `/complaints/${complaintId}/add_comment/`
 };
 
 export const authAPI = (accessToken) =>

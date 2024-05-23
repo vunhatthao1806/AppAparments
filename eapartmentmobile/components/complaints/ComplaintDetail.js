@@ -12,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const ComplaintDetail = ({route}) => {
     const [complaint, setComplaint] = useState(null);
     const [comments, setComments] = useState([]);
+    const [comment, setComment] = useState('');
     const [content, setContent] = useState("");
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
@@ -30,8 +31,9 @@ const ComplaintDetail = ({route}) => {
     const loadLike = async () => {
         try {
             accessToken = await AsyncStorage.getItem("access-token");
-            let response = await authAPI(accessToken).post(endpoints["liked"](complaintId));           
+            let response = await authAPI(accessToken).post(endpoints["liked"](complaintId));        
             setLiked(response.data.liked);
+            console.log(response.data);
             setLikeCount(response.data.likeCount);
         } catch (ex){
             console.error(ex);
@@ -41,25 +43,49 @@ const ComplaintDetail = ({route}) => {
     const loadLikeCount = async () => {
         try {
             let res = await APIs.get(endpoints['get_likes'](complaintId));
+            // console.log('loadLikeCount response:', res.data);
             setLikeCount(res.data);
         } catch(ex){
             console.error(ex);
         }
-
     } 
 
     const loadComments = async () => {
         try {
             let res = await APIs.get(endpoints['comments'](complaintId));
             setComments(Array.isArray(res.data) ? res.data : [])
-            // console.info(res.data);
         } catch (ex) {
             console.error(ex);
         }
     } 
 
+    const loadAddComment = async () => {
+        try {
+            accessToken = await AsyncStorage.getItem("access-token");
+            let response = await authAPI(accessToken).post(endpoints["add_comment"](complaintId),{
+                content: comment
+            });  
+            loadComments();
+            setComment('');
+        } catch (ex) {
+            console.error(ex);
+        }
+    }
+
+    const handleLike = async () => {
+        await loadLike();
+        await loadLikeCount();
+    };
+
+    const handleComment = async () => {
+        await loadAddComment();
+    }
+ 
     useEffect(() => {
         loadComplaint();
+    }, [complaintId]);
+
+    useEffect(() => {
         loadLikeCount();
     }, [complaintId]);
 
@@ -116,16 +142,14 @@ const ComplaintDetail = ({route}) => {
 
                 <View style={[Style.commentStyle, MyStyle.row, {"justifyContent": "space-between"}]}> 
                     <View style={Style.buttonContainer}>
-                    {/* {complaint.count_likes===null?
-                        <Text>0</Text> : <Text>{complaint.count_likes}</Text> 
-                    } */}
                         <Button 
-                            icon="thumb-up-outline" 
+                             icon={liked ? "thumb-up": "thumb-up-outline"}
                             mode="outlined" 
-                            onPress={loadLike}>Like</Button>
+                            onPress={handleLike}> Like
+                        </Button>
                     </View>
-                    <View style={Style.margin}>
-                        <Text>View</Text>
+                    <View style={Style.tags}>
+                        <Text>Lượt thích: {likeCount}</Text>
                     </View>
                 </View>
                 
@@ -133,13 +157,13 @@ const ComplaintDetail = ({route}) => {
                     <TextInput style={Style.textInput} 
                         multiline={true} 
                         label={"Suy nghĩ của bạn là gì"} 
-                        value={content} 
-                        onChangeText={setContent} />
+                        value={comment} 
+                        onChangeText={setComment} />
                     <View style={Style.buttonContainer}>
                         <Button style={Style.button}
                             icon="send-circle" 
                             mode="contained" 
-                            onPress={() => console.log('Pressed')}/>
+                            onPress={handleComment}/>
                     </View>
                 </View>
 

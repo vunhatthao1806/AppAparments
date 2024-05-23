@@ -42,7 +42,7 @@ export default StyleSheet.create({
       textDecorationStyle: "solid"
     }, 
     tags:{
-        margin: 6
+        margin: 10
     },
     username: {
         fontSize: 15,

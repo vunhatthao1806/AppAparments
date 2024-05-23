@@ -126,11 +126,12 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.Crea
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
-    # @action(methods=['get'], url_path='get_likes', detail=True)
-    # def get_likes(self, request, pk):
-    #     likes = Like.objects.filter(active=True).count()
-    #
-    #     return Response({'Số lượt like: ': likes}, status=status.HTTP_200_OK)
+    @action(methods=['get'], url_path='get_likes', detail=True)
+    def get_likes(self, request, pk):
+        complaint = self.get_object()
+        likes = Like.objects.filter(complaint=complaint, active=True).count()
+
+        return Response({likes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], url_path='comments', detail=True)
     def get_comments(self, request, pk):

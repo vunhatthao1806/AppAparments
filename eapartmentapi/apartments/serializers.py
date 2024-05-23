@@ -13,6 +13,8 @@ class FlatSerializer(serializers.ModelSerializer):
 
 class ECabinetSerializer(serializers.ModelSerializer):
     count_items = serializers.SerializerMethodField()
+
+
     class Meta:
         model = ECabinet
         fields = ['id', 'name', 'user', 'active', 'count_items']
@@ -93,17 +95,10 @@ class ComplaintSerializer(serializers.ModelSerializer):
 class ComplaintDetailSerializer(ComplaintSerializer):
     status_tag = TagSerializer()
     complaint_tag = TagSerializer()
-    count_likes = serializers.SerializerMethodField()
+
     class Meta:
         model = ComplaintSerializer.Meta.model
-        fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag', 'count_likes']
-
-    def get_count_likes(self, obj):
-        try:
-            return obj.like_set.count()
-        except Exception as e:
-            # Log the exception if needed
-            return 0
+        fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag']
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -145,6 +140,9 @@ class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):
     class Meta:
         model = ComplaintDetailSerializer.Meta.model
         fields = ComplaintDetailSerializer.Meta.fields + ['liked']
+
+    # def get_count_likes(self, obj):
+    #     return obj.like_set.count()
 
 
 class SurveySerializer(serializers.ModelSerializer):

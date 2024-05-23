@@ -17,16 +17,26 @@ const Profile = ({ navigation }) => {
       type: "logout",
     });
   };
+
+  const change = (value, field) => {
+    setUser(current => {
+        return {...current, [field]: value}
+    })
+}
+
+
   const chooseAvatar = async () => {
-    let status = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") alert("Từ chối quyền truy cập");
+    let {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') alert("Từ chối quyền truy cập");
     else {
       let res = await ImagePicker.launchImageLibraryAsync();
       if (!res.canceled) {
-        // updateAvatar(res.uri);
+        updateAvatar(res.uri);
+        // change(res.assets[0], 'avatar');
       }
     }
   };
+
   const updateAvatar = async (imageUri) => {
     try {
       let accessToken = await AsyncStorage.getItem("access-token");

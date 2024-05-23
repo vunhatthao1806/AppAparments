@@ -59,5 +59,7 @@ export default StyleSheet.create({
     alignSelf: 'center',
     marginRight: 10, // Adjust spacing as needed
     fontSize: 16, // Adjust font size as needed
-  }
+  }, webview: {
+    flex: 1,
+  },
 });

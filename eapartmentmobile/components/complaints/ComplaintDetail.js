@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { Image, ScrollView, Text, View, useWindowDimensions } from "react-native";
-import APIs, { endpoints } from "../../configs/APIs";
-import { ActivityIndicator, Avatar, Button, Card, Chip, List, TextInput } from "react-native-paper";
+import { Image, ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
+import APIs, { authAPI, endpoints } from "../../configs/APIs";
+import { ActivityIndicator, Avatar, Button, Card, Chip, Icon, List, TextInput } from "react-native-paper";
 import Style from "./Style";
 import MyStyle from "../../styles/MyStyle";
 import moment from "moment";
 import RenderHTML from "react-native-render-html";
 import { isCloseToBottom } from "../utils/Utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ComplaintDetail = ({route}) => {
     const [complaint, setComplaint] = useState(null);
     const [comments, setComments] = useState([]);
     const [content, setContent] = useState("");
+    const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
     const complaintId = route.params?.complaintId;
     const { width } = useWindowDimensions();
 
@@ -24,6 +27,27 @@ const ComplaintDetail = ({route}) => {
         }
     }
 
+    const loadLike = async () => {
+        try {
+            accessToken = await AsyncStorage.getItem("access-token");
+            let response = await authAPI(accessToken).post(endpoints["liked"](complaintId));           
+            setLiked(response.data.liked);
+            setLikeCount(response.data.likeCount);
+        } catch (ex){
+            console.error(ex);
+        }
+    }
+
+    const loadLikeCount = async () => {
+        try {
+            let res = await APIs.get(endpoints['get_likes'](complaintId));
+            setLikeCount(res.data);
+        } catch(ex){
+            console.error(ex);
+        }
+
+    } 
+
     const loadComments = async () => {
         try {
             let res = await APIs.get(endpoints['comments'](complaintId));
@@ -35,8 +59,10 @@ const ComplaintDetail = ({route}) => {
     } 
 
     useEffect(() => {
-        loadComplaint(); 
+        loadComplaint();
+        loadLikeCount();
     }, [complaintId]);
+
 
     const loadMoreInfo = ({nativeEvent}) => {
         if (isCloseToBottom(nativeEvent)) {
@@ -90,10 +116,13 @@ const ComplaintDetail = ({route}) => {
 
                 <View style={[Style.commentStyle, MyStyle.row, {"justifyContent": "space-between"}]}> 
                     <View style={Style.buttonContainer}>
+                    {/* {complaint.count_likes===null?
+                        <Text>0</Text> : <Text>{complaint.count_likes}</Text> 
+                    } */}
                         <Button 
                             icon="thumb-up-outline" 
                             mode="outlined" 
-                            onPress={() => console.log('Pressed')}>Like</Button>
+                            onPress={loadLike}>Like</Button>
                     </View>
                     <View style={Style.margin}>
                         <Text>View</Text>

@@ -2,8 +2,8 @@ import { Text, View } from "react-native";
 
 const Survey = () => {
     return (
-        <View>
-            <Text>Survey</Text>
+        <View> 
+            <Text>SURVEY</Text>
         </View>
     );
 }

@@ -104,6 +104,12 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.Crea
     queryset = Complaint.objects.filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
     serializer_class = serializers.ComplaintDetailSerializer
 
+    def get_serializer_class(self):
+        if self.request.user.is_authenticated:
+            return serializers.AuthenticatedComplaintDetailSerializer
+
+        return self.serializer_class
+
     def get_queryset(self):
         queryset = self.queryset
 
@@ -115,16 +121,16 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.Crea
 
         return queryset
 
-    def get_serializer_class(self):
-        if self.request.user.is_authenticated:
-            return serializers.AuthenticatedComplaintDetailSerializer
-
-        return self.serializer_class
-
     def get_permissions(self):
         if self.action in ['add_comment', 'like']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
+
+    # @action(methods=['get'], url_path='get_likes', detail=True)
+    # def get_likes(self, request, pk):
+    #     likes = Like.objects.filter(active=True).count()
+    #
+    #     return Response({'Số lượt like: ': likes}, status=status.HTTP_200_OK)
 
     @action(methods=['get'], url_path='comments', detail=True)
     def get_comments(self, request, pk):
@@ -206,7 +212,7 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
 class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = djf_surveys.models.Survey.objects.all()
     serializer_class = serializers.SurveySerializer
-    permission_classes = [perms.ManageSurveys]
+    # permission_classes = [perms.ManageSurveys]
 
     def post(self, request):
         if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn

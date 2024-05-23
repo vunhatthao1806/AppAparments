@@ -2,7 +2,7 @@ import djf_surveys.models
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard
+from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like
 
 
 class FlatSerializer(serializers.ModelSerializer):
@@ -93,10 +93,17 @@ class ComplaintSerializer(serializers.ModelSerializer):
 class ComplaintDetailSerializer(ComplaintSerializer):
     status_tag = TagSerializer()
     complaint_tag = TagSerializer()
-
+    count_likes = serializers.SerializerMethodField()
     class Meta:
         model = ComplaintSerializer.Meta.model
-        fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag']
+        fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag', 'count_likes']
+
+    def get_count_likes(self, obj):
+        try:
+            return obj.like_set.count()
+        except Exception as e:
+            # Log the exception if needed
+            return 0
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -119,6 +126,12 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'content', 'created_date', 'updated_date', 'user', 'complaint']
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = ['id']
 
 
 class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):

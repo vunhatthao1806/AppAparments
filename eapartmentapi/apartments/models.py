@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from ckeditor.fields import RichTextField
 from cloudinary.models import CloudinaryField
 from django.utils import timezone
+from django.db.models import Count
 
 
 class BaseModel(models.Model):

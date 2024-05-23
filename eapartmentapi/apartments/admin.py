@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item, User, Comment, Survey, Question, Choice, \
-    CarCard
+    CarCard, Like
 import cloudinary
 
 
@@ -62,6 +62,10 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ['id', 'content', 'user', 'complaint_id']
 
 
+class LikeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'complaint', 'active']
+
+
 admin.site.register(Flat, FlatAdmin)
 admin.site.register(ECabinet, ECabinetAdmin)
 admin.site.register(Complaint, ComplaintAdmin)
@@ -69,5 +73,6 @@ admin.site.register(Tag, TagAdmin)
 admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(User)
+admin.site.register(Like,LikeAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(CarCard, CarCardAdmin)

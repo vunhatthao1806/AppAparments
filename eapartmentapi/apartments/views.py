@@ -3,7 +3,8 @@ from django.db.models import Count
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, CarCard
+from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
+    CarCard
 from apartments import serializers, paginators, perms
 
 
@@ -67,6 +68,11 @@ class ItemViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIView
     serializer_class = serializers.ItemSerializer
     pagination_class = paginators.ItemPaginator
     permission_classes = [perms.AdminOwner]
+
+
+class TagViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = serializers.TagSerializer
 
 
 class ReceiptViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):

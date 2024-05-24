@@ -1,5 +1,6 @@
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import Complaint from "./components/complaints/Complaint";
+import AddComplaint from "./components/complaints/AddComplaint";
 import { NavigationContainer } from "@react-navigation/native";
 import { Icon } from 'react-native-paper';
 import ComplaintDetail from './components/complaints/ComplaintDetail';
@@ -91,6 +92,11 @@ const ComplaintStack = () => {
         name="ComplaintDetail"
         component={ComplaintDetail}
         options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="AddComplaint"
+        component={AddComplaint}
+        options={{ headerShown: true, tabBarVisible: false}}
       />
     </Stack.Navigator>
   );

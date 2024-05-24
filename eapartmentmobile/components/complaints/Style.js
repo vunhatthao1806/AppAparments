@@ -25,13 +25,12 @@ export default StyleSheet.create({
     },
     title: {
         margin: 8,
-        // color: 'blue',
         fontSize: 25,
         fontWeight: 'bold',
         flexWrap: 'wrap'
     },
      margin: {
-        margin: 10
+        margin: 6
     },
      marginbot: {
         marginBottom: 10
@@ -101,5 +100,57 @@ export default StyleSheet.create({
         borderWidth: 1,
         borderColor: '#000', 
         flexDirection: 'row-reverse',  // Màu viền cho Button
+    }, 
+    container: {
+        flexGrow: 1,
+        flex: 1,
+        justifyContent: 'center',
+        padding: 16,
+    }, 
+    fabStyle: {
+        bottom: 16,
+        right: 16,
+        position: 'absolute',
+    },
+    titleComplaint: {
+        fontSize: 20,
+        fontWeight: "500",
+        marginBottom: 3,
+        marginLeft: 8
+    }, 
+    textInput:{
+        borderColor: 'gray',
+        borderWidth: 1,
+        textAlignVertical: 'top', // Đảm bảo văn bản bắt đầu từ đầu ô nhập
+    },
+    justifyContent: {
+        justifyContent: "space-between"
+    }, 
+    titleTag: {
+        // borderWidth: 2,
+        // borderColor: '#000', 
+        // padding: 5,
+        // marginBottom: 10
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#333',
+        textAlign: 'center',
+        marginVertical: 10,
+        padding: 5,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 5,
+    },
+    buttonCreate: {
+        margin: 10,
+        borderWidth: 2,
+        borderColor: '#F0D9FF', 
+        padding: 15,
+        marginBottom: 10,
+        alignItems:"center",
+        borderRadius: 30,
+        backgroundColor: "#F0D9FF"
+    }, 
+    textCreate: {
+        fontSize: 20
     }
 });

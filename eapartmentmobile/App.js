@@ -23,6 +23,7 @@ import Carcard from './components/profiles/convenient/Carcard';
 import Logo from './components/users/Logo';
 import Login from './components/users/Login';
 import Items from './components/profiles/convenient/Items';
+import CarcardDetail from './components/profiles/convenient/CarCardDetail';
 
 
 const Stack = createNativeStackNavigator();
@@ -66,13 +67,18 @@ const ProfileStack = () => {
         options={{ headerShown: true }}
       />
       <Stack.Screen
-        name="Survey"
-        component={Survey}
+        name="Carcard"
+        component={Carcard}
         options={{ headerShown: true }}
       />
       <Stack.Screen
-        name="Carcard"
-        component={Carcard}
+        name="CarCardDetail"
+        component={CarcardDetail}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="Survey"
+        component={Survey}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>

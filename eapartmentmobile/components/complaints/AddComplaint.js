@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { Checkbox, Icon, TextInput, ToggleButton } from "react-native-paper";
+import { Checkbox, Chip, Icon, TextInput, ToggleButton } from "react-native-paper";
 import Style from "./Style";
 import MyStyle from "../../styles/MyStyle";
 import APIs, { authAPI, endpoints } from "../../configs/APIs";
@@ -14,7 +14,7 @@ const AddComplaint = ({navigation}) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tags, setTags] = useState([]);
-    const [selectedTags, setSelectedTags] = useState({ status: null, complaint: null });
+    const [selectedTags, setSelectedTags] = useState({ status: '', complaint: ''});
 
     const [complaints, setComplaints] = useState([]);
     const [complaint_tagId, setComplaint_tagId] = useState("");
@@ -48,7 +48,7 @@ const AddComplaint = ({navigation}) => {
             complaint_tag: selectedTags.complaint
         };
 
-        // console.log("Sending payload:", payload);
+        console.log("Sending payload:", payload);
         accessToken = await AsyncStorage.getItem("access-token");
         let response = await authAPI(accessToken).post(endpoints["add_complaint"], {payload});   
         setTitle();
@@ -74,10 +74,6 @@ const AddComplaint = ({navigation}) => {
         await loadCreatComplaint();
         
     }
-
-    // useEffect(() => {
-    //     loadComplaints();
-    // }, [complaint_tagId]);
 
     const StatusTags = tags.filter(t => t.id === 9 || t.id === 10);
     const ComplaintTags = tags.filter(t => t.id >= 3 && t.id <= 8 );
@@ -149,7 +145,7 @@ const AddComplaint = ({navigation}) => {
                     <Text style={[Style.titleComplaint, Style.titleTag]}>
                         Complaint tag
                     </Text>
-                    {ComplaintTags.map(c => 
+                    {/* {ComplaintTags.map(c => 
                         <View style={MyStyle.row}>
                             <Text style={Style.margin}>
                                 {c.name} 
@@ -162,7 +158,18 @@ const AddComplaint = ({navigation}) => {
                                 color="purple"
                             />
                         </View>
-                    )}      
+                    )}       */}
+                    {ComplaintTags===null?<ActivityIndicator />:<>
+                    {ComplaintTags.map(c =>
+                        <Chip mode={checkedComplaint ===c.id?"flat":"outlined"} 
+                        key={c.id} 
+                        onPress={() => {
+                            setCheckedComplaint(checkedComplaint === c.id ? null : c.id);
+                        }}
+                        style={Style.tags}  
+                        icon="shape-plus">{c.name}</Chip>
+                    )}
+                </>}
                 </View>
             </View>
 

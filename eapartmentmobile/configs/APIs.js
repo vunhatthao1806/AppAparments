@@ -9,7 +9,7 @@ const BASE_URL = 'http://192.168.2.5:8000/';
 export const endpoints = {
     'complaints': '/complaints/',
     'complaint-detail': (complaintId) => `/complaints/${complaintId}/`,
-    'add_complaint': '/complaints/',
+    'add_complaint': '/addcomplaints/',
     'comments': (complaintId) => `/complaints/${complaintId}/comments/`,
     'ecabinet': "/users/ecabinets/",
     'items': (ecabinetId) => `/ecabinets/${ecabinetId}/items/`,
@@ -19,7 +19,9 @@ export const endpoints = {
     'liked': (complaintId) => `/complaints/${complaintId}/like/`,
     'get_likes': (complaintId) => `/complaints/${complaintId}/get_likes/`, 
     'add_comment': (complaintId) => `/complaints/${complaintId}/add_comment/`,
-    'tags': '/tags/'
+    'tags': '/tags/',
+    'carcards': '/users/carcards/',
+    'carcard-detail': (carCardId) => `/carcards/${carCardId}/`
 };
 
 export const authAPI = (accessToken) =>

@@ -20,6 +20,7 @@ const  Complaint = ({navigation, animatedValue,
     const [loading,setLoading] = useState(false);
     const { width } = useWindowDimensions();
     const [showFullContent, setShowFullContent] = useState({});
+    const [tags, setTags] = useState([]);
 
     const loadComplaints = async () => {
         try {
@@ -41,10 +42,22 @@ const  Complaint = ({navigation, animatedValue,
 
     const maxContentLength = 100; // Giới hạn số lượng ký tự để hiển thị trước khi bấm "Đọc thêm"
 
+    const loadTags = async () => {
+        try {
+            let res = await APIs.get(endpoints['tags']);
+            setTags(res.data);
+        } catch (ex){
+            console.error(ex);
+        }
+    }
     
     useEffect(() => {
         loadComplaints();
     }, [complaint_tagId]);
+
+    useEffect(() => {
+        loadTags();
+    },[])
 
     const search = (value, callback) => {
         callback(value);
@@ -62,6 +75,7 @@ const  Complaint = ({navigation, animatedValue,
     };
 
   const fabStyle = { [animateFrom]: 20 };
+  const ComplaintTags = tags.filter(t => t.id >= 3 && t.id <= 8 );
 
     return (
         <View style={[MyStyle.container]}>
@@ -70,15 +84,17 @@ const  Complaint = ({navigation, animatedValue,
             <View style={[MyStyle.row, MyStyle.wrap]}>
                 <Chip mode={!complaint_tagId?"flat":"outlined"} 
                 onPress={() => search("", setComplaint_tagId)} style={Style.tags} icon="shape-plus">Tất cả</Chip>
-                
-                {complaints===null?<ActivityIndicator/>:<>
-                    {complaints.map(c => 
-                    <Chip mode={c.complaint_tag.id===complaint_tagId?"flat":"outlined"} 
-                    key={c.id} 
-                    onPress={() => search(c.complaint_tag.id, setComplaint_tagId)} 
-                    style={Style.tags}  
-                    icon="shape-plus">{c.complaint_tag.name}</Chip>)}
+
+                {ComplaintTags===null?<ActivityIndicator />:<>
+                    {ComplaintTags.map(c => 
+                        <Chip mode={c.id===complaint_tagId?"flat":"outlined"} 
+                        key={c.id} 
+                        onPress={() => search(c.id, setComplaint_tagId)} 
+                        style={Style.tags}  
+                        icon="shape-plus">{c.name}</Chip>
+                    )}
                 </>}
+
             </View>
             {/* <SafeAreaView style={Style.container}> */}
                 <ScrollView onScroll={onScroll}>

@@ -1,3 +1,4 @@
+
 import djf_surveys.models
 from django.db.models import Count
 from rest_framework import viewsets, generics, status, parsers, permissions
@@ -106,7 +107,7 @@ class ReceiptViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAP
         return queryset
 
 
-class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.CreateAPIView, generics.ListAPIView):
+class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
     queryset = Complaint.objects.filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
     serializer_class = serializers.ComplaintDetailSerializer
 
@@ -128,9 +129,38 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.Crea
         return queryset
 
     def get_permissions(self):
-        if self.action in ['add_comment', 'like']:
+        if self.action in ['add_comment', 'like', 'post']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
+
+    # def post(self, request, *args, **kwargs):
+    #     data = request.data
+    #
+    #     # Lấy các instance của Tag từ ID
+    #     status_tag_id = data.get('status_tag')
+    #     complaint_tag_id = data.get('complaint_tag')
+    #
+    #     status_tag = Tag.objects.get(id=status_tag_id)
+    #     complaint_tag = Tag.objects.get(id=complaint_tag_id)
+    #
+    #     complaint = Complaint.objects.create(
+    #         title=data.get('title'),
+    #         content=data.get('content'),
+    #         status_tag=status_tag,
+    #         complaint_tag=complaint_tag
+    #     )
+    #
+    #     # Serialize và trả về phản hồi
+    #     # serializer = serializers.ComplaintDetailSerializer(complaint)
+    #     return Response(serializers.ComplaintDetailSerializer(complaint).data, status=status.HTTP_201_CREATED)
+
+    # @action(methods=['post'], url_path='create_complaint', detail=False)
+    # def create_complaint(self, request):
+    #     c = self.get_object().complaint_set.create(user=request.user, content=request.data.get('content'),
+    #                                  title=request.data.get('request'), status_tag=request.data.get('status_tag'),
+    #                                  complaint_tag=request.data.get('complaint_tag'))
+    #     # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
+    #     return Response(serializers.ComplaintDetailSerializer(c).data, status=status.HTTP_201_CREATED)
 
     @action(methods=['get'], url_path='get_likes', detail=True)
     def get_likes(self, request, pk):
@@ -195,18 +225,20 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
             user.save()
         return Response(serializers.UserSerializer(request.user).data)
 
-    @action(methods=['get'], url_path='complaints', detail=True)
-    def get_complaint(self, request, pk):
-        complaint = self.get_object().complaint_set.all()
-
-        return Response(serializers.ComplaintSerializer(complaint, many=True).data, status=status.HTTP_200_OK)
-
     @action(methods=['get'], url_path='ecabinets', detail=False)
     def get_ecabinets(self, request):
         user = request.user
 
         ecabinets =  ECabinet.objects.filter(user_id=user.id)
         return Response(serializers.ECabinetSerializer(ecabinets, many=True).data, status=status.HTTP_200_OK);
+
+    # @action(methods=['post'], url_path='create_complaint', detail=False)
+    # def create_complaint(self, request):
+    #     c = self.get_object().complaint_set.create(user=request.user, content=request.data.get('content'),
+    #                                  title=request.data.get('request'), status_tag=request.data.get('status_tag'),
+    #                                  complaint_tag=request.data.get('complaint_tag'))
+    #     # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
+    #     return Response(serializers.ComplaintDetailSerializer(c).data, status=status.HTTP_201_CREATED)
 
 
 # class AdminViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.UpdateAPIView):

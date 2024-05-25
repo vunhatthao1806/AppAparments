@@ -25,10 +25,12 @@ class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
         return queryset
 
 
-class CarCardViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPIView):
+class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView):
     queryset = CarCard.objects.all()
     serializer_class = serializers.CarCardSerializer
-    permission_classes = [perms.CarCardOwner]
+    # permission_classes = [perms.CarCardOwner]
+
+
 
 
 class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
@@ -107,6 +109,17 @@ class ReceiptViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAP
         return queryset
 
 
+class AddComplaintViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = Complaint.objects.filter(active=True)  # tag lúc nào cũng cần dùng khi vào chi tiết complaint
+    serializer_class = serializers.AddComplaintSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        # complaint = Complaint.objects.filter(user_id=user.id).first()
+        serializer.save(user=user)
+
+
 class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
     queryset = Complaint.objects.filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
     serializer_class = serializers.ComplaintDetailSerializer
@@ -129,38 +142,9 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.List
         return queryset
 
     def get_permissions(self):
-        if self.action in ['add_comment', 'like', 'post']:
+        if self.action in ['add_comment', 'like']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
-
-    # def post(self, request, *args, **kwargs):
-    #     data = request.data
-    #
-    #     # Lấy các instance của Tag từ ID
-    #     status_tag_id = data.get('status_tag')
-    #     complaint_tag_id = data.get('complaint_tag')
-    #
-    #     status_tag = Tag.objects.get(id=status_tag_id)
-    #     complaint_tag = Tag.objects.get(id=complaint_tag_id)
-    #
-    #     complaint = Complaint.objects.create(
-    #         title=data.get('title'),
-    #         content=data.get('content'),
-    #         status_tag=status_tag,
-    #         complaint_tag=complaint_tag
-    #     )
-    #
-    #     # Serialize và trả về phản hồi
-    #     # serializer = serializers.ComplaintDetailSerializer(complaint)
-    #     return Response(serializers.ComplaintDetailSerializer(complaint).data, status=status.HTTP_201_CREATED)
-
-    # @action(methods=['post'], url_path='create_complaint', detail=False)
-    # def create_complaint(self, request):
-    #     c = self.get_object().complaint_set.create(user=request.user, content=request.data.get('content'),
-    #                                  title=request.data.get('request'), status_tag=request.data.get('status_tag'),
-    #                                  complaint_tag=request.data.get('complaint_tag'))
-    #     # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
-    #     return Response(serializers.ComplaintDetailSerializer(c).data, status=status.HTTP_201_CREATED)
 
     @action(methods=['get'], url_path='get_likes', detail=True)
     def get_likes(self, request, pk):
@@ -231,6 +215,12 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
 
         ecabinets =  ECabinet.objects.filter(user_id=user.id)
         return Response(serializers.ECabinetSerializer(ecabinets, many=True).data, status=status.HTTP_200_OK);
+
+    @action(methods=['get'], url_path='carcards', detail=False)
+    def get_carcards(self, request):
+        user = request.user
+        carcards = CarCard.objects.filter(user_id=user.id)
+        return Response(serializers.CarCardSerializer(carcards, many=True).data, status=status.HTTP_200_OK)
 
     # @action(methods=['post'], url_path='create_complaint', detail=False)
     # def create_complaint(self, request):

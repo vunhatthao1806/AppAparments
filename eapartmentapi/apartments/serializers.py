@@ -44,6 +44,7 @@ class ReceiptDetailSerializer(serializers.ModelSerializer):
 
 
 class CarCardSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = CarCard
         fields = '__all__'
@@ -74,6 +75,22 @@ class UserSerializer(serializers.ModelSerializer):
                 'write_only': True
             }
         }
+
+
+class AddComplaintSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        if instance.image:
+            req['image'] = instance.image.url
+
+        return req
+
+    # status_tag = TagSerializer()
+    # complaint_tag = TagSerializer()
+
+    class Meta:
+        model = Complaint
+        fields = ['id', 'title', 'created_date', 'content', 'status_tag', 'complaint_tag', 'image']
 
 
 class ComplaintSerializer(serializers.ModelSerializer):

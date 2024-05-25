@@ -6,7 +6,7 @@ export default StyleSheet.create({
         marginTop: 30,
         marginLeft: 10
     }, row: {
-        flexDirection: "row"
+        flexDirection: "row",
     }, wrap: {
         flexWrap: "wrap"
     }, avatar: {

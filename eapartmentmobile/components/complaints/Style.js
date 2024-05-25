@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TextInputComponent } from "react-native";
 import { Line } from "react-native-svg";
 
 export default StyleSheet.create({
@@ -65,6 +65,7 @@ export default StyleSheet.create({
         backgroundColor: '#fff', // Màu nền
         marginLeft: 10,
         marginRight: 10,
+        
     }, 
     commentsContainer: {
         marginTop: 10,
@@ -116,9 +117,12 @@ export default StyleSheet.create({
         fontSize: 20,
         fontWeight: "500",
         marginBottom: 3,
-        marginLeft: 8
+        marginLeft: 8,
+        
     }, 
     textInput:{
+        marginLeft: 10,
+        width: '73%',
         borderColor: 'gray',
         borderWidth: 1,
         textAlignVertical: 'top', // Đảm bảo văn bản bắt đầu từ đầu ô nhập
@@ -127,10 +131,6 @@ export default StyleSheet.create({
         justifyContent: "space-between"
     }, 
     titleTag: {
-        // borderWidth: 2,
-        // borderColor: '#000', 
-        // padding: 5,
-        // marginBottom: 10
         fontSize: 20,
         fontWeight: 'bold',
         color: '#333',
@@ -152,5 +152,48 @@ export default StyleSheet.create({
     }, 
     textCreate: {
         fontSize: 20
-    }
+    }, 
+    TextInputComplaint:{
+        borderColor: 'gray',
+        borderWidth: 1,
+        textAlignVertical: 'top', // Đảm bảo văn bản bắt đầu từ đầu ô nhập
+    },
+    avatar: {
+        marginTop: 15
+    },
+    row: {
+        flexDirection: "row",
+    }, 
+    textContent: {
+        marginRight: 10
+    },
+    
+
+    commentContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    textContainer: {
+        marginLeft: 10,
+        flex: 1,
+    },
+    userInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 5,
+    },
+    username: {
+        fontWeight: 'bold',
+    },
+    createdDate: {
+        marginLeft: 10,
+        color: 'gray',
+    },
+    commentText: {
+        flexWrap: 'wrap',
+    },
+    iconContainer: {
+        paddingLeft: 10,
+    },
 });

@@ -7,15 +7,29 @@ import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Complaint = () => {
+const AddComplaint = ({navigation}) => {
     const [checkedStatus, setCheckedStatus] = useState(false);
     const [checkedComplaint, setCheckedComplaint] = useState(false);
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [tags, setTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState({ status: null, complaint: null });
 
-    const navigation = useNavigation(); // Get the navigation object
+    const [complaints, setComplaints] = useState([]);
+    const [complaint_tagId, setComplaint_tagId] = useState("");
+
+    const loadComplaints = async () => {
+        try {
+            let url = `${endpoints['complaints']}?complaint_tag_id=${complaint_tagId}`;
+
+            let res = await APIs.get(url);
+            setComplaints(res.data);
+        } catch (ex) {
+            console.error(ex);
+        } 
+    }
+
     const loadTags = async () => {
         try {
             let res = await APIs.get(endpoints['tags']);
@@ -30,17 +44,17 @@ const Complaint = () => {
             const payload = {
             title: title,
             content: content,
-            statusTag: checkedStatus,
-            complaintTag: checkedComplaint
+            status_tag: selectedTags.status,
+            complaint_tag: selectedTags.complaint
         };
 
-        console.log("Sending payload:", payload);
-            accessToken = await AsyncStorage.getItem("access-token");
-            let response = await authAPI(accessToken).post(endpoints["add_complaint"], {payload});   
-            console.log(response.data);
-            if (response.status === 201) {
-                navigation.navigate('Complaint'); // Navigate to MainScreen
-            }
+        // console.log("Sending payload:", payload);
+        accessToken = await AsyncStorage.getItem("access-token");
+        let response = await authAPI(accessToken).post(endpoints["add_complaint"], {payload});   
+        setTitle();
+        setContent();
+        console.log(response.data);
+        
         } catch(ex) {
             console.error(ex);
         }
@@ -51,8 +65,19 @@ const Complaint = () => {
     },[])
 
     const createComplaint = async () => {
+        const statusTag = tags.find(t => t.id === checkedStatus);
+        const complaintTag = tags.find(t => t.id === checkedComplaint);
+        setSelectedTags({
+            status: statusTag ? statusTag.name : null,
+            complaint: complaintTag ? complaintTag.name : null
+        });
         await loadCreatComplaint();
+        
     }
+
+    // useEffect(() => {
+    //     loadComplaints();
+    // }, [complaint_tagId]);
 
     const StatusTags = tags.filter(t => t.id === 9 || t.id === 10);
     const ComplaintTags = tags.filter(t => t.id >= 3 && t.id <= 8 );
@@ -71,7 +96,7 @@ const Complaint = () => {
                     </Text>
                 </View>
                 <TextInput
-                    style={Style.textInput}
+                    style={Style.TextInputComplaint}
                     value={title}
                     onChangeText={title => setTitle(title)}
                     multiline={true}
@@ -95,7 +120,7 @@ const Complaint = () => {
                     value={content}
                     onChangeText={content => setContent(content)}
                     multiline={true}
-                    style={Style.textInput}
+                    style={Style.TextInputComplaint}
                 />
             </View>
 
@@ -145,9 +170,19 @@ const Complaint = () => {
                 <TouchableOpacity style={Style.buttonCreate} onPress={createComplaint}>
                     <Text style={Style.textCreate}>Create</Text>
                 </TouchableOpacity>
+            </View>
+            
+            {selectedTags.status || selectedTags.complaint ? (
+                <View style={[Style.margin, Style.container]}>
+                    <Text>Selected Tags:</Text>
+                    {selectedTags.status && <Text>Status: {selectedTags.status}</Text>}
+                    {selectedTags.complaint && <Text>Complaint: {selectedTags.complaint}</Text>}
                 </View>
+            ) : null}
+
+            
         </ScrollView>
     );
 }
 
-export default Complaint;
+export default AddComplaint;

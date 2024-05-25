@@ -169,18 +169,27 @@ const ComplaintDetail = ({route}) => {
 
                 <View style={Style.commentsContainer}>
                     {comments.length > 0 ? comments.map(c => (
-                            <List.Item
-                                style={Style.commentStyle}
-                                key={c.id}
-                                title={c.user.username}
-                                description={c.content}
-                                left={() => <Avatar.Image size={43} source={{ uri: c.user.avatar }} />}
-                                right={() => <Text>{moment(c.created_date).fromNow()}</Text>}
-                            />
+                        <View key={c.id} style={[Style.commentStyle]}>
+                            <View style={Style.commentContent}>
+                                <Avatar.Image size={43} source={{ uri: c.user.avatar }} />
+                                <View style={Style.textContainer}>
+                                    <View style={Style.userInfo}>
+                                        <Text style={Style.username}>{c.user.username}</Text>
+                                        <Text style={Style.createdDate}>{moment(c.created_date).fromNow()}</Text>
+                                    </View>
+                                    <Text style={Style.commentText}>{c.content}</Text>
+                                </View>
+                                <TouchableOpacity style={Style.iconContainer}>
+                                    <Icon source="dots-vertical" size={20} />
+                                </TouchableOpacity>
+                            </View>
+                            
+                        </View>
                         )) :   
                         <View style={Style.noCommentContainer}>
                             <Text style={Style.noCommentText}>Chưa có bình luận nào!</Text>
-                        </View>}
+                        </View>
+                    }
                 </View>
             </ScrollView>
         </View>

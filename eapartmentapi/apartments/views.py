@@ -28,9 +28,7 @@ class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
 class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView):
     queryset = CarCard.objects.all()
     serializer_class = serializers.CarCardSerializer
-    # permission_classes = [perms.CarCardOwner]
-
-
+    permission_classes = [perms.CarCardOwner]
 
 
 class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):

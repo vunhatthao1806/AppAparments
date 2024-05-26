@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Button, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { Checkbox, Chip, Icon, TextInput, ToggleButton } from "react-native-paper";
+import { ActivityIndicator, Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Checkbox, Chip, Icon, TextInput, ToggleButton, TouchableRipple } from "react-native-paper";
 import Style from "./Style";
 import MyStyle from "../../styles/MyStyle";
 import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from 'expo-image-picker';
 
 const AddComplaint = ({navigation}) => {
     const [checkedStatus, setCheckedStatus] = useState(false);
@@ -18,6 +19,45 @@ const AddComplaint = ({navigation}) => {
 
     const [complaints, setComplaints] = useState([]);
     const [complaint_tagId, setComplaint_tagId] = useState("");
+    const [imageComplaint, setImageComplaint] = useState(null);
+    const [imageURL, setImageURL] = useState(null);
+
+
+    const chooseAvatar = async () => {
+        let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") alert("Từ chối quyền truy cập");
+        else {
+            let res = await ImagePicker.launchImageLibraryAsync();
+            if (!res.canceled) {
+                console.log(res.assets[0].uri);
+                setImageComplaint(res.assets[0].uri);
+                await uploadImage();
+            }
+        }
+    };    
+
+    const uploadImage = async (imageUri) => {
+        try {
+            const formData = new FormData();
+            formData.append("image", {
+                uri: imageUri,
+                name: "",
+                type: "image/jpeg",
+            });
+
+            const accessToken = await AsyncStorage.getItem("access-token");
+            const response = await authAPI(accessToken).post(endpoints["upload_image"], formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            console.log("Image uploaded:", response.data);
+            setImageURL(response.data.imageUrl);  // Assume server response contains the image URL in `imageUrl`
+        } catch (ex) {
+            console.error("Image upload failed:", ex.response ? ex.response.data : ex.message);
+        }
+    };
 
     const loadComplaints = async () => {
         try {
@@ -41,20 +81,16 @@ const AddComplaint = ({navigation}) => {
 
     const loadCreatComplaint = async () => {
         try{
-            const payload = {
-            title: title,
-            content: content,
-            status_tag: selectedTags.status,
-            complaint_tag: selectedTags.complaint
-        };
-
-        console.log("Sending payload:", payload);
-        accessToken = await AsyncStorage.getItem("access-token");
-        let response = await authAPI(accessToken).post(endpoints["add_complaint"], {payload});   
-        setTitle();
-        setContent();
-        console.log(response.data);
-        
+            console.log("Sending payload:", payload);
+            accessToken = await AsyncStorage.getItem("access-token");
+            let response = await authAPI(accessToken).post(endpoints["add_complaint"], {
+                title: title,
+                content: content,
+                status_tag: checkedStatus,
+                complaint_tag: checkedComplaint,
+                image: imageComplaint
+            });
+            console.log(response.data);
         } catch(ex) {
             console.error(ex);
         }
@@ -65,14 +101,13 @@ const AddComplaint = ({navigation}) => {
     },[])
 
     const createComplaint = async () => {
-        const statusTag = tags.find(t => t.id === checkedStatus);
-        const complaintTag = tags.find(t => t.id === checkedComplaint);
+        const statusTag = tags.find(t => t.id == checkedStatus);
+        const complaintTag = tags.find(t => t.id == checkedComplaint);
         setSelectedTags({
-            status: statusTag ? statusTag.name : null,
-            complaint: complaintTag ? complaintTag.name : null
+            status: statusTag ? statusTag.id : null,
+            complaint: complaintTag ? complaintTag.id : null
         });
         await loadCreatComplaint();
-        
     }
 
     const StatusTags = tags.filter(t => t.id === 9 || t.id === 10);
@@ -80,6 +115,17 @@ const AddComplaint = ({navigation}) => {
 
     return (
         <ScrollView>
+            <View>
+                <TouchableRipple onPress={chooseAvatar}>
+                            <Text>Chọn hình đại diện...</Text>
+                </TouchableRipple>
+                {imageComplaint && (
+                    <View style={{ alignItems: 'center', marginVertical: 20 }}>
+                        <Image source={{ uri: imageComplaint }} style={{ width: 200, height: 200 }} />
+                    </View>
+                )}
+            </View>
+            
             <View style={[Style.margin, Style.container]}>
                 <View style={MyStyle.row}>
                     <Icon
@@ -125,7 +171,7 @@ const AddComplaint = ({navigation}) => {
                     <Text style={[Style.titleComplaint, Style.titleTag]}>
                         Status tag
                     </Text>
-                    {StatusTags.map(s => 
+                    {/* {StatusTags.map(s => 
                         <View style={MyStyle.row}>
                             <Text style={Style.margin}>
                                 {s.name} 
@@ -138,7 +184,18 @@ const AddComplaint = ({navigation}) => {
                                 color="purple"
                             />
                         </View>
+                    )} */}
+                    {StatusTags===null?<ActivityIndicator />:<>
+                    {StatusTags.map(c =>
+                        <Chip mode={checkedStatus ===c.id?"flat":"outlined"} 
+                        key={c.id} 
+                        onPress={() => {
+                            setCheckedStatus(checkedStatus === c.id ? null : c.id);
+                        }}
+                        style={Style.tags}  
+                        icon="shape-plus">{c.name}</Chip>
                     )}
+                </>}
                 </View>
 
                 <View>

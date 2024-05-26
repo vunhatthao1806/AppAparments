@@ -41,7 +41,7 @@ export default StyleSheet.create({
       textDecorationStyle: "solid"
     }, 
     tags:{
-        margin: 10
+        margin: 5
     },
     username: {
         fontSize: 15,

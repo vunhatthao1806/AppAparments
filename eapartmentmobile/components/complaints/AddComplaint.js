@@ -31,32 +31,20 @@ const AddComplaint = ({navigation}) => {
         else {
             let res = await ImagePicker.launchImageLibraryAsync();
             if (!res.canceled) {
-                console.log(res.assets[0].uri);
-                setSelectedImage(res.assets[0].uri);
-                // uploadImage(res.assets[0].uri);
+                setSelectedImage(res.assets[0]);
+                // console.log(res.assets[0]);
             }
         }
     };    
 
-    const uploadImage = async (uri) => {
-        let apiUrl = 'https://api.cloudinary.com/v1_1/dps7wzdje/image/upload/';
-        let data = new FormData();
-        data.append('file', {
-            uri,
-            type: 'image/jpeg', // hoặc type phù hợp với file của bạn
-            name: 'upload.jpg',
-        });
-        data.append('upload_preset', 'image');
-
+    const loadTags = async () => {
         try {
-            let response = await axios.post(apiUrl, data);
-            setSelectedImage(response.data.secure_url);
-        } catch (error) {
-            console.error(error);
-            alert('Upload failed, try again!');
+            let res = await APIs.get(endpoints['tags']);
+            setTags(res.data);
+        } catch (ex){
+            console.error(ex);
         }
-       
-    };
+    }
 
     const loadComplaints = async () => {
         try {
@@ -69,26 +57,42 @@ const AddComplaint = ({navigation}) => {
         } 
     }
 
-    const loadTags = async () => {
-        try {
-            let res = await APIs.get(endpoints['tags']);
-            setTags(res.data);
-        } catch (ex){
-            console.error(ex);
-        }
-    }
-
     const loadCreatComplaint = async () => {
         try{
-            accessToken = await AsyncStorage.getItem("access-token");
-            let response = await authAPI(accessToken).post(endpoints["add_complaint"], {
-                title: title,
-                content: content,
-                status_tag: checkedStatus,
-                complaint_tag: checkedComplaint,
-                image: selectedImage 
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("content", content);
+            formData.append("status_tag", checkedStatus);
+            formData.append("complaint_tag", checkedComplaint);
+            console.log(formData);
+
+            const filename = selectedImage.uri.split("/").pop();
+            const match = /\.(\w+)$/.exec(filename);
+            const fileType = match ? `image/${match[1]}` : `image`;
+
+            console.log(fileType);
+            console.log(filename);
+            console.log(selectedImage);
+            
+            formData.append("image", {
+                uri: selectedImage.uri,
+                type: fileType, // hoặc type phù hợp với file của bạn
+                name: filename,
             });
-            console.log(response.data);
+
+            // Gửi dữ liệu form lên server
+            let accessToken = await AsyncStorage.getItem("access-token");
+            let res = await authAPI(accessToken).post(endpoints["add_complaint"],
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+      
+            // Xử lý kết quả trả về từ server
+            alert("Thông báo", "Đăng ký thành công!!!");
         } catch(ex) {
             console.error(ex);
         }
@@ -118,9 +122,10 @@ const AddComplaint = ({navigation}) => {
                 <TouchableRipple onPress={chooseAvatar}>
                             <Text>Chọn hình đại diện...</Text>
                 </TouchableRipple>
+                
                 {selectedImage && (
                     <View style={{ alignItems: 'center', marginVertical: 20 }}>
-                        <Image source={{ uri: selectedImage }} style={{ width: 200, height: 200 }} />
+                        <Image source={{ uri: selectedImage.uri }} style={{ width: 200, height: 200 }} />
                     </View>
                 )}
             </View>

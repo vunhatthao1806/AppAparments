@@ -8,6 +8,7 @@ import { ActivityIndicator, Avatar, Card, Chip, List, Searchbar, Button } from "
 import Style from "./Style";
 import moment from "moment";
 import RenderHTML from 'react-native-render-html';
+import { isCloseToBottom } from "../utils/Utils";
 
 const  Complaint = ({navigation, animatedValue,
     visible,
@@ -20,17 +21,31 @@ const  Complaint = ({navigation, animatedValue,
     const [loading,setLoading] = useState(false);
     const { width } = useWindowDimensions();
     const [showFullContent, setShowFullContent] = useState({});
-    const [tags, setTags] = useState([]);
+    const [tags, setTags] = useState([]); 
+    const [page, setPage] = useState(1)
 
     const loadComplaints = async () => {
-        try {
-            let url = `${endpoints['complaints']}?complaint_tag_id=${complaint_tagId}`;
-
-            let res = await APIs.get(url);
-            setComplaints(res.data);
-        } catch (ex) {
-            console.error(ex);
-        } 
+        if (page > 0) {
+            setLoading(true);
+            let url = `${endpoints['complaints']}?complaint_tag_id=${complaint_tagId}&&page=${page}`;
+            try {
+                let res = await APIs.get(url);
+                if (page === 1)
+                    setComplaints(res.data.results);
+                else
+                    setComplaints(current => {
+                    return [...current, ...res.data.results] //chen them du lieu vao trang hien tai
+                });
+    
+                if (!res.data.next)
+                    setPage(0);
+            } catch (ex) {
+                console.error(ex);
+            } finally {
+                setLoading(false);
+            }
+        }
+         
     }
 
     const handleToggleContent = (id) => {
@@ -53,25 +68,31 @@ const  Complaint = ({navigation, animatedValue,
     
     useEffect(() => {
         loadComplaints();
-    }, [complaint_tagId]);
+    }, [complaint_tagId, page]);
 
     useEffect(() => {
         loadTags();
     },[])
 
     const search = (value, callback) => {
+        setPage(1);
         callback(value);
     }
+
 
     const [isExtended, setIsExtended] = useState(true);
 
     const isIOS = Platform.OS === 'ios';
 
-    const onScroll = ({ nativeEvent }) => {
+    const Scroll = ({ nativeEvent }) => {
         const currentScrollPosition =
         Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
 
         setIsExtended(currentScrollPosition <= 0);
+
+        if (!loading && page > 0 && isCloseToBottom(nativeEvent)){
+            setPage(page + 1);
+        }
     };
 
   const fabStyle = { [animateFrom]: 20 };
@@ -97,7 +118,7 @@ const  Complaint = ({navigation, animatedValue,
 
             </View>
             {/* <SafeAreaView style={Style.container}> */}
-                <ScrollView onScroll={onScroll}>
+                <ScrollView onScroll={Scroll}>
                     {complaints===null?<ActivityIndicator/>:<>
                     {complaints.map(c => (
                         <TouchableOpacity key={c.id} onPress={() => navigation.navigate('ComplaintDetail', {'complaintId': c.id})} >

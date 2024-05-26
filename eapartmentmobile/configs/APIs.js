@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = 'http://192.168.2.5:8000/';
+const BASE_URL = 'http://192.168.2.8:8000/';
 
 // const BASE_URL = 'http://192.168.1.8:8000/';
 
@@ -12,7 +12,7 @@ export const endpoints = {
     'add_complaint': '/addcomplaints/',
     'upd_image': '/addcomplaints/upd_image/',
     'comments': (complaintId) => `/complaints/${complaintId}/comments/`,
-    'update_comment': '/comments/',
+    'update_comment': (commentId) => `/comments/${commentId}/`,
     'ecabinet': "/users/ecabinets/",
     'items': (ecabinetId) => `/ecabinets/${ecabinetId}/items/`,
     'surveys': '/surveys/',

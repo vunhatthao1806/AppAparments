@@ -117,9 +117,21 @@ class AddComplaintViewSet(viewsets.ViewSet, generics.CreateAPIView):
         # complaint = Complaint.objects.filter(user_id=user.id).first()
         serializer.save(user=user)
 
+    # @action(methods=['patch'], url_path='upd_image', detail=False)
+    # def update_image(self, request):
+    #     complaint = request.complaint
+    #     for i in request.data.items():
+    #         if i == 'image':
+    #             complaint.set_image(i)
+    #         else:
+    #             setattr(complaint, i)
+    #     complaint.save()
+    #     return Response(serializers.AddComplaintSerializer(complaint).data)
+
 
 class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
     queryset = Complaint.objects.filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
+    pagination_class = paginators.ComplaintPaginator
     serializer_class = serializers.ComplaintDetailSerializer
 
     def get_serializer_class(self):

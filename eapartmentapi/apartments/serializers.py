@@ -85,9 +85,6 @@ class AddComplaintSerializer(serializers.ModelSerializer):
 
         return req
 
-    # status_tag = TagSerializer()
-    # complaint_tag = TagSerializer()
-
     class Meta:
         model = Complaint
         fields = ['id', 'title', 'created_date', 'content', 'status_tag', 'complaint_tag', 'image']

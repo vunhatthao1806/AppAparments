@@ -1,8 +1,18 @@
 {
   "expo": {
     "name": "eapartmentmobile",
-    "slug": "eapartmentmobile",
-    "version": "1.0.0"
+    "slug": "apartment-app",
+    "version": "1.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "6687b1b2-0db0-42e6-8dcf-1486d76335d7"
+      }
+    },
+    "android": {
+      "googleServicesFile": "android/app/google-services.json",
+      "package": "com.mycorp.myapp"
+    },
+    "owner": "thanh_thuy"
   },
   "name": "eapartmentmobile"
 }

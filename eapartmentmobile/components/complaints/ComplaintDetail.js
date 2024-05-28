@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import APIs, { authAPI, endpoints } from "../../configs/APIs";
-import { ActivityIndicator, Avatar, Button, Card, Chip, Icon, List, TextInput } from "react-native-paper";
+import { ActivityIndicator, Avatar, Button, Card, Chip, Icon, List, TextInput, Menu, Divider, PaperProvider, IconButton } from "react-native-paper";
 import Style from "./Style";
 import MyStyle from "../../styles/MyStyle";
 import moment from "moment";
@@ -9,7 +9,7 @@ import RenderHTML from "react-native-render-html";
 import { isCloseToBottom } from "../utils/Utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ComplaintDetail = ({route}) => {
+const ComplaintDetail = ({route, navigation}) => {
     const [complaint, setComplaint] = useState(null);
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState('');
@@ -18,6 +18,12 @@ const ComplaintDetail = ({route}) => {
     const [likeCount, setLikeCount] = useState(0);
     const complaintId = route.params?.complaintId;
     const { width } = useWindowDimensions();
+
+    const [visible, setVisible] = useState(null);
+
+    const openMenu = (id) => setVisible(id);
+
+    const closeMenu = () => setVisible(null);
 
     const loadComplaint = async () => {
         try {
@@ -72,6 +78,16 @@ const ComplaintDetail = ({route}) => {
         }
     }
 
+    const loadDeleteComment = async () => {
+        try {
+            accessToken = await AsyncStorage.getItem("access-token");
+            let response = await authAPI(accessToken).delete(endpoints["delete_comment"](commentId));  
+            loadComments();
+        } catch (ex) {
+            console.error(ex);
+        }
+    }
+
     const handleLike = async () => {
         await loadLike();
         await loadLikeCount();
@@ -79,6 +95,10 @@ const ComplaintDetail = ({route}) => {
 
     const handleComment = async () => {
         await loadAddComment();
+    }
+
+    const handleDelete = async () => {
+        await loadDeleteComment();
     }
  
     useEffect(() => {
@@ -97,7 +117,7 @@ const ComplaintDetail = ({route}) => {
     }
 
     return (
-        <View>
+        <PaperProvider>
             <ScrollView onScroll={loadMoreInfo}>
                 {complaint===null?<ActivityIndicator/>:<>
                     <Card style={Style.marginbot}>
@@ -179,9 +199,25 @@ const ComplaintDetail = ({route}) => {
                                     </View>
                                     <Text style={Style.commentText}>{c.content}</Text>
                                 </View>
-                                <TouchableOpacity style={Style.iconContainer}>
-                                    <Icon source="dots-vertical" size={20} />
-                                </TouchableOpacity>
+
+                                <View>
+                                    <Menu
+                                        visible={visible === c.id}
+                                        onDismiss={closeMenu}
+                                        anchor={
+                                            <IconButton  onPress={() => openMenu(c.id)}  icon="camera" size={20} />}
+                                            style={{
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: '60%', 
+                                                elevation: 4,
+                                        }}
+                                            >
+                                            <Menu.Item style={{ padding: 10 }} onPress={() => navigation.navigate('EditComment', {'commentId': c.id})} title="Chỉnh sửa" />
+                                            <Menu.Item style={{ padding: 10 }} onPress={handleDelete} title="Xóa" />
+                                    </Menu>
+                                </View>
+                                
                             </View>
                             
                         </View>
@@ -190,9 +226,10 @@ const ComplaintDetail = ({route}) => {
                             <Text style={Style.noCommentText}>Chưa có bình luận nào!</Text>
                         </View>
                     }
+                    
                 </View>
             </ScrollView>
-        </View>
+        </PaperProvider>
     );
 }
 

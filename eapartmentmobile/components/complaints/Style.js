@@ -196,4 +196,7 @@ export default StyleSheet.create({
     iconContainer: {
         paddingLeft: 10,
     },
+    menuComment: {
+        marginRight: 100
+    }
 });

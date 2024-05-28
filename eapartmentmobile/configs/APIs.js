@@ -13,6 +13,7 @@ export const endpoints = {
     'upd_image': '/addcomplaints/upd_image/',
     'comments': (complaintId) => `/complaints/${complaintId}/comments/`,
     'update_comment': (commentId) => `/comments/${commentId}/`,
+    'delete_comment': (commentId) => `/comments/${commentId}/`,
     'ecabinet': "/users/ecabinets/",
     'items': (ecabinetId) => `/ecabinets/${ecabinetId}/items/`,
     'surveys': '/surveys/',

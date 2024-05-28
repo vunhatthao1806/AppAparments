@@ -24,6 +24,7 @@ import Logo from './components/users/Logo';
 import Login from './components/users/Login';
 import Items from './components/profiles/convenient/Items';
 import CarcardDetail from './components/profiles/convenient/CarCardDetail';
+import EditComment from './components/complaints/EditComment';
 
 
 const Stack = createNativeStackNavigator();
@@ -102,6 +103,11 @@ const ComplaintStack = () => {
       <Stack.Screen
         name="AddComplaint"
         component={AddComplaint}
+        options={{ headerShown: true, tabBarVisible: false}}
+      />
+      <Stack.Screen
+        name="EditComment"
+        component={EditComment}
         options={{ headerShown: true, tabBarVisible: false}}
       />
     </Stack.Navigator>

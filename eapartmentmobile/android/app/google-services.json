@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "802671782165",
+    "project_id": "pushnotification-54fd7",
+    "storage_bucket": "pushnotification-54fd7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:802671782165:android:f26304d6e08e74e554211c",
+        "android_client_info": {
+          "package_name": "com.TT.appartmentapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmN5xUjVgMk8CysUc50oYfmXf9f-Z0vDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

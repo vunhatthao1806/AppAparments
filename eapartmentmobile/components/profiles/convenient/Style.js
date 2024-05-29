@@ -47,5 +47,20 @@ export default StyleSheet.create({
     }, 
     commentsContainer: {
         marginTop: 10,
-    },
+    },imagecarcard: {
+        width: 170,
+        height: 170,
+        borderRadius: 20,
+      },
+      titlecarcard: {
+        alignSelf: "center",
+        fontSize: 30,
+        fontWeight: "bold",
+        margin: 10,
+      },
+      itemcarcard: {
+        margin: 10,
+        fontSize: 20,
+        fontWeight: "condensedBold",
+      },
 });

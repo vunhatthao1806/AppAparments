@@ -23,8 +23,9 @@ export const endpoints = {
     'get_likes': (complaintId) => `/complaints/${complaintId}/get_likes/`, 
     'add_comment': (complaintId) => `/complaints/${complaintId}/add_comment/`,
     'tags': '/tags/',
-    'carcards': '/users/carcards/',
-    'carcard-detail': (carCardId) => `/carcards/${carCardId}/`
+    'carcard': '/users/carcards/',
+    'carcard-detail': (carCardId) => `/carcards/${carCardId}/`,
+    'carcards': '/carcards/',
 };
 
 export const authAPI = (accessToken) =>

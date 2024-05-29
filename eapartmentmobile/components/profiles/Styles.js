@@ -61,5 +61,5 @@ export default StyleSheet.create({
     fontSize: 16, // Adjust font size as needed
   }, webview: {
     flex: 1,
-  },
+  }
 });

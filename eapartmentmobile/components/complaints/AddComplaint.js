@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { ActivityIndicator, Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, Button, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Checkbox, Chip, Icon, TextInput, ToggleButton, TouchableRipple } from "react-native-paper";
 import Style from "./Style";
 import MyStyle from "../../styles/MyStyle";
@@ -9,6 +9,31 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
 import axios from "axios";
+import * as Notifications from 'expo-notifications';
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+});
+
+async function registerForPushNotificationsAsync() {
+    let token;
+  
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    return token;
+}
 
 const AddComplaint = ({navigation}) => {
     const [checkedStatus, setCheckedStatus] = useState(false);
@@ -23,6 +48,45 @@ const AddComplaint = ({navigation}) => {
     const [complaint_tagId, setComplaint_tagId] = useState("");
 
     const [selectedImage, setSelectedImage] = useState(null);
+
+    const [expoPushToken, setExpoPushToken] = useState('');
+      
+        useEffect(() => {
+          registerForPushNotificationsAsync().then(token => {
+            setExpoPushToken(token);
+            console.log(token);
+            fetch('http://192.168.2.8/save-token/', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ token, user_id: 2 }), // Thay 1 bằng ID người dùng thực sự
+            });
+          });
+        }, []);
+      
+        const sendNotification = async () => {
+
+          console.log("Sending push notification... ")
+
+          const message = {
+            to: expoPushToken,
+            sound: "default",
+            title: "Thông báo",
+            body: "Bạn đã tạo thành công một bài phản ánh!",
+        };
+
+        await fetch("https://exp.host/--/api/v2/push/send", {
+            method: "POST",
+            headers: {
+                host: "exp.host",
+                accept: "application/json",
+                "accept-encoding": "gzip, deflate",
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(message),
+        });
+        };
 
     const chooseAvatar = async () => {
         let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -92,7 +156,7 @@ const AddComplaint = ({navigation}) => {
             );
       
             // Xử lý kết quả trả về từ server
-            alert("Thông báo", "Đăng ký thành công!!!");
+            // alert("Thông báo", "Đăng ký thành công!!!");
         } catch(ex) {
             console.error(ex);
         }
@@ -111,6 +175,7 @@ const AddComplaint = ({navigation}) => {
         });
         loadComplaints();
         await loadCreatComplaint();
+        await sendNotification();
     }
 
     const StatusTags = tags.filter(t => t.id === 9 || t.id === 10);

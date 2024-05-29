@@ -78,7 +78,7 @@ const ComplaintDetail = ({route, navigation}) => {
         }
     }
 
-    const loadDeleteComment = async () => {
+    const loadDeleteComment = async (commentId) => {
         try {
             accessToken = await AsyncStorage.getItem("access-token");
             let response = await authAPI(accessToken).delete(endpoints["delete_comment"](commentId));  
@@ -95,10 +95,6 @@ const ComplaintDetail = ({route, navigation}) => {
 
     const handleComment = async () => {
         await loadAddComment();
-    }
-
-    const handleDelete = async () => {
-        await loadDeleteComment();
     }
  
     useEffect(() => {
@@ -214,7 +210,7 @@ const ComplaintDetail = ({route, navigation}) => {
                                         }}
                                             >
                                             <Menu.Item style={{ padding: 10 }} onPress={() => navigation.navigate('EditComment', {'commentId': c.id})} title="Chỉnh sửa" />
-                                            <Menu.Item style={{ padding: 10 }} onPress={handleDelete} title="Xóa" />
+                                            <Menu.Item style={{ padding: 10 }} onPress={() => loadDeleteComment(c.id)} title="Xóa" />
                                     </Menu>
                                 </View>
                                 

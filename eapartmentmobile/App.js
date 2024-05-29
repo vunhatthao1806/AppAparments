@@ -25,6 +25,7 @@ import Login from './components/users/Login';
 import Items from './components/profiles/convenient/Items';
 import CarcardDetail from './components/profiles/convenient/CarCardDetail';
 import EditComment from './components/complaints/EditComment';
+import CarcardRegister from './components/profiles/convenient/CarCardRegister';
 
 
 const Stack = createNativeStackNavigator();
@@ -75,6 +76,11 @@ const ProfileStack = () => {
       <Stack.Screen
         name="CarCardDetail"
         component={CarcardDetail}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="CarCardRegister"
+        component={CarcardRegister}
         options={{ headerShown: true }}
       />
       <Stack.Screen

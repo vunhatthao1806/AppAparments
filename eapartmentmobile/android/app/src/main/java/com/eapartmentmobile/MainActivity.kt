@@ -3,6 +3,9 @@ package com.eapartmentmobile
 import android.os.Build
 import android.os.Bundle
 
+import android.content.Intent; // <-- include if not already there
+import com.tkporter.sendsms.SendSMSPackage;
+
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
@@ -58,4 +61,12 @@ class MainActivity : ReactActivity() {
       // because it's doing more than [Activity.moveTaskToBack] in fact.
       super.invokeDefaultOnBackPressed()
   }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      //probably some other stuff here
+      SendSMSPackage.getInstance().onActivityResult(requestCode, resultCode, data);
+    }
+
 }

@@ -11,11 +11,14 @@ r.register('receipts', views.ReceiptViewSet, 'receipts')
 r.register('complaints', views.ComplaintViewSet, 'complaints')
 r.register('addcomplaints', views.AddComplaintViewSet, 'addcomplaints')
 r.register('users', views.UserViewSet, 'users')
+# r.register('user', views.UserNotificationViewSet, 'user')
 r.register('comments', views.CommentViewSet, 'comments')
 r.register('surveys', views.SurveyViewSet, 'surveys')
 r.register('carcards', views.CarCardViewSet, 'carcards')
 r.register('tags', views.TagViewSet, 'tags')
 
 urlpatterns = [
-    path('', include(r.urls))
+    path('', include(r.urls)),
+    # path('save-token/', views.save_token, name='save_token'),
+    # path('send-notification/', views.send_notification, name='send_notification'),
 ]

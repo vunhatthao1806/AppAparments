@@ -36,6 +36,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('', include('apartments.urls')),
     path('admin/', admin.site.urls),
+    # path('api/', include('apartments.urls')),
     re_path(r'^ckeditor/',
             include('ckeditor_uploader.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',

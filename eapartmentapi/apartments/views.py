@@ -1,12 +1,23 @@
-
+import json
 import djf_surveys.models
+import requests
 from django.db.models import Count
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
     CarCard
 from apartments import serializers, paginators, perms
+from exponent_server_sdk import (
+    DeviceNotRegisteredError,
+    PushClient,
+    PushMessage,
+    PushServerError
+)
 
 
 class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -25,10 +36,25 @@ class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
         return queryset
 
 
-class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView):
+class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
     queryset = CarCard.objects.all()
     serializer_class = serializers.CarCardSerializer
     permission_classes = [perms.CarCardOwner]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        flat = Flat.objects.filter(user_id=user.id).first()
+        serializer.save(user=user, flat=flat)
+
+    # tìm kiếm tủ đồ
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if self.action.__eq__('list'):
+            q = self.request.query_params.get('q')
+            if q:
+                queryset = queryset.filter(name__icontains=q)
+        return queryset
 
 
 class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
@@ -116,17 +142,6 @@ class AddComplaintViewSet(viewsets.ViewSet, generics.CreateAPIView):
         user = self.request.user
         # complaint = Complaint.objects.filter(user_id=user.id).first()
         serializer.save(user=user)
-
-    # @action(methods=['patch'], url_path='upd_image', detail=False)
-    # def update_image(self, request):
-    #     complaint = request.complaint
-    #     for i in request.data.items():
-    #         if i == 'image':
-    #             complaint.set_image(i)
-    #         else:
-    #             setattr(complaint, i)
-    #     complaint.save()
-    #     return Response(serializers.AddComplaintSerializer(complaint).data)
 
 
 class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
@@ -230,22 +245,11 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
     def get_carcards(self, request):
         user = request.user
         carcards = CarCard.objects.filter(user_id=user.id)
-        return Response(serializers.CarCardSerializer(carcards, many=True).data, status=status.HTTP_200_OK)
-
-    # @action(methods=['post'], url_path='create_complaint', detail=False)
-    # def create_complaint(self, request):
-    #     c = self.get_object().complaint_set.create(user=request.user, content=request.data.get('content'),
-    #                                  title=request.data.get('request'), status_tag=request.data.get('status_tag'),
-    #                                  complaint_tag=request.data.get('complaint_tag'))
-    #     # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
-    #     return Response(serializers.ComplaintDetailSerializer(c).data, status=status.HTTP_201_CREATED)
-
-
-# class AdminViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView, generics.UpdateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = serializers.UserSerializer
-#     parser_classes = [parsers.MultiPartParser, ]
-#     permission_classes = [perms.AdminOwner]
+        paginator = PageNumberPagination()
+        paginator.page_size = 4
+        result_page = paginator.paginate_queryset(carcards, request)
+        serializer = serializers.CarCardSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 
 class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
@@ -273,3 +277,43 @@ class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
         question_count = survey.questions.count()
 
         return Response({'question_count': question_count}, status=status.HTTP_200_OK)
+
+
+# @csrf_exempt
+# def save_token(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         expo_push_token = data.get('expo_push_token')
+#         user_id = data.get('user_id')
+#
+#         if expo_push_token and user_id:
+#             user = get_object_or_404(User, id=user_id)
+#             push_token, created = User.objects.get_or_create(user=user)
+#             push_token.token = expo_push_token
+#             push_token.save()
+#             return JsonResponse({'message': 'Token saved successfully'})
+#         else:
+#             return JsonResponse({'error': 'Token or user ID is missing'}, status=400)
+#
+#
+# @csrf_exempt
+# def send_notification(request):
+#     if request.method == 'POST':
+#         data = json.loads(request.body)
+#         expo_push_token = data.get('token')
+#         title = data.get('title')
+#         body = data.get('body')
+#         user_id = data.get('user_id')
+#
+#         if expo_push_token and title and body and user_id:
+#             user = get_object_or_404(User, id=user_id)
+#
+#             try:
+#                 message = PushMessage(to=expo_push_token, title=title, body=body)
+#                 response = PushClient().publish([message])
+#                 response.validate_response()
+#                 return JsonResponse({'message': 'Notification sent successfully'})
+#             except (DeviceNotRegisteredError, PushServerError) as exc:
+#                 return JsonResponse({'message': 'Error sending notification', 'error': str(exc)}, status=500)
+#         else:
+#             return JsonResponse({'error': 'Token, title, body, or user ID is missing'}, status=400)

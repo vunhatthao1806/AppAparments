@@ -18,6 +18,7 @@ class BaseModel(models.Model):
 
 class User(AbstractUser):
     avatar = CloudinaryField(null=True)
+    expo_push_token = models.CharField(max_length=255, null=True, blank=True)
 
 
 class ECabinet(BaseModel):
@@ -86,6 +87,9 @@ class Complaint(BaseModel):
     complaint_tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='complaint_tag')
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['-created_date']
 
     def __str__(self):
         return self.title

@@ -44,10 +44,19 @@ class ReceiptDetailSerializer(serializers.ModelSerializer):
 
 
 class CarCardSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        image_fields = ['image_mrc_m1', 'image_mrc_m2', 'image_idcard_m1', 'image_idcard_m2']
+
+        for field in image_fields:
+            if hasattr(instance, field) and getattr(instance, field):
+                req[field] = getattr(instance, field).url
+
+        return req
 
     class Meta:
         model = CarCard
-        fields = '__all__'
+        fields = ['id', 'type', 'number_plate', 'image_mrc_m1', 'image_mrc_m2', 'image_idcard_m1', 'image_idcard_m2']
 
 
 class UserSerializer(serializers.ModelSerializer):

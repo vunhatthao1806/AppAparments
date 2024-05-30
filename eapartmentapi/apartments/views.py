@@ -44,7 +44,7 @@ class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAP
     def perform_create(self, serializer):
         user = self.request.user
         flat = Flat.objects.filter(user_id=user.id).first()
-        serializer.save(user=user, flat=flat)
+        serializer.save(flat=flat)
 
     # tìm kiếm tủ đồ
     def get_queryset(self):
@@ -225,14 +225,18 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.RetrieveAPI
 
         return [permissions.AllowAny()]
 
-    @action(methods=['get', 'patch'], url_path='current_user', detail=False) # khong cho truyen id user khac len vi nguy hiem
-    def current_user(self, request):
+    @action(methods=['get', 'patch'], url_path='current_user', detail=False)
+    def update_current_user(self, request):
         user = request.user
-        if request.method.__eq__('PATCH'): # vi tri cap nhat
-            for k, v in request.data.items():
+        for k, v in request.data.items():
+            if k == 'password':
+                user.set_password(v)
+            elif k == 'avatar':
+                user.avatar = v
+            else:
                 setattr(user, k, v)
-            user.save()
-        return Response(serializers.UserSerializer(request.user).data)
+        user.save()
+        return Response(serializers.UserSerializer(user).data)
 
     @action(methods=['get'], url_path='ecabinets', detail=False)
     def get_ecabinets(self, request):

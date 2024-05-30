@@ -61,5 +61,42 @@ export default StyleSheet.create({
     fontSize: 16, // Adjust font size as needed
   }, webview: {
     flex: 1,
+  },
+  backgroundtranfer: {
+    borderWidth: 1,
+    width: 150,
+    height: 150,
+    alignSelf: "center",
+    marginTop: 20,
+    backgroundColor: "#F1E5D1",
+    borderRadius: 10,
+  },
+  uploadImage: {
+    width: 100,
+    height: 100,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    alignSelf: "center",
+    margin: 20,
+    borderRadius: 10,
+  },
+  iconupimage: {
+    alignSelf: "center",
+    marginTop: 35,
+  },
+  textupload: {
+    textAlign: "center",
+    alignItems: "center",
+  },
+  input: {
+    width: "90%",
+    alignSelf: "center",
+    marginTop: 30,
+  },
+  avatarImage: {
+    marginTop: 30,
+    textAlign: "center",
+    alignItems: "center",
+    fontSize: 25
   }
 });

@@ -70,13 +70,15 @@ const Profile = ({ navigation }) => {
       <View style={Styles.avatarbackground}>
         <Avatar.Image
           style={Styles.avatarprofile}
-          source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
+          // source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
+          source={{ uri: user.avatar } }
           size={150}
         />
-        <TouchableOpacity onPress={chooseAvatar}>
+        <TouchableOpacity>
           <Button
             icon="camera"
             mode="contained"
+            onPress={chooseAvatar}
             style={{
               width: 50,
               position: "absolute",

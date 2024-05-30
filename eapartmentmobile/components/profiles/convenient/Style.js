@@ -63,4 +63,15 @@ export default StyleSheet.create({
         fontSize: 20,
         fontWeight: "condensedBold",
       },
+      input: {
+        width: "90%",
+        alignSelf: "center",
+        marginTop: 30,
+      },
+      imageOnTop: {
+        width: "100%",
+        height: 230,
+        borderBottomLeftRadius: 120,
+        borderBottomRightRadius: 120,
+      },
 });

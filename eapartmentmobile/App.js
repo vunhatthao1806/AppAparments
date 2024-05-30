@@ -26,6 +26,7 @@ import Items from './components/profiles/convenient/Items';
 import CarcardDetail from './components/profiles/convenient/CarCardDetail';
 import EditComment from './components/complaints/EditComment';
 import CarcardRegister from './components/profiles/convenient/CarCardRegister';
+import LoginFirst from './components/profiles/profile/LoginFirst';
 
 
 const Stack = createNativeStackNavigator();
@@ -120,7 +121,7 @@ const ComplaintStack = () => {
   );
 };
 
-const LoginStack = ({ user }) => {
+const LoginStack = ({ user, isInitialSetupComplete, onInitialSetupComplete }) => {
   return (
     <Stack.Navigator>
       {user === null ? (
@@ -132,14 +133,21 @@ const LoginStack = ({ user }) => {
           />
         </>
       ) : (
-        <>
-          <Stack.Screen
-            name="MyTab"
-            component={MyTab}
-            options={{ headerShown: false }}
-          />
-        </>
-      )}
+        isInitialSetupComplete ? (
+            <Stack.Screen
+                name="MyTab"
+                component={MyTab}
+                options={{ headerShown: false }}
+            />
+        ) : (
+            <Stack.Screen
+                name="LoginFirst"
+                options={{ headerShown: false }}
+            >
+                {props => <LoginFirst {...props} onInitialSetupComplete={onInitialSetupComplete} />}
+            </Stack.Screen>
+        )
+    )}
     </Stack.Navigator>
   );
 };
@@ -160,7 +168,7 @@ const MyTab = () => {
       
       <Tab.Screen
         name="Notification"
-        component={Notifiactions}
+        component={LoginFirst}
         options={{
           title: "Thông báo",
           tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
@@ -196,13 +204,28 @@ const MyTab = () => {
 const App = () => {
   const [user, dispatch] = useReducer(MyUserReducer, null);
   const [loading, setLoading] = useState(true);
+  const [isInitialSetupComplete, setIsInitialSetupComplete] = useState(false);
   useEffect(() => {
     const timeout = setTimeout(() => {
       setLoading(false);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timeout);
   }, []);
+
+  useEffect(() => {
+    const checkInitialSetup = async () => {
+        const setupComplete = await AsyncStorage.getItem("initial-setup-complete");
+        setIsInitialSetupComplete(setupComplete === "true");
+    };
+
+    checkInitialSetup();
+}, [user]);
+
+const handleInitialSetupComplete = () => {
+    setIsInitialSetupComplete(true);
+};
+
   return (
     <Context.Provider value={[user, dispatch]}>
       <NavigationContainer>
@@ -217,7 +240,14 @@ const App = () => {
         ) : (
           <Stack.Navigator>
             <Stack.Screen name="LoginStack" options={{ headerShown: false }}>
-              {() => <LoginStack user={user} />}
+              {/* {() => <LoginStack user={user} />} */}
+              {() => (
+                  <LoginStack
+                      user={user}
+                      isInitialSetupComplete={isInitialSetupComplete}
+                      onInitialSetupComplete={handleInitialSetupComplete}
+                  />
+                            )}
             </Stack.Screen>
           </Stack.Navigator>
         )}

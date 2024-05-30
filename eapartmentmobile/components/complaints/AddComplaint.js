@@ -96,7 +96,6 @@ const AddComplaint = ({navigation}) => {
             let res = await ImagePicker.launchImageLibraryAsync();
             if (!res.canceled) {
                 setSelectedImage(res.assets[0]);
-                // console.log(res.assets[0]);
             }
         }
     };    

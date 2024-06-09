@@ -18,7 +18,7 @@ export const endpoints = {
     'items': (ecabinetId) => `/ecabinets/${ecabinetId}/items/`,
     'surveys': '/surveys/',
     'login': '/o/token/',
-    'current_user': "/users/current_user/",
+    'current_user': '/users/current_user/',
     'liked': (complaintId) => `/complaints/${complaintId}/like/`,
     'get_likes': (complaintId) => `/complaints/${complaintId}/get_likes/`, 
     'add_comment': (complaintId) => `/complaints/${complaintId}/add_comment/`,

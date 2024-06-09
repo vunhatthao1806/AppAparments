@@ -98,5 +98,15 @@ export default StyleSheet.create({
     textAlign: "center",
     alignItems: "center",
     fontSize: 25
-  }
+  }, subject: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#212121",
+  },
+  accountinfoImage: {
+    marginTop: 20,
+    width: "40%",
+    height: "30%",
+    alignSelf: "center",
+  },
 });

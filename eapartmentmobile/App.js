@@ -27,6 +27,7 @@ import CarcardDetail from './components/profiles/convenient/CarCardDetail';
 import EditComment from './components/complaints/EditComment';
 import CarcardRegister from './components/profiles/convenient/CarCardRegister';
 import LoginFirst from './components/profiles/profile/LoginFirst';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Stack = createNativeStackNavigator();
@@ -121,7 +122,7 @@ const ComplaintStack = () => {
   );
 };
 
-const LoginStack = ({ user, isInitialSetupComplete, onInitialSetupComplete }) => {
+const LoginStack = ({ user, onInitialSetupComplete }) => {
   return (
     <Stack.Navigator>
       {user === null ? (
@@ -133,7 +134,7 @@ const LoginStack = ({ user, isInitialSetupComplete, onInitialSetupComplete }) =>
           />
         </>
       ) : (
-        isInitialSetupComplete ? (
+        !user.first_login ? (
             <Stack.Screen
                 name="MyTab"
                 component={MyTab}
@@ -213,17 +214,9 @@ const App = () => {
     return () => clearTimeout(timeout);
   }, []);
 
-  useEffect(() => {
-    const checkInitialSetup = async () => {
-        const setupComplete = await AsyncStorage.getItem("initial-setup-complete");
-        setIsInitialSetupComplete(setupComplete === "true");
-    };
-
-    checkInitialSetup();
-}, [user]);
-
 const handleInitialSetupComplete = () => {
     setIsInitialSetupComplete(true);
+    dispatch({ type: "updateFirstLogin" });
 };
 
   return (
@@ -244,7 +237,6 @@ const handleInitialSetupComplete = () => {
               {() => (
                   <LoginStack
                       user={user}
-                      isInitialSetupComplete={isInitialSetupComplete}
                       onInitialSetupComplete={handleInitialSetupComplete}
                   />
                             )}
@@ -257,4 +249,3 @@ const handleInitialSetupComplete = () => {
 }
 
 export default App;
-

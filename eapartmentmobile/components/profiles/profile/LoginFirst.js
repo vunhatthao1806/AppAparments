@@ -9,7 +9,7 @@ import {
     Alert,
 } from "react-native";
 import { Button, Icon, TextInput, HelperText } from "react-native-paper";
-import { useContext, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import Context from "../../../configs/Context";
 import { authAPI, endpoints } from "../../../configs/APIs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,6 +17,7 @@ import Styles from "../Styles";
 import MyStyle from "../../../styles/MyStyle";
 import qs from "qs";
 import * as ImagePicker from "expo-image-picker";
+import MyUserReducer from "../../../reducers/MyUserReducer";
 
 const LoginFirst = ({onInitialSetupComplete}) => {
     const [usercurrent, setCurrentUser] = useState({});
@@ -26,6 +27,8 @@ const LoginFirst = ({onInitialSetupComplete}) => {
     const [avatar, setAvatar] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [firstLogin, setFirstLogin] = useState(true);
+    const [user, dispatch] = useReducer(MyUserReducer, null);
 
     const fields = [
         {
@@ -77,7 +80,8 @@ const LoginFirst = ({onInitialSetupComplete}) => {
                     type: "image/jpg",
                 });
             }
-
+            form.append("first_login", "False");
+            
             let accessToken = await AsyncStorage.getItem("access-token");
             let res = await authAPI(accessToken).patch(endpoints["current_user"],
                 form,
@@ -87,8 +91,8 @@ const LoginFirst = ({onInitialSetupComplete}) => {
                     },
                 }
             );
-            await AsyncStorage.setItem("initial-setup-complete", "true");
             onInitialSetupComplete();
+
         } catch (ex) {
             console.log(ex);
         } finally {

@@ -25,7 +25,7 @@ const Login = () => {
       console.info(res.data);
       await AsyncStorage.setItem("access-token", res.data.access_token);
       let user = await authAPI(res.data.access_token).get(
-        endpoints["current-user"]
+        endpoints["current_user"]
       );
       dispatch({
         type: "login",

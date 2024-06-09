@@ -1,69 +1,80 @@
 import { TouchableOpacity, View } from "react-native";
 import { Avatar, Button, List } from "react-native-paper";
-
 import { useContext, useEffect, useState } from "react";
 import Context from "../../../configs/Context";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MyStyle from "../../../styles/MyStyle";
 import Styles from "../Styles";
-
+import { authAPI, endpoints } from "../../../configs/APIs";
 
 const Profile = ({ navigation }) => {
+  const [userInfo, setUserInfo] = useState('');
   const [user, dispatch] = useContext(Context);
   const userAvatar = user ? user.avatar : null;
+  const [avatar, setAvatar] = useState(null);
   const logout = () => {
     dispatch({
       type: "logout",
     });
   };
-
-  const change = (value, field) => {
-    setUser(current => {
-        return {...current, [field]: value}
-    })
-}
-
-
   const chooseAvatar = async () => {
-    let {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') alert("Từ chối quyền truy cập");
+    let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") alert("Từ chối quyền truy cập");
     else {
       let res = await ImagePicker.launchImageLibraryAsync();
       if (!res.canceled) {
-        updateAvatar(res.uri);
-        // change(res.assets[0], 'avatar');
+        const image = res.assets[0];
+        setAvatar(image);
+        uploadImage(image);
+      }
+    }
+  };
+  const uploadImage = async (image) => {
+    const filename = image.uri.split("/").pop();
+    const match = /\.(\w+)$/.exec(filename);
+    const fileType = match ? `image/${match[1]}` : `image`;
+    if (avatar) {
+      const form = new FormData();
+      form.append("avatar", {
+        uri: image.uri,
+        type: fileType,
+        name: filename,
+      });
+      console.log(image.uri);
+      console.log(fileType);
+      console.log(filename);
+      try {
+        let accessToken = await AsyncStorage.getItem("access-token");
+        let res = await authAPI(accessToken).patch(
+          endpoints["current_user"],
+          form,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        Alert.alert("Thông báo", "Cập nhật ảnh thành công!!!");
+      } catch (ex) {
+        console.error(ex);
       }
     }
   };
 
-  const updateAvatar = async (imageUri) => {
+  const loadCurrentUser = async () => {
     try {
-      let accessToken = await AsyncStorage.getItem("access-token");
-      let formData = new FormData();
-      formData.append("avatar", {
-        uri: imageUri,
-        name: "avatar.jpg",
-        type: "image/jpg",
-      });
-
-      let res = await authAPI(accessToken).patch(
-        endpoints["current-user"],
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      dispatch({
-        type: "updateAvatar",
-        payload: { avatar: res.data.avatar }, // Giả sử server trả về đường dẫn mới của ảnh đại diện
-      });
-    } catch (error) {
-      console.error(error);
+        let accessToken = await AsyncStorage.getItem("access-token");
+        let res = await authAPI(accessToken).get(endpoints["current_user"]);
+        setUserInfo(res.data);
+    } catch(ex){
+        console.error(ex);
     }
   };
+
+  useEffect(() => {
+    loadCurrentUser();
+  },[])
 
   return (
     <View style={MyStyle.container}>
@@ -71,7 +82,7 @@ const Profile = ({ navigation }) => {
         <Avatar.Image
           style={Styles.avatarprofile}
           // source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
-          source={{ uri: user.avatar } }
+          source={{ uri: userInfo.avatar } }
           size={150}
         />
         <TouchableOpacity>

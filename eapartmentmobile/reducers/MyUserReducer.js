@@ -4,6 +4,8 @@ const MyUserReducer = (currenState, action) => {
             return action.payload;
         case "logout":
             return null;
+        case "updateFirstLogin":
+            return {...currenState ,'first_login': false };
     }
     
     return currenState;

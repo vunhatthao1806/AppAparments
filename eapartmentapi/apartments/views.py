@@ -12,12 +12,6 @@ from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
     CarCard, Survey, AnswerUser
 from apartments import serializers, paginators, perms
-from exponent_server_sdk import (
-    DeviceNotRegisteredError,
-    PushClient,
-    PushMessage,
-    PushServerError
-)
 
 
 class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -57,7 +51,7 @@ class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAP
         return queryset
 
 
-class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView):
     queryset = ECabinet.objects.filter(active=True)
     serializer_class = serializers.ECabinetSerializer
 

@@ -5,7 +5,6 @@ from rest_framework.exceptions import ValidationError
 from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question, Choice, AnswerUser
 
 
-
 class FlatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flat
@@ -14,7 +13,6 @@ class FlatSerializer(serializers.ModelSerializer):
 
 class ECabinetSerializer(serializers.ModelSerializer):
     count_items = serializers.SerializerMethodField()
-
 
     class Meta:
         model = ECabinet
@@ -79,7 +77,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'avatar', 'is_active', 'first_login']
+        fields = ['id', 'username', 'avatar', 'is_active', 'first_login', 'is_staff']
         extra_kwargs = {
             'password': {
                 'write_only': True

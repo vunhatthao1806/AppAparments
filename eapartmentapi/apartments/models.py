@@ -18,6 +18,7 @@ class BaseModel(models.Model):
 
 class User(AbstractUser):
     avatar = CloudinaryField(null=True)
+    first_login = models.BooleanField(default=True)
     expo_push_token = models.CharField(max_length=255, null=True, blank=True)
 
 

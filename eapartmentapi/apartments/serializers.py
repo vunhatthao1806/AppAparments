@@ -2,7 +2,8 @@ import djf_surveys.models
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like
+from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question, Choice, AnswerUser
+
 
 
 class FlatSerializer(serializers.ModelSerializer):
@@ -168,13 +169,44 @@ class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):
     #     return obj.like_set.count()
 
 
+# class SurveysSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = djf_surveys.models.Survey
+#         fields = ['id', 'name', 'description']
+#
+#
+# class QuestionsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = djf_surveys.models.Question
+#         fields = ['id', 'label', 'type_field', 'choices']
+
+# djf_surveys.models.Survey
 class SurveySerializer(serializers.ModelSerializer):
     class Meta:
-        model = djf_surveys.models.Survey
-        fields = ['id', 'name', 'description']
+        model = Survey
+        fields = ['id', 'title', 'content', 'user']
 
 
 class QuestionSerializer(serializers.ModelSerializer):
+
     class Meta:
-        model = djf_surveys.models.Question
-        fields = ['id', 'label', 'type_field', 'choices']
+        model = Question
+        fields = ['id', 'name', 'survey']
+
+
+class ChoiceSerializer(serializers.ModelSerializer):
+    question = QuestionSerializer()
+
+    class Meta:
+        model = Choice
+        fields = ['id', 'name', 'question']
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    question = QuestionSerializer()
+    user = UserSerializer()
+    survey = SurveySerializer()
+
+    class Meta:
+        model = AnswerUser
+        fields = ['id', 'question', 'survey', 'user']

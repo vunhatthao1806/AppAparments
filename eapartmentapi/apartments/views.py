@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
-    CarCard
+    CarCard, Survey, AnswerUser
 from apartments import serializers, paginators, perms
 from exponent_server_sdk import (
     DeviceNotRegisteredError,
@@ -256,68 +256,50 @@ class UserViewSet(viewsets.ViewSet):
         return paginator.get_paginated_response(serializer.data)
 
 
-class SurveyViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
-    queryset = djf_surveys.models.Survey.objects.all()
+# class SurveysViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+#     queryset = djf_surveys.models.Survey.objects.all()
+#     serializer_class = serializers.SurveysSerializer
+#     # permission_classes = [perms.ManageSurveys]
+#
+#     def post(self, request):
+#         if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn
+#             return Response("Bạn không có quyền thực hiện thao tác này.", status=status.HTTP_403_FORBIDDEN)
+#
+#     def delete(self, request):
+#         if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn
+#             return Response("Bạn không có quyền thực hiện thao tác này.", status=status.HTTP_403_FORBIDDEN)
+#
+#     @action(methods=['get'], url_path='questions', detail=True)
+#     def get_surveys(self, request, pk):
+#         questions = self.get_object().questions.all()
+#
+#         return Response(serializers.QuestionSerializer(questions, many=True).data, status=status.HTTP_200_OK)
+#
+#     @action(methods=['get'], url_path='questions_count', detail=True)
+#     def get_survey_questions_count(self, request, pk):
+#         survey = self.get_object()
+#         question_count = survey.questions.count()
+#
+#         return Response({'question_count': question_count}, status=status.HTTP_200_OK)
+
+
+class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Survey.objects.all()
     serializer_class = serializers.SurveySerializer
-    # permission_classes = [perms.ManageSurveys]
-
-    def post(self, request):
-        if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn
-            return Response("Bạn không có quyền thực hiện thao tác này.", status=status.HTTP_403_FORBIDDEN)
-
-    def delete(self, request):
-        if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn
-            return Response("Bạn không có quyền thực hiện thao tác này.", status=status.HTTP_403_FORBIDDEN)
-
-    @action(methods=['get'], url_path='questions', detail=True)
-    def get_surveys(self, request, pk):
-        questions = self.get_object().questions.all()
-
-        return Response(serializers.QuestionSerializer(questions, many=True).data, status=status.HTTP_200_OK)
-
-    @action(methods=['get'], url_path='questions_count', detail=True)
-    def get_survey_questions_count(self, request, pk):
-        survey = self.get_object()
-        question_count = survey.questions.count()
-
-        return Response({'question_count': question_count}, status=status.HTTP_200_OK)
 
 
-# @csrf_exempt
-# def save_token(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         expo_push_token = data.get('expo_push_token')
-#         user_id = data.get('user_id')
-#
-#         if expo_push_token and user_id:
-#             user = get_object_or_404(User, id=user_id)
-#             push_token, created = User.objects.get_or_create(user=user)
-#             push_token.token = expo_push_token
-#             push_token.save()
-#             return JsonResponse({'message': 'Token saved successfully'})
-#         else:
-#             return JsonResponse({'error': 'Token or user ID is missing'}, status=400)
-#
-#
-# @csrf_exempt
-# def send_notification(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         expo_push_token = data.get('token')
-#         title = data.get('title')
-#         body = data.get('body')
-#         user_id = data.get('user_id')
-#
-#         if expo_push_token and title and body and user_id:
-#             user = get_object_or_404(User, id=user_id)
-#
-#             try:
-#                 message = PushMessage(to=expo_push_token, title=title, body=body)
-#                 response = PushClient().publish([message])
-#                 response.validate_response()
-#                 return JsonResponse({'message': 'Notification sent successfully'})
-#             except (DeviceNotRegisteredError, PushServerError) as exc:
-#                 return JsonResponse({'message': 'Error sending notification', 'error': str(exc)}, status=500)
-#         else:
-#             return JsonResponse({'error': 'Token, title, body, or user ID is missing'}, status=400)
+class QuestionViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Question.objects.all()
+    serializer_class = serializers.QuestionSerializer
+
+
+class ChoiceViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = Choice.objects.all()
+    serializer_class = serializers.ChoiceSerializer
+
+
+class AnswerViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = AnswerUser.objects.all()
+    serializer_class = serializers.AnswerSerializer
+
+

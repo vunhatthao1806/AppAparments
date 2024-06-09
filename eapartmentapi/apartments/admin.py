@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item, User, Comment, Survey, Question, Choice, \
-    CarCard, Like
+    CarCard, Like, AnswerUser
 import cloudinary
 
 
@@ -66,6 +66,32 @@ class LikeAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'complaint', 'active']
 
 
+class AnswerAdmin(admin.ModelAdmin):
+    list_display = ['id', 'survey', 'question', 'user', 'choice']
+
+
+class ChoiceAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'question']
+
+
+class ChoiceInLineAdmin(admin.StackedInline):
+    model = Choice
+    fk_name = 'question'
+
+
+class QuestionAdmin(admin.ModelAdmin):
+    inlines = [ChoiceInLineAdmin, ]
+
+
+class QuestionInlineAdmin(admin.StackedInline):
+    model = Question
+    fk_name = 'survey' # tên khoá ngoại (tuỳ chọn)
+
+
+class SurveyAdmin(admin.ModelAdmin):
+    inlines = [QuestionInlineAdmin, ]
+
+
 admin.site.register(Flat, FlatAdmin)
 admin.site.register(ECabinet, ECabinetAdmin)
 admin.site.register(Complaint, ComplaintAdmin)
@@ -76,3 +102,8 @@ admin.site.register(User)
 admin.site.register(Like,LikeAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(CarCard, CarCardAdmin)
+
+admin.site.register(Survey, SurveyAdmin)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(Choice, ChoiceAdmin)
+admin.site.register(AnswerUser, AnswerAdmin)

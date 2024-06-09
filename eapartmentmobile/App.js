@@ -28,6 +28,7 @@ import EditComment from './components/complaints/EditComment';
 import CarcardRegister from './components/profiles/convenient/CarCardRegister';
 import LoginFirst from './components/profiles/profile/LoginFirst';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ItemCreate from './components/profiles/convenient/ItemCreate';
 
 
 const Stack = createNativeStackNavigator();
@@ -88,6 +89,38 @@ const ProfileStack = () => {
       <Stack.Screen
         name="Survey"
         component={Survey}
+        options={{ headerShown: true }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+const AdminStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        options={{ headerTitleAlign: "center" }}
+        name="Tài khoản"
+        component={Profile}
+      />
+      <Stack.Screen
+        name="Convenient"
+        component={Convenient}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="AccountInfo"
+        component={AccountInfo}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="ChangePass"
+        component={ChangePass}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="ItemCreate"
+        component={ItemCreate}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>
@@ -169,7 +202,55 @@ const MyTab = () => {
       
       <Tab.Screen
         name="Notification"
-        component={LoginFirst}
+        component={Notifiactions}
+        options={{
+          title: "Thông báo",
+          tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
+          headerTitleAlign: "center",
+        }}
+      />
+      
+      <Tab.Screen
+            name="Compaint"
+            component={ComplaintStack}
+            options={{
+              title: "Phản ánh",
+              tabBarIcon: () => <Icon source="newspaper" size={30} color="white" />,
+              headerTitleAlign: "center",
+              headerShown: false,
+            }}
+          />
+
+      <Tab.Screen
+            name="Profile"
+            component={ProfileStack}
+            options={{
+              title: "Tài khoản",
+              tabBarIcon: () => <Icon source="account" size={30} color="white" />,
+              headerTitleAlign: "center",
+              headerShown: false,
+            }}
+            />
+    </Tab.Navigator>
+  );
+}
+
+const AdminTab = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+              name="Chat"
+              component={Chat}
+              options={{
+                title: "Tin nhắn",
+                tabBarIcon: () => <Icon source="chat" size={30} color="white" />,
+                headerTitleAlign: "center",
+              }}
+            />
+      
+      <Tab.Screen
+        name="Notification"
+        component={Survey}
         options={{
           title: "Thông báo",
           tabBarIcon: () => <Icon source="bell" size={30} color="white" />,

@@ -1,12 +1,14 @@
-import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import MyStyle from "../../../styles/MyStyle";
-import Styles from "../Styles";
+import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
+// import MyStyle from "../../../styles/MyStyle";
+// import Styles from "../Styles";
 import { Avatar, IconButton, Searchbar } from "react-native-paper";
+import MyStyle from "../../../styles/MyStyle";
+import Styles from "../../profiles/Styles";
 
 const Convenient = ({ navigation }) => {
   return (
     <View style={MyStyle.container}>
-      <ScrollView>
+      <View>
         <ImageBackground style={Styles.image} source={require("./home.jpg")}>
           <View>
             <Searchbar
@@ -27,7 +29,7 @@ const Convenient = ({ navigation }) => {
         </ImageBackground>
         <View>
           <Text style={[Styles.subject, { marginTop: 80 }, { marginLeft: 10 }]}>
-            Dịch vụ & Tiện ích
+            Dịch vụ
           </Text>
         </View>
         <View style={{ marginTop: 20 }}>
@@ -46,7 +48,7 @@ const Convenient = ({ navigation }) => {
                     fontSize: 20,
                   }}
                 >
-                  Thanh toán
+                  Khảo sát
                 </Text>
               </View>
             </TouchableOpacity>
@@ -64,7 +66,7 @@ const Convenient = ({ navigation }) => {
                     fontSize: 20,
                   }}
                 >
-                  Tủ đồ điện tử
+                  Hàng đã gửi
                 </Text>
               </View>
             </TouchableOpacity>
@@ -84,31 +86,14 @@ const Convenient = ({ navigation }) => {
                     fontSize: 20,
                   }}
                 >
-                  Thẻ xe
+                  Cư dân
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Survey")}>
-              <View style={{ alignItems: "center" }}>
-                <IconButton
-                  icon="form-select"
-                  size={50}
-                  iconColor="rgba(60,32,22,0.8)"
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#212121",
-                    fontSize: 20,
-                  }}
-                >
-                  Khảo sát
-                </Text>
-              </View>
-            </TouchableOpacity>
+            
           </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };

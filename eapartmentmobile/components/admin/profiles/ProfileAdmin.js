@@ -126,7 +126,7 @@ const Profile = ({ navigation }) => {
                 )}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Convenient")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Services")}>
               <List.Item
                 title="Dịch vụ"
                 titleStyle={{ fontSize: 20 }}

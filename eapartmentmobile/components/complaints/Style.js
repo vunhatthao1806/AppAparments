@@ -41,7 +41,8 @@ export default StyleSheet.create({
       textDecorationStyle: "solid"
     }, 
     tags:{
-        margin: 5
+        margin: 5,
+        padding: 3,
     },
     username: {
         fontSize: 15,
@@ -107,6 +108,7 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 16,
+        
     }, 
     fabStyle: {
         bottom: 16,
@@ -198,5 +200,24 @@ export default StyleSheet.create({
     },
     menuComment: {
         marginRight: 100
+    }, chipSelected:{
+        backgroundColor: "#D4E7C5"
+    },
+    chipUnselected: {
+        backgroundColor: "#99BC85"
+    },
+    itemCreate: {
+        backgroundColor: "#627254",
+        width: '80%',
+        height: 50,
+        marginLeft: 30,
+        borderRadius: 0
+    },
+    textCreate: {
+        color: "white", 
+        alignSelf: "center",
+        marginTop: 10, 
+        fontSize: 18, 
+        fontWeight: "bold"
     }
 });

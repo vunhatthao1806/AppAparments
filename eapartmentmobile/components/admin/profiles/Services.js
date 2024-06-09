@@ -1,14 +1,33 @@
-import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
+import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from "react-native";
 // import MyStyle from "../../../styles/MyStyle";
 // import Styles from "../Styles";
 import { Avatar, IconButton, Searchbar } from "react-native-paper";
 import MyStyle from "../../../styles/MyStyle";
 import Styles from "../../profiles/Styles";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authAPI, endpoints } from "../../../configs/APIs";
 
-const Convenient = ({ navigation }) => {
+const Services = ({ navigation }) => {
+  const [userInfo, setUserInfo] = useState('');
+
+  const loadCurrentUser = async () => {
+    try {
+        let accessToken = await AsyncStorage.getItem("access-token");
+        let res = await authAPI(accessToken).get(endpoints["current_user"]);
+        setUserInfo(res.data);
+    } catch(ex){
+        console.error(ex);
+    }
+  };
+
+  useEffect(() => {
+    loadCurrentUser();
+  },[])
+
   return (
     <View style={MyStyle.container}>
-      <View>
+      <ScrollView>
         <ImageBackground style={Styles.image} source={require("./home.jpg")}>
           <View>
             <Searchbar
@@ -22,7 +41,7 @@ const Convenient = ({ navigation }) => {
           <View>
             <Avatar.Image
               style={Styles.avatarconvenient}
-              source={require("./avatar.jpg")}
+              source={{ uri: userInfo.avatar } }
               size={130}
             />
           </View>
@@ -34,10 +53,10 @@ const Convenient = ({ navigation }) => {
         </View>
         <View style={{ marginTop: 20 }}>
           <View style={Styles.row}>
-            <TouchableOpacity onPress={() => navigation.navigate("Payment")}>
+            <TouchableOpacity onPress={() => navigation.navigate("SurveyCreate")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
-                  icon="receipt"
+                  icon="playlist-edit"
                   size={50}
                   iconColor="rgba(60,32,22,0.8)"
                 />
@@ -52,10 +71,10 @@ const Convenient = ({ navigation }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Cabinet")}>
+            <TouchableOpacity onPress={() => navigation.navigate("ItemCreate")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
-                  icon="file-cabinet"
+                  icon="gift-outline"
                   size={50}
                   iconColor="rgba(60,32,22,0.8)"
                 />
@@ -75,7 +94,7 @@ const Convenient = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate("Carcard")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
-                  icon="car"
+                  icon="account-details"
                   size={50}
                   iconColor="rgba(60,32,22,0.8)"
                 />
@@ -90,11 +109,29 @@ const Convenient = ({ navigation }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            
+            <TouchableOpacity onPress={() => navigation.navigate("CarCardRegister")}>
+              <View style={{ alignItems: "center" }}>
+                <IconButton
+                  icon="account-details"
+                  size={50}
+                  iconColor="rgba(60,32,22,0.8)"
+                />
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#212121",
+                    fontSize: 20,
+                  }}
+                >
+                  Card
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
+          
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
-export default Convenient;
+export default Services;

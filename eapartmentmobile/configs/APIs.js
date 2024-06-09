@@ -15,6 +15,7 @@ export const endpoints = {
     'update_comment': (commentId) => `/comments/${commentId}/`,
     'delete_comment': (commentId) => `/comments/${commentId}/`,
     'ecabinet': "/users/ecabinets/",
+    'ecabinets': '/ecabinets/',
     'items': (ecabinetId) => `/ecabinets/${ecabinetId}/items/`,
     'surveys': '/surveys/',
     'login': '/o/token/',

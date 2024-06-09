@@ -28,8 +28,12 @@ import EditComment from './components/complaints/EditComment';
 import CarcardRegister from './components/profiles/convenient/CarCardRegister';
 import LoginFirst from './components/profiles/profile/LoginFirst';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ItemCreate from './components/profiles/convenient/ItemCreate';
+// import ItemCreate from './components/profiles/convenient/ItemCreate';
 
+import ProfileAdmin from './components/admin/profiles/ProfileAdmin';
+import Services from './components/admin/profiles/Services';
+import ItemCreate from './components/admin/creations/ItemCreate';
+import SurveyCreate from './components/admin/creations/SurveyCreate';
 
 const Stack = createNativeStackNavigator();
 
@@ -101,11 +105,11 @@ const AdminStack = () => {
       <Stack.Screen
         options={{ headerTitleAlign: "center" }}
         name="Tài khoản"
-        component={Profile}
+        component={ProfileAdmin}
       />
       <Stack.Screen
-        name="Convenient"
-        component={Convenient}
+        name="Services"
+        component={Services}
         options={{ headerShown: true }}
       />
       <Stack.Screen
@@ -121,6 +125,16 @@ const AdminStack = () => {
       <Stack.Screen
         name="ItemCreate"
         component={ItemCreate}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="SurveyCreate"
+        component={SurveyCreate}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="CarCardRegister"
+        component={CarcardRegister}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>
@@ -158,31 +172,19 @@ const ComplaintStack = () => {
 const LoginStack = ({ user, onInitialSetupComplete }) => {
   return (
     <Stack.Navigator>
-      {user === null ? (
-        <>
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-        </>
-      ) : (
-        !user.first_login ? (
-            <Stack.Screen
-                name="MyTab"
-                component={MyTab}
-                options={{ headerShown: false }}
-            />
-        ) : (
-            <Stack.Screen
-                name="LoginFirst"
-                options={{ headerShown: false }}
-            >
-                {props => <LoginFirst {...props} onInitialSetupComplete={onInitialSetupComplete} />}
-            </Stack.Screen>
-        )
+    {user === null ? (
+      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+    ) : user.first_login ? (
+      <Stack.Screen name="LoginFirst" options={{ headerShown: false }}>
+        {props => <LoginFirst {...props} onInitialSetupComplete={onInitialSetupComplete} />}
+      </Stack.Screen>
+    ) : user.is_staff ? (
+      <Stack.Screen name="AdminTab" component={AdminTab} options={{ headerShown: false }} />
+    ) : (
+      <Stack.Screen name="MyTab" component={MyTab} options={{ headerShown: false }} />
     )}
-    </Stack.Navigator>
+  </Stack.Navigator>
+
   );
 };
 
@@ -249,10 +251,10 @@ const AdminTab = () => {
             />
       
       <Tab.Screen
-        name="Notification"
+        name="Survey"
         component={Survey}
         options={{
-          title: "Thông báo",
+          title: "Khảo sát",
           tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
           headerTitleAlign: "center",
         }}
@@ -271,7 +273,7 @@ const AdminTab = () => {
 
       <Tab.Screen
             name="Profile"
-            component={ProfileStack}
+            component={AdminStack}
             options={{
               title: "Tài khoản",
               tabBarIcon: () => <Icon source="account" size={30} color="white" />,
@@ -291,14 +293,17 @@ const App = () => {
     const timeout = setTimeout(() => {
       setLoading(false);
     }, 3000);
+    
+    // console.log(user.is_staff);
 
     return () => clearTimeout(timeout);
   }, []);
 
-const handleInitialSetupComplete = () => {
-    setIsInitialSetupComplete(true);
-    dispatch({ type: "updateFirstLogin" });
-};
+  const handleInitialSetupComplete = () => {
+      setIsInitialSetupComplete(true);
+      dispatch({ type: "updateFirstLogin" });
+      console.log(user.is_staff);
+  };
 
   return (
     <Context.Provider value={[user, dispatch]}>

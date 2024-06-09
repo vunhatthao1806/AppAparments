@@ -24,13 +24,14 @@ export default StyleSheet.create({
   image: {
     width: "100%",
     height: 200,
+    right: 10
   },
   searchbar: {
     position: "absolute",
     width: 300,
     top: 70,
-    left: 60,
-    height: 60,
+    left: 30,
+    height: 50,
     backgroundColor: "rgba(60, 32, 22, 0.8)",
   },
   imagecontainer: {
@@ -68,7 +69,7 @@ export default StyleSheet.create({
     height: 150,
     alignSelf: "center",
     marginTop: 20,
-    backgroundColor: "#F1E5D1",
+    backgroundColor: "#EEF0E5",
     borderRadius: 10,
   },
   uploadImage: {

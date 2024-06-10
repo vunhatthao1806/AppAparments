@@ -2,7 +2,16 @@ import djf_surveys.models
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question, Choice, AnswerUser
+from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question, Choice, AnswerUser, PhoneNumber
+
+
+class ImageSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        if instance.image:
+            req['image'] = instance.image.url
+
+        return req
 
 
 class FlatSerializer(serializers.ModelSerializer):
@@ -20,6 +29,18 @@ class ECabinetSerializer(serializers.ModelSerializer):
 
     def get_count_items(self, obj):
         return obj.item_set.count()
+
+
+class EcabinetDetailSerializer(ECabinetSerializer):
+    class Meta:
+        model = ECabinetSerializer.Meta.model
+        fields = ECabinetSerializer.Meta.fields + ['phone_number']
+
+
+class PhoneNumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PhoneNumber
+        fields = ['id', 'number', 'user']
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -85,28 +106,14 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
 
-class AddComplaintSerializer(serializers.ModelSerializer):
-    def to_representation(self, instance):
-        req = super().to_representation(instance)
-        if instance.image:
-            req['image'] = instance.image.url
-
-        return req
+class AddComplaintSerializer(ImageSerializer):
 
     class Meta:
         model = Complaint
         fields = ['id', 'title', 'created_date', 'content', 'status_tag', 'complaint_tag', 'image']
 
 
-class ComplaintSerializer(serializers.ModelSerializer):
-    # chỉnh đường dẫn trực tiếp cloudinary cho ảnh
-    def to_representation(self, instance):
-        req = super().to_representation(instance)
-        if instance.image:
-            req['image'] = instance.image.url
-
-        return req
-
+class ComplaintSerializer(ImageSerializer):
     user = UserSerializer()
 
     class Meta:
@@ -123,18 +130,25 @@ class ComplaintDetailSerializer(ComplaintSerializer):
         fields = ComplaintSerializer.Meta.fields + ['content', 'status_tag', 'complaint_tag']
 
 
-class ItemSerializer(serializers.ModelSerializer):
-    def to_representation(self, instance):
-        req = super().to_representation(instance)
-        if instance.image:
-            req['image'] = instance.image.url
-
-        return req
-    status_tag = TagSerializer()
+class ItemSerializer(ImageSerializer):
 
     class Meta:
         model = Item
-        fields = ['id', 'name', 'status', 'e_cabinet', 'status_tag', 'image']
+        fields = ['id', 'name', 'e_cabinet', 'image']
+
+
+class ItemDetailSerializer(ItemSerializer):
+    status_tag = TagSerializer()
+
+    class Meta:
+        model = ItemSerializer.Meta.model
+        fields = ItemSerializer.Meta.fields + ['status_tag']
+
+
+class AddItemSerializer(ItemSerializer):
+    class Meta:
+        model = Item
+        fields = ['id', 'name', 'status_tag', 'e_cabinet', 'image']
 
 
 class CommentSerializer(serializers.ModelSerializer):

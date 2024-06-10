@@ -10,7 +10,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
-    CarCard, Survey, AnswerUser
+    CarCard, Survey, AnswerUser, PhoneNumber
 from apartments import serializers, paginators, perms
 
 
@@ -53,7 +53,7 @@ class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAP
 
 class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView):
     queryset = ECabinet.objects.filter(active=True)
-    serializer_class = serializers.ECabinetSerializer
+    serializer_class = serializers.EcabinetDetailSerializer
 
     def get_permissions(self):
         if self.action in ['add_items']:
@@ -75,19 +75,36 @@ class ECabinetViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListA
     def get_items(self, request, pk):
         item = self.get_object().item_set.all()
 
-        return Response(serializers.ItemSerializer(item, many=True).data, status=status.HTTP_200_OK)
-
-    @action(methods=['post'], url_path='add_item', detail=True)
-    def add_items(self, request, pk):
-        item = self.get_object().item_set.create(name=request.data.get('name'), status=False)
-
-        return Response(serializers.ItemSerializer(item).data, status=status.HTTP_201_CREATED)
+        return Response(serializers.ItemDetailSerializer(item, many=True).data, status=status.HTTP_200_OK)
 
 
-class ItemViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIView):
+class EcabinetAdminViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+    queryset = ECabinet.objects.filter(active=True)
+    serializer_class = serializers.EcabinetDetailSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+    @action(methods=['get'], url_path='items', detail=True)
+    def get_items(self, request, pk):
+        item = self.get_object().item_set.all()
+
+        return Response(serializers.ItemDetailSerializer(item, many=True).data, status=status.HTTP_200_OK)
+
+
+class PhoneNumberViewSet(viewsets.ViewSet, generics.ListAPIView):
+    queryset = PhoneNumber.objects.all()
+    serializer_class = serializers.PhoneNumberSerializer
+    # permission_classes = [perms.AdminOwner]
+
+
+class ItemViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Item.objects.all()
-    serializer_class = serializers.ItemSerializer
-    pagination_class = paginators.ItemPaginator
+    serializer_class = serializers.ItemDetailSerializer
+    permission_classes = [perms.AdminOwner]
+
+
+class AddItemViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.UpdateAPIView):
+    queryset = Item.objects.filter(active=True)  # tag lúc nào cũng cần dùng khi vào chi tiết complaint
+    serializer_class = serializers.AddItemSerializer
     permission_classes = [perms.AdminOwner]
 
 
@@ -134,7 +151,6 @@ class AddComplaintViewSet(viewsets.ViewSet, generics.CreateAPIView):
 
     def perform_create(self, serializer):
         user = self.request.user
-        # complaint = Complaint.objects.filter(user_id=user.id).first()
         serializer.save(user=user)
 
 

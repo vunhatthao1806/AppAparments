@@ -6,8 +6,12 @@ r = routers.DefaultRouter()
 
 r.register('flats', views.FlatViewSet, 'flats')
 r.register('ecabinets', views.ECabinetViewSet, 'ecabinets')
+r.register('ecabinet', views.EcabinetAdminViewSet, 'ecabinet')
 r.register('items', views.ItemViewSet, 'items')
+r.register('additem', views.AddItemViewSet, 'additem')
 r.register('receipts', views.ReceiptViewSet, 'receipts')
+
+r.register('phonenumbers', views.PhoneNumberViewSet, 'phonenumbers')
 
 r.register('complaints', views.ComplaintViewSet, 'complaints')
 r.register('addcomplaints', views.AddComplaintViewSet, 'addcomplaints')

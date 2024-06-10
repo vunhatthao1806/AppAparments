@@ -8,7 +8,7 @@ export default StyleSheet.create({
         padding: 8,
     },
     cardContainer: {
-        width: '48%', // Adjust to fit two items per row, with some spacing
+        width: '48%', 
         marginBottom: 8,
     },
     card: {

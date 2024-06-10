@@ -109,7 +109,7 @@ const Services = ({ navigation }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("CarCardRegister")}>
+            <TouchableOpacity onPress={() => navigation.navigate("ItemUpdate")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
                   icon="account-details"
@@ -123,7 +123,7 @@ const Services = ({ navigation }) => {
                     fontSize: 20,
                   }}
                 >
-                  Card
+                  Update items
                 </Text>
               </View>
             </TouchableOpacity>

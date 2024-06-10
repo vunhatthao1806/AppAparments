@@ -9,21 +9,36 @@ import moment from "moment";
 
 const Items = ({route}) => {
     const [items, setItems] = useState([]);
+    const [item_tagId, setItem_tagId] = useState("");
     const ecabinetId = route.params?.ecabinetId;
+    const [tags, setTags] = useState([]);
 
     const loadItems = async () => {
         try{
             accessToken = await AsyncStorage.getItem("access-token");
             let res = await authAPI(accessToken).get(endpoints['items'](ecabinetId));
             setItems(res.data);
+            // console.log(items.status_tag.name);
         } catch (ex){
             console.error(ex);
         }
     } 
 
+    const loadTags = async () => {
+        try {
+            let res = await APIs.get(endpoints['tags']);
+            setTags(res.data);
+        } catch (ex){
+            console.error(ex);
+        }
+    }
+
     useEffect(() => {
         loadItems();
+        loadTags();
     }, [ecabinetId]);
+
+    const StatusTags = tags.filter(t => t.id === 1 || t.id === 2);
 
     return (
         <ScrollView contentContainerStyle={Style.container}>
@@ -47,7 +62,6 @@ const Items = ({route}) => {
                              {item.status_tag.name}
                          </Chip>
                         )}
-                       
                     </View>
                 </Card>
             </View>

@@ -33,6 +33,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProfileAdmin from './components/admin/profiles/ProfileAdmin';
 import Services from './components/admin/profiles/Services';
 import ItemCreate from './components/admin/creations/ItemCreate';
+import ItemUpdate from './components/admin/creations/ItemUpdate';
 import SurveyCreate from './components/admin/creations/SurveyCreate';
 
 const Stack = createNativeStackNavigator();
@@ -133,8 +134,8 @@ const AdminStack = () => {
         options={{ headerShown: true }}
       />
       <Stack.Screen
-        name="CarCardRegister"
-        component={CarcardRegister}
+        name="ItemUpdate"
+        component={ItemUpdate}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>
@@ -203,8 +204,8 @@ const MyTab = () => {
             />
       
       <Tab.Screen
-        name="Notification"
-        component={Notifiactions}
+        name="Survey"
+        component={Survey}
         options={{
           title: "Thông báo",
           tabBarIcon: () => <Icon source="bell" size={30} color="white" />,

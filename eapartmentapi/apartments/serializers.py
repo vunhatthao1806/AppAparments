@@ -194,9 +194,27 @@ class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):
 
 # djf_surveys.models.Survey
 class SurveySerializer(serializers.ModelSerializer):
+    count_users = serializers.SerializerMethodField()
+    user_create = UserSerializer()
+
     class Meta:
         model = Survey
-        fields = ['id', 'title', 'content', 'user']
+        fields = ['id', 'title', 'created_date', 'active', 'content', 'user_create', 'count_users']
+
+    def get_count_users(self, obj):
+        return obj.survey_user_done.count()
+
+
+class CreateSurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Survey
+        fields = ['id', 'title', 'content']
+
+
+class CreateQuestionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'name']
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -207,7 +225,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
-    question = QuestionSerializer()
+    # question = QuestionSerializer()
 
     class Meta:
         model = Choice
@@ -215,9 +233,9 @@ class ChoiceSerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
-    question = QuestionSerializer()
-    user = UserSerializer()
-    survey = SurveySerializer()
+    # question = QuestionSerializer()
+    # user = UserSerializer()
+    # survey = SurveySerializer()
 
     class Meta:
         model = AnswerUser

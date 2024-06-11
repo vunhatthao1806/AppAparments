@@ -19,6 +19,8 @@ class BaseModel(models.Model):
 class User(AbstractUser):
     avatar = CloudinaryField(null=True)
     first_login = models.BooleanField(default=True)
+
+    survey_user_done = models.ManyToManyField('Survey', related_name='survey_user_done')
     expo_push_token = models.CharField(max_length=255, null=True, blank=True)
 
 
@@ -138,7 +140,7 @@ class Survey(BaseModel):
     title = models.CharField(max_length=255)
     content = RichTextField()
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user_create = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_create')
 
     def __str__(self):
         return self.title

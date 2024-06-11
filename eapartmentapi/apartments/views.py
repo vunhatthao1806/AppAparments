@@ -1,10 +1,3 @@
-import json
-import djf_surveys.models
-import requests
-from django.db.models import Count
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -93,7 +86,6 @@ class EcabinetAdminViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
 class PhoneNumberViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = PhoneNumber.objects.all()
     serializer_class = serializers.PhoneNumberSerializer
-    # permission_classes = [perms.AdminOwner]
 
 
 class ItemViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -297,10 +289,22 @@ class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Survey.objects.all()
     serializer_class = serializers.SurveySerializer
 
+    @action(methods=['get'], url_path='questions', detail=True)
+    def get_questions(self, request, pk):
+        q = self.get_object().question_set.all()
+
+        return Response(serializers.QuestionSerializer(q, many=True).data, status=status.HTTP_200_OK)
+
 
 class QuestionViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Question.objects.all()
     serializer_class = serializers.QuestionSerializer
+
+    @action(methods=['get'], url_path='choices', detail=True)
+    def get_choices(self, request, pk):
+        c = self.get_object().choice_set.all()
+
+        return Response(serializers.ChoiceSerializer(c, many=True).data, status=status.HTTP_200_OK)
 
 
 class ChoiceViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -313,3 +317,15 @@ class AnswerViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = serializers.AnswerSerializer
 
 
+class CreateSurveyViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = serializers.CreateSurveySerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user_create=user)
+
+
+class CreateQuestionViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = serializers.CreateQuestionsSerializer

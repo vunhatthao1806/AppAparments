@@ -201,7 +201,7 @@ const ComplaintDetail = ({route, navigation}) => {
                                         visible={visible === c.id}
                                         onDismiss={closeMenu}
                                         anchor={
-                                            <IconButton  onPress={() => openMenu(c.id)}  icon="camera" size={20} />}
+                                            <IconButton  onPress={() => openMenu(c.id)}  icon="dots-vertical" size={20} />}
                                             style={{
                                                 position: 'absolute',
                                                 top: '50%',

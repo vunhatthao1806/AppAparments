@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert, ScrollView, Text, View } from "react-native";
-import { authAPI, endpoints } from "../../../configs/APIs";
+import { authAPI, endpoints } from "../../../../configs/APIs";
 import { useEffect, useState } from "react";
-import Style from "../../complaints/Style";
-import MyStyle from "../../../styles/MyStyle";
+import Style from "../../../complaints/Style";
+import MyStyle from "../../../../styles/MyStyle";
 import { Picker } from "@react-native-picker/picker";
 import { Card, Chip, Icon } from "react-native-paper";
 import moment from "moment";
@@ -58,6 +58,7 @@ const ItemUpdate = () => {
                 status_tag: newStatusId
             });
             setSelectedItems(updatedItems);
+            // console.log(updatedItems);
         } catch (ex) {
             console.error(ex);
         }
@@ -115,6 +116,7 @@ const ItemUpdate = () => {
                         ))}
                     </Picker>                    
                 )}
+                <Text>Bạn đã chọn: {ecabinets.find(e => e.id === selectedEcabinet)?.name}</Text>
             </View>
             <ScrollView contentContainerStyle={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', padding: 8,}}>
                     {selectedEcabinet && (

@@ -23,6 +23,8 @@ export const endpoints = {
     'get_items': '/items/',
     'update_item': (itemId) => `/additem/${itemId}/`,
     'surveys': '/surveys/',
+    'create_surveys': '/createsurveys/',
+    'create_questions': '/createquestions/',
     'login': '/o/token/',
     'current_user': '/users/current_user/',
     'liked': (complaintId) => `/complaints/${complaintId}/like/`,

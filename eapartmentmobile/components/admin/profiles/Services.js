@@ -53,7 +53,7 @@ const Services = ({ navigation }) => {
         </View>
         <View style={{ marginTop: 20 }}>
           <View style={Styles.row}>
-            <TouchableOpacity onPress={() => navigation.navigate("SurveyCreate")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Surveys")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
                   icon="playlist-edit"

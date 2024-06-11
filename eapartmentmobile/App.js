@@ -32,9 +32,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ProfileAdmin from './components/admin/profiles/ProfileAdmin';
 import Services from './components/admin/profiles/Services';
-import ItemCreate from './components/admin/creations/ItemCreate';
-import ItemUpdate from './components/admin/creations/ItemUpdate';
-import SurveyCreate from './components/admin/creations/SurveyCreate';
+import ItemCreate from './components/admin/creations/items/ItemCreate';
+import ItemUpdate from './components/admin/creations/items/ItemUpdate';
+import Surveys from './components/admin/creations/surveys/Surveys';
+import SurveyCreate from './components/admin/creations/surveys/SurveyCreate';
 
 const Stack = createNativeStackNavigator();
 
@@ -129,13 +130,18 @@ const AdminStack = () => {
         options={{ headerShown: true }}
       />
       <Stack.Screen
-        name="SurveyCreate"
-        component={SurveyCreate}
-        options={{ headerShown: true }}
+        name="Surveys"
+        component={Surveys}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ItemUpdate"
         component={ItemUpdate}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="SurveyCreate"
+        component={SurveyCreate}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>
@@ -238,6 +244,22 @@ const MyTab = () => {
   );
 }
 
+const SurveyStack = () => {
+  return (
+    <Stack.Navigator>
+        <Stack.Screen
+          name="Surveys"
+          component={Surveys}
+          options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SurveyCreate"
+        component={SurveyCreate}
+        options={{ headerShown: true }}
+      />
+      </Stack.Navigator>
+  );
+ }
 const AdminTab = () => {
   return (
     <Tab.Navigator>
@@ -252,11 +274,11 @@ const AdminTab = () => {
             />
       
       <Tab.Screen
-        name="Survey"
-        component={Survey}
+        name="Surveys"
+        component={SurveyStack}
         options={{
           title: "Khảo sát",
-          tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
+          tabBarIcon: () => <Icon source="playlist-edit" size={30} color="white" />,
           headerTitleAlign: "center",
         }}
       />

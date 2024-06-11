@@ -6,10 +6,10 @@ import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
 import * as SMS from 'expo-sms';
-import APIs, { authAPI, endpoints } from "../../../configs/APIs";
-import Styles from "../../profiles/Styles";
-import Style from "../../complaints/Style";
-import MyStyle from "../../../styles/MyStyle";
+import APIs, { authAPI, endpoints } from "../../../../configs/APIs";
+import Styles from "../../../profiles/Styles";
+import Style from "../../../complaints/Style";
+import MyStyle from "../../../../styles/MyStyle";
 
 const ItemCreate = () => {
     const [tags, setTags] = useState([]);
@@ -40,7 +40,7 @@ const ItemCreate = () => {
             let accessToken = await AsyncStorage.getItem("access-token");
             let res = await authAPI(accessToken).get(endpoints["ecabinets"]);
             setEcabinets(res.data);
-            console.log(res.data);
+            // console.log(res.data);
         } catch (ex) {
             console.error(ex);
         }

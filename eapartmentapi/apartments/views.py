@@ -295,6 +295,14 @@ class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return Response(serializers.QuestionSerializer(q, many=True).data, status=status.HTTP_200_OK)
 
+    @action(methods=['post'], url_path='create_questions', detail=True)
+    def create_questions(self, request, pk):
+        survey = self.get_object()
+        q = Question.objects.create(name=request.data.get('name'), survey=survey)
+
+        return Response(serializers.CreateQuestionsSerializer(q).data,
+                        status=status.HTTP_201_CREATED)
+
 
 class QuestionViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Question.objects.all()
@@ -306,8 +314,16 @@ class QuestionViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return Response(serializers.ChoiceSerializer(c, many=True).data, status=status.HTTP_200_OK)
 
+    @action(methods=['post'], url_path='create_choices', detail=True)
+    def create_choices(self, request, pk):
+        question = self.get_object()
+        c = Choice.objects.create(name=request.data.get('name'), question=question)
 
-class ChoiceViewSet(viewsets.ViewSet, generics.ListAPIView):
+        return Response(serializers.ChoiceSerializer(c).data,
+                        status=status.HTTP_201_CREATED)
+
+
+class ChoiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView):
     queryset = Choice.objects.all()
     serializer_class = serializers.ChoiceSerializer
 
@@ -324,6 +340,8 @@ class CreateSurveyViewSet(viewsets.ViewSet, generics.CreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user_create=user)
+
+
 
 
 class CreateQuestionViewSet(viewsets.ViewSet, generics.CreateAPIView):

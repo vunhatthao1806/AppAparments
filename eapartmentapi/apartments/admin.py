@@ -75,7 +75,7 @@ class AnswerAdmin(admin.ModelAdmin):
 
 
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'question']
+    list_display = ['id', 'name', 'question_id']
 
 
 class ChoiceInLineAdmin(admin.StackedInline):
@@ -84,6 +84,7 @@ class ChoiceInLineAdmin(admin.StackedInline):
 
 
 class QuestionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'survey_id']
     inlines = [ChoiceInLineAdmin, ]
 
 
@@ -93,6 +94,7 @@ class QuestionInlineAdmin(admin.StackedInline):
 
 
 class SurveyAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title', 'user_create']
     inlines = [QuestionInlineAdmin, ]
 
 

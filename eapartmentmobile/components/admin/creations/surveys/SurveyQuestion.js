@@ -15,10 +15,7 @@ const SurveyQuestion = ({ question, options, index }) => {
                     backgroundColor: "#D2E3C8",
                 }}>
                     <Text style={{
-                        marginTop: 10,
-                        marginLeft: 10,
-                        marginRight: 10,
-                        marginBottom: 10,
+                        margin: 10,
                         fontSize: 16
                     }}>{question}</Text>
                 </View>

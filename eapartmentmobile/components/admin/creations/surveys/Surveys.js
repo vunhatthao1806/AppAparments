@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import { Appbar, Avatar, Button, Divider, Icon, Menu, PaperProvider } from "react-native-paper";
 import Style from "../surveys/Style";
 import moment from "moment";
@@ -37,7 +37,7 @@ const Surveys = ({navigation}) => {
 
     return(
         <PaperProvider>
-            <View>
+            <ScrollView>
                 <Appbar.Header> 
                     {/* <Appbar.BackAction onPress={() => navigation.navigate('Services')} /> */}
                     <Appbar.Content title="Surveys" />
@@ -69,7 +69,7 @@ const Surveys = ({navigation}) => {
                             <View key={c.id} style={[Style.commentStyle]}>
                                 <View style={Style.commentContent}>
                                     <Avatar.Image 
-                                        style={{marginTop: '-20%'}} 
+                                        // style={{marginTop: '-20%'}} 
                                         size={50} 
                                         source={{ uri: c.user_create.avatar }} />
                                     <View style={Style.textContainer}>
@@ -78,18 +78,25 @@ const Surveys = ({navigation}) => {
                                             <Text style={Style.createdDate}>{moment(c.created_date).format("DD/MM/YYYY")}</Text>
                                         </View>
                                         <Text style={Style.commentText}>{c.title}</Text>
-                                        <RenderHTML
-                                            contentWidth={width} 
-                                            source={{  html: `${c.content.slice(0, maxContentLength)}...` }}
-                                        />
-                                        <View style={{flexDirection: 'row', justifyContent: "flex-end", marginTop: 2}}>
-                                            <Icon 
-                                                source="eye"
-                                                color={'#DDDDDD'}
-                                                size={20}
+                                    </View>
+                                </View>
+                                <View style={{
+                                    marginTop: 10,
+                                    marginLeft: 10
+                                }}>
+                                    <RenderHTML
+                                                contentWidth={width} 
+                                                source={{  html: `${c.content.slice(0, maxContentLength)}...` }}
                                             />
-                                            <Text style={{flexWrap: 'wrap', fontWeight: "bold", marginLeft: 5, marginBottom: 5, marginTop: -1}}>{c.count_users}</Text>
-                                        </View>
+                                </View>
+                                <View>
+                                    <View style={{flexDirection: 'row', justifyContent: "flex-end", marginTop: 2}}>
+                                                <Icon 
+                                                    source="eye"
+                                                    color={'#DDDDDD'}
+                                                    size={20}
+                                                />
+                                                <Text style={{flexWrap: 'wrap', fontWeight: "bold", marginLeft: 5, marginBottom: 5, marginTop: -1}}>{c.count_users}</Text>
                                     </View>
                                 </View>
                                 
@@ -97,7 +104,7 @@ const Surveys = ({navigation}) => {
                         </TouchableOpacity>
                         )) :   
                         <View style={Style.noCommentContainer}>
-                            <Text style={Style.noCommentText}>Chưa có bình luận nào!</Text>
+                            <Text style={Style.noCommentText}>Chưa có bài khảo sát nào!</Text>
                         </View>
                     }
                     
@@ -105,7 +112,7 @@ const Surveys = ({navigation}) => {
                 
 
 
-            </View>
+            </ScrollView>
         </PaperProvider>
     );
 }

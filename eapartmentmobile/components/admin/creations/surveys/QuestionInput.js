@@ -3,11 +3,17 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import RadioGroup from 'react-native-radio-buttons-group';
 import Style from "../../../complaints/Style";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { authAPI, endpoints } from '../../../../configs/APIs';
 
-const QuestionInput = ({ onAddQuestion }) => {
+const QuestionInput = ({ onAddQuestion, route }) => {
     const [questionText, setQuestionText] = useState('');
     const [optionText, setOptionText] = useState('');
     const [options, setOptions] = useState([]);
+
+    const [name, setName] = useState('');
+    
+    // const surveyId = route.params?.surveyId;
 
     const handleAddOption = () => {
         if (optionText) {
@@ -21,6 +27,7 @@ const QuestionInput = ({ onAddQuestion }) => {
             onAddQuestion(questionText, options);
             setQuestionText('');
             setOptions([]);
+
         }
     };
 
@@ -64,6 +71,7 @@ const QuestionInput = ({ onAddQuestion }) => {
                 underlineStyle={{ backgroundColor: "#E0FBE2" }}
                 backgroundColor="#E0FBE2"
             />
+
             <TextInput
                 style={{
                     borderColor: 'gray',
@@ -131,66 +139,3 @@ const styles = StyleSheet.create({
 });
 
 export default QuestionInput;
-// const handleAddOption = () => {
-//     if (optionText) {
-//         setOptions([...options, { id: String(options.length + 1), label: optionText, value: optionText }]);
-//         setOptionText('');
-//     }
-// };
-
-// const handleAddQuestion = () => {
-//     if (questionText && options.length > 0) {
-//         onAddQuestion(questionText, options);
-//         setQuestionText('');
-//         setOptions([]);
-//     }
-// };
-
-// return (
-//     <View style={styles.container}>
-//         <Text style={styles.title}>Câu hỏi:</Text>
-//         <TextInput
-//             style={styles.input}
-//             value={questionText}
-//             onChangeText={setQuestionText}
-//             placeholder="Nhập câu hỏi"
-//             multiline={true}
-//         />
-//         <TextInput
-//             style={styles.input}
-//             value={optionText}
-//             onChangeText={setOptionText}
-//             placeholder="Nhập lựa chọn"
-//             multiline={true}
-//         />
-//         <Button onPress={handleAddOption}>Thêm lựa chọn</Button>
-//         <RadioGroup
-//             radioButtons={options}
-//             layout='row'
-//         />
-//         <Button onPress={handleAddQuestion}>Thêm câu hỏi</Button>
-//     </View>
-// );
-// };
-
-// const styles = StyleSheet.create({
-// container: {
-//     marginBottom: 20,
-//     padding: 10,
-//     backgroundColor: '#f9f9f9',
-//     borderRadius: 5,
-// },
-// title: {
-//     fontSize: 18,
-//     marginBottom: 10,
-// },
-// input: {
-//     height: 40,
-//     borderColor: 'gray',
-//     borderWidth: 1,
-//     marginBottom: 10,
-//     paddingHorizontal: 10,
-// },
-// });
-
-// export default QuestionInput;

@@ -45,13 +45,14 @@ export default StyleSheet.create({
         marginBottom: 5,
     },username: {
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 15
     },createdDate: {
         marginLeft: 10,
         color: 'gray',
     },commentText: {
         flexWrap: 'wrap',
         fontWeight: "bold",
+        fontSize: 19
     },noCommentContainer: {
         flex: 1,
         justifyContent: 'center',

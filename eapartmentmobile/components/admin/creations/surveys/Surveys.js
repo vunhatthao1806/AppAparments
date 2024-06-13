@@ -6,6 +6,7 @@ import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI, endpoints } from "../../../../configs/APIs";
 import RenderHTML from "react-native-render-html";
+import { isCloseToBottom } from "../../../utils/Utils";
 
 const Surveys = ({navigation}) => {
     const [visible, setVisible] = useState(false);
@@ -18,25 +19,55 @@ const Surveys = ({navigation}) => {
 
     const { width } = useWindowDimensions();
 
+    const [page, setPage] = useState(1)
+    const [loading,setLoading] = useState(false);
+
     const loadSurveys = async () => {
-        try {
-            accessToken = await AsyncStorage.getItem("access-token");
-            let response = await authAPI(accessToken).get(endpoints["surveys"]);  
-            setSurveys(response.data);
-        } catch(ex){
-            console.error(ex);
+        if (page > 0) {
+            setLoading(true);
+            let url = `${endpoints["surveys"]}?page=${page}`;
+            try {
+                accessToken = await AsyncStorage.getItem("access-token");
+                let response = await authAPI(accessToken).get(url);
+
+                if (page === 1)
+                    setSurveys(response.data.results);
+                else
+                setSurveys(current => {
+                    return [...current, ...response.data.results] //chen them du lieu vao trang hien tai
+                });
+                if (!response.data.next)
+                    setPage(0);
+            } catch(ex){
+                console.error(ex);
+            } finally {
+                setLoading(false);
+            }
         }
     }
 
     useEffect(() => {
         loadSurveys();
-    },[])
+    },[page]);
 
     const maxContentLength = 100;
 
+    const [isExtended, setIsExtended] = useState(true);
+
+    const Scroll = ({ nativeEvent }) => {
+        const currentScrollPosition =
+        Math.floor(nativeEvent?.contentOffset?.y) ?? 0;
+
+        setIsExtended(currentScrollPosition <= 0);
+
+        if (!loading && page > 0 && isCloseToBottom(nativeEvent)){
+            setPage(page + 1);
+        }
+    };
+
     return(
         <PaperProvider>
-            <ScrollView>
+            <ScrollView onScroll={Scroll}>
                 <Appbar.Header> 
                     <Appbar.Content title="Surveys" />
                     <Menu

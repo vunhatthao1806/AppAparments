@@ -13,17 +13,6 @@ const SurveyCreate = ({navigation}) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
-    const [questions, setQuestions] = useState([]);
-
-    const handleAddQuestion = (questionText, options) => {
-        const newQuestion = {
-            id: String(questions.length + 1),
-            text: questionText,
-            options: options,
-        };
-        setQuestions([...questions, newQuestion]);
-    };
-
     const loadCreateSurvey = async () => {
         try {
             const formData = new FormData();

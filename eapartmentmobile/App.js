@@ -27,8 +27,6 @@ import CarcardDetail from './components/profiles/convenient/CarCardDetail';
 import EditComment from './components/complaints/EditComment';
 import CarcardRegister from './components/profiles/convenient/CarCardRegister';
 import LoginFirst from './components/profiles/profile/LoginFirst';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-// import ItemCreate from './components/profiles/convenient/ItemCreate';
 
 import ProfileAdmin from './components/admin/profiles/ProfileAdmin';
 import Services from './components/admin/profiles/Services';
@@ -38,6 +36,11 @@ import Surveys from './components/admin/creations/surveys/Surveys';
 import SurveyCreate from './components/admin/creations/surveys/SurveyCreate';
 import SurveyQuestion from './components/admin/creations/surveys/SurveyQuestion';
 import QuestionCreate from './components/admin/creations/surveys/QuestionCreate';
+import LockAccount from './components/admin/creations/users/LockAccount';
+import LockAccountDetail from './components/admin/creations/users/LockAccountDetail';
+import PaymentDetail from './components/profiles/convenient/PaymentDetail';
+import PaymentHistory from './components/profiles/convenient/PaymentHistory';
+import TranferPayment from './components/profiles/convenient/TranferPayment';
 
 const Stack = createNativeStackNavigator();
 
@@ -68,6 +71,21 @@ const ProfileStack = () => {
         options={{ headerShown: true }}
         name="Payment"
         component={Payment}
+      />
+      <Stack.Screen
+        options={{ headerShown: true }}
+        name="PaymentDetail"
+        component={PaymentDetail}
+      />
+      <Stack.Screen
+        options={{ headerShown: true }}
+        name="PaymentHistory"
+        component={PaymentHistory}
+      />
+      <Stack.Screen
+        options={{ headerShown: true }}
+        name="TranferPayment"
+        component={TranferPayment}
       />
       <Stack.Screen
         name="Cabinet"
@@ -146,6 +164,16 @@ const AdminStack = () => {
         component={SurveyCreate}
         options={{ headerShown: true }}
       />
+      <Stack.Screen
+        name="LockAccount"
+        component={LockAccount}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="LockAccountDetail"
+        component={LockAccountDetail}
+        options={{ headerShown: true }}
+      />
     </Stack.Navigator>
   );
 };
@@ -202,8 +230,8 @@ const MyTab = () => {
   return (
     <Tab.Navigator>
       <Tab.Screen
-              name="Chat"
-              component={Chat}
+              name="Payment"
+              component={Payment}
               options={{
                 title: "Tin nhắn",
                 tabBarIcon: () => <Icon source="chat" size={30} color="white" />,
@@ -272,6 +300,7 @@ const SurveyStack = () => {
       </Stack.Navigator>
   );
  }
+
 const AdminTab = () => {
   return (
     <Tab.Navigator>

@@ -7,6 +7,9 @@ const BASE_URL = 'http://192.168.2.8:8000/';
 // const BASE_URL = 'http://10.17.65.72:8000/';
 
 export const endpoints = {
+    'get_user': '/users/',
+    'user-detail': (userId) => `/admins/${userId}`,
+    'lock': (userId) => `/admins/${userId}/update_active/`,
     'complaints': '/complaints/',
     'complaint-detail': (complaintId) => `/complaints/${complaintId}/`,
     'add_complaint': '/addcomplaints/',
@@ -19,7 +22,6 @@ export const endpoints = {
     'add_item': '/additem/',
     'phone_number': '/phonenumbers/',
     'items': (ecabinetId) => `/ecabinets/${ecabinetId}/items/`,
-    // 'get_items': (ecabinetId) => `/ecabinet/${ecabinetId}/items/`,
     'get_items': '/items/',
     'update_item': (itemId) => `/additem/${itemId}/`,
     'surveys': '/surveys/',
@@ -35,6 +37,10 @@ export const endpoints = {
     'carcard': '/users/carcards/',
     'carcard-detail': (carCardId) => `/carcards/${carCardId}/`,
     'carcards': '/carcards/',
+    'receipts': "/receipts/",
+    'receipt-detail': (receiptid) => `/receipts/${receiptid}`,
+    "create-payment": "/payments/create-payment/",
+    'tranferpayment': "/paymentdetails/",
 };
 
 export const authAPI = (accessToken) =>

@@ -74,7 +74,7 @@ const Services = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate("ItemCreate")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
-                  icon="gift-outline"
+                  icon="archive-plus"
                   size={50}
                   iconColor="rgba(60,32,22,0.8)"
                 />
@@ -85,34 +85,17 @@ const Services = ({ navigation }) => {
                     fontSize: 20,
                   }}
                 >
-                  Hàng đã gửi
+                  {"Thêm hàng \n hóa mới"}
                 </Text>
               </View>
             </TouchableOpacity>
           </View>
           <View style={Styles.row}>
-            <TouchableOpacity onPress={() => navigation.navigate("Carcard")}>
-              <View style={{ alignItems: "center" }}>
-                <IconButton
-                  icon="account-details"
-                  size={50}
-                  iconColor="rgba(60,32,22,0.8)"
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#212121",
-                    fontSize: 20,
-                  }}
-                >
-                  Cư dân
-                </Text>
-              </View>
-            </TouchableOpacity>
+            
             <TouchableOpacity onPress={() => navigation.navigate("ItemUpdate")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
-                  icon="account-details"
+                  icon="archive-refresh"
                   size={50}
                   iconColor="rgba(60,32,22,0.8)"
                 />
@@ -123,7 +106,25 @@ const Services = ({ navigation }) => {
                     fontSize: 20,
                   }}
                 >
-                  Update items
+                  {"Cập nhật\n hàng hóa"}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("LockAccount")}>
+              <View style={{ alignItems: "center" }}>
+                <IconButton
+                  icon="account-cancel"
+                  size={50}
+                  iconColor="rgba(60,32,22,0.8)"
+                />
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#212121",
+                    fontSize: 20,
+                  }}
+                >
+                  Khóa tài khoản
                 </Text>
               </View>
             </TouchableOpacity>

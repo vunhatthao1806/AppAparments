@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
-import MyStyle from '../../../../styles/MyStyle';
 
 const SurveyQuestion = ({ question, options, index }) => {
     const [selectedId, setSelectedId] = useState('');

@@ -73,5 +73,19 @@ export default StyleSheet.create({
         height: 230,
         borderBottomLeftRadius: 120,
         borderBottomRightRadius: 120,
+      }, 
+      tiltepayment: {
+        flexDirection: "row",
+        justifyContent: "space-evenly",
+        marginTop: 10,
+        marginBottom: 5,
+        backgroundColor: "#96B6C5",
+        marginLeft: 5,
+        marginRight: 5,
+        borderRadius: 10,
+      },
+      titletextpayment: {
+        fontSize: 20,
+        fontWeight: "bold",
       },
 });

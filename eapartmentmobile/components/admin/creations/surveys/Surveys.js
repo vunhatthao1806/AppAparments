@@ -23,7 +23,6 @@ const Surveys = ({navigation}) => {
             accessToken = await AsyncStorage.getItem("access-token");
             let response = await authAPI(accessToken).get(endpoints["surveys"]);  
             setSurveys(response.data);
-            // console.log(response.data);
         } catch(ex){
             console.error(ex);
         }
@@ -39,7 +38,6 @@ const Surveys = ({navigation}) => {
         <PaperProvider>
             <ScrollView>
                 <Appbar.Header> 
-                    {/* <Appbar.BackAction onPress={() => navigation.navigate('Services')} /> */}
                     <Appbar.Content title="Surveys" />
                     <Menu
                         visible={visible}

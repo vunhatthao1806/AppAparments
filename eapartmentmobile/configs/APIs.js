@@ -25,7 +25,7 @@ export const endpoints = {
     'surveys': '/surveys/',
     'create_surveys': '/createsurveys/',
     'create_questions': (surveyId) => `/surveys/${surveyId}/create_questions/`,
-    'choices': /choices/,
+    'choices': '/choices/',
     'login': '/o/token/',
     'current_user': '/users/current_user/',
     'liked': (complaintId) => `/complaints/${complaintId}/like/`,

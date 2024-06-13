@@ -5,9 +5,6 @@ import Style from "../../../complaints/Style";
 // import Style from "./Style";
 import MyStyle from "../../../../styles/MyStyle";
 import { Divider, Icon, TextInput } from "react-native-paper";
-import RadioGroup from 'react-native-radio-buttons-group';
-import QuestionInput from "./QuestionInput";
-import SurveyQuestion from "./SurveyQuestion";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI, endpoints } from "../../../../configs/APIs";
 import { Alert } from "react-native";
@@ -102,17 +99,6 @@ const SurveyCreate = ({navigation}) => {
             </View>
 
             <Divider/>
-
-            <QuestionInput onAddQuestion={handleAddQuestion} />
-
-            {questions.map((question, index) => (
-                <SurveyQuestion
-                    key={question.id}
-                    index={`Câu hỏi ${index + 1}:`}
-                    question={question.text}
-                    options={question.options}
-                />
-            ))}
 
             <TouchableOpacity
                     style={[Style.margin, Style.container]}

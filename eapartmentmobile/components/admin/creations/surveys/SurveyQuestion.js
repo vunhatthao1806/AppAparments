@@ -13,6 +13,7 @@ const SurveyQuestion = ({ question, options, index }) => {
                 
                 <View style={{
                     backgroundColor: "#D2E3C8",
+                    marginRight: 10
                 }}>
                     <Text style={{
                         margin: 10,
@@ -21,7 +22,6 @@ const SurveyQuestion = ({ question, options, index }) => {
                 </View>
                 
             </View>
-            
             <RadioGroup
                 radioButtons={options}
                 onPress={setSelectedId}

@@ -1,48 +1,36 @@
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
-import { Divider, Icon, TextInput } from "react-native-paper";
-import QuestionInput from "./QuestionInput";
+import { Appbar, Divider, Icon, Menu, PaperProvider, TextInput } from "react-native-paper";
 import SurveyQuestion from "./SurveyQuestion";
 import { useState } from "react";
 import Style from "../../../complaints/Style";
-// import Style from "./Style";
-import MyStyle from "../../../../styles/MyStyle";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import APIs, { authAPI, endpoints } from "../../../../configs/APIs";
 import { RadioGroup } from "react-native-radio-buttons-group";
+import { authAPI, endpoints } from "../../../../configs/APIs";
 
-const QuestionCreate = ({route}) => {
+const QuestionCreate = ({route, navigation}) => {
     const [questions, setQuestions] = useState([]);
     const surveyId = route.params?.surveyId;
+    const [quesId, setQuesId] = useState('');
 
     const [question, setQuestion] = useState('');
     const [optionText, setOptionText] = useState('');
     const [options, setOptions] = useState([]);
+    const [showQuestions, setShowQuestions] = useState(false);
+    const [surveys, setSurveys] = useState([])
 
-    const handleAddOption = () => {
-        if (optionText) {
-            setOptions([...options, { id: String(options.length + 1), label: optionText}]);
-            setOptionText('');
+    const loadSurveys = async () => {
+        try {
+            accessToken = await AsyncStorage.getItem("access-token");
+            let response = await authAPI(accessToken).get(endpoints["surveys"]);  
+            setSurveys(response.data);
+        } catch(ex){
+            console.error(ex);
         }
-    };
-
-    // const buttonCreateQuestion = () => {
-    //     if (question && options.length > 0) {
-    //         setQuestion('');
-    //         setOptions([]);
-
-    //         const newQuestion = {
-    //             id: String(questions.length + 1),
-    //             text: question,
-    //             options: options,
-    //         };
-    //         setQuestions([...questions, newQuestion]);
-    //         console.log(question);
-    //     }
-    // }
+    }
 
     const loadCreateQuestion = async () => {
         try {
-            if (question && options.length > 0) {
+            if (question && options.length > 0 ) { 
                 setQuestion('');
                 setOptions([]);
     
@@ -52,12 +40,12 @@ const QuestionCreate = ({route}) => {
                     options: options,
                 };
                 setQuestions([...questions, newQuestion]);
-                console.log(newQuestion.options);
+                console.log(newQuestion);
             }
 
             const formData = new FormData();
             formData.append("name", question);
-            console.log(formData);
+            // console.log(formData);
 
             let accessToken = await AsyncStorage.getItem("access-token");
             let res = await authAPI(accessToken).post(endpoints["create_questions"](surveyId),
@@ -68,24 +56,20 @@ const QuestionCreate = ({route}) => {
                 }
             });
             
-            // await loadCreateOptions(res.data.id, options);
-
+            setQuesId(res.data.id);
             return res.data.id;
         } catch (ex) {
             console.error(ex);
         }
     }
-    const loadCreateOptions = async (questionId, optionsArray) => {
+
+    const loadCreateOptions = async (questionId) => {
         try {
             const formData1 = new FormData();
             formData1.append("question", questionId);
+            formData1.append("name", optionText);
 
-            if (optionsArray && optionsArray.length > 0) {
-                optionsArray.forEach((option) => {
-                    // console.log(option.label);
-                    formData1.append("name", option.label);
-                });}
-                console.log(formData1);
+            // console.log(options);
             let accessToken = await AsyncStorage.getItem("access-token");
             let res = await authAPI(accessToken).post(endpoints["choices"],
                 formData1,
@@ -99,33 +83,59 @@ const QuestionCreate = ({route}) => {
         } catch(ex){
             console.error(ex);
         }
+    }
+        const buttonCreateOption = async () => {
+            if (optionText) {
+                setOptions([...options, { id: String(options.length + 1), label: optionText}]);
+                setOptionText('');
             }
+            await loadCreateOptions(quesId);
+        }
 
-        const buttonCreateQuestion1 = async () => {
-            const questionId = await loadCreateQuestion();
-            await loadCreateOptions(questionId, options);
+        const handleShow = () => {
+            if (question && options.length > 0 ) { 
+                setQuestion('');
+                setOptions([]);
+    
+                const newQuestion = {
+                    id: String(questions.length + 1),
+                    text: question,
+                    options: options,
+                };
+                setQuestions([...questions, newQuestion]);
+                console.log(newQuestion);
+            }
+            setShowQuestions(true);
+            console.log(showQuestions); // Khi click vào nút "Show", đặt showQuestions thành true để hiển thị danh sách câu hỏi
         };
 
+        const completeCreate = () => {
+            loadSurveys();
+            Alert.alert("Thông báo", "Tạo bài khảo sát hoàn tất!");
+            navigation.navigate("Surveys");
+        }
 
     return  (
+        <PaperProvider>
         <ScrollView>
-            <Divider/>
 
-                {questions.map((question, index) => (
-                    <SurveyQuestion
-                        key={question.id}
-                        index={`Câu hỏi ${index + 1}:`}
-                        question={question.text}
-                        options={question.options}
-                    />
-                ))}
+            <Appbar.Header> 
+                <Appbar.Content title="Surveys" />
+                <Appbar.Action icon="calendar" onPress={completeCreate} />
+            </Appbar.Header>
 
-            <Divider/>
-            <View style={styles.container}>
+            {showQuestions && questions.map((question, index) => (
+                <SurveyQuestion
+                    key={question.id}
+                    index={`Câu hỏi ${index + 1}:`}
+                    question={question.text}
+                    options={question.options}
+                />
+            ))}
 
             <TouchableOpacity
                     style={[Style.margin, Style.container]}
-                    onPress={buttonCreateQuestion1}
+                    onPress={handleShow}
                 >
                     <View style={{
                         backgroundColor: "#1A4D2E",
@@ -139,75 +149,103 @@ const QuestionCreate = ({route}) => {
                             alignSelf: "center",
                             marginTop: 14, 
                             fontSize: 15, 
-                            fontWeight: "normal"}}>Thêm câu hỏi</Text>
+                            fontWeight: "normal"}}>Show</Text>
                     </View>
             </TouchableOpacity>
 
-            <TextInput
-                style={{
-                    borderColor: 'gray',
-                    borderWidth: 1,
-                    textAlignVertical: 'top',
-                    marginBottom: 5
-                }}
-                value={question}
-                onChangeText={setQuestion}
-                multiline={true}
-                placeholder="Nhập câu hỏi"
-                placeholderTextColor="black"
-                textColor="black"
-                cursorColor="black"
-                underlineStyle={{ backgroundColor: "#E0FBE2" }}
-                backgroundColor="#E0FBE2"
-            />
+            <Divider style={{marginBottom: 10}} />
 
-            <TextInput
-                style={{
-                    borderColor: 'gray',
-                    borderWidth: 1,
-                    textAlignVertical: 'top',
-                    marginBottom: 5
-                }}
-                value={optionText}
-                onChangeText={setOptionText}
-                placeholder="Nhập lựa chọn"
-                multiline={true}
-                placeholderTextColor="black"
-                textColor="black"
-                cursorColor="black"
-                underlineStyle={{ backgroundColor: "#E0FBE2" }}
-                backgroundColor="#E0FBE2"
-            />
+            <View style={styles.container}>
 
-            {/* <RadioGroup
-                radioButtons={options}
-                layout='row'
-            /> */}
+                <TextInput
+                    style={{
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        textAlignVertical: 'top',
+                        marginBottom: 5,
+                        marginRight: 10
+                    }}
+                    value={question}
+                    onChangeText={setQuestion}
+                    multiline={true}
+                    placeholder="Nhập câu hỏi"
+                    placeholderTextColor="black"
+                    textColor="black"
+                    cursorColor="black"
+                    underlineStyle={{ backgroundColor: "#E0FBE2" }}
+                    backgroundColor="#E0FBE2"
+                />
 
-            <TouchableOpacity
-                    style={[Style.margin, Style.container]}
-                    onPress={handleAddOption}
-                >
-                    <View style={{
-                        backgroundColor: "#1A4D2E",
-                        width: '50%',
-                        height: 50,
-                        marginLeft: '60%',
-                        borderRadius: 50,
-                        
-                    }}>
-                        <Text style={{color: "white", 
-                            alignSelf: "center",
-                            marginTop: 14, 
-                            fontSize: 15, 
-                            fontWeight: "normal"}}>Thêm lựa chọn</Text>
-                    </View>
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity
+                        style={[Style.margin, Style.container]}
+                        onPress={loadCreateQuestion}
+                    >
+                        <View style={{
+                            backgroundColor: "#1A4D2E",
+                            width: '80%',
+                            height: 50,
+                            marginLeft: 30,
+                            borderRadius: 0,
+                            
+                        }}>
+                            <Text style={{color: "white", 
+                                alignSelf: "center",
+                                marginTop: 14, 
+                                fontSize: 15, 
+                                fontWeight: "normal"}}>Thêm câu hỏi</Text>
+                        </View>
+                </TouchableOpacity>
+
+
+                <TextInput
+                    style={{
+                        borderColor: 'gray',
+                        borderWidth: 1,
+                        textAlignVertical: 'top',
+                        marginBottom: 5,
+                        marginRight: 10
+                    }}
+                    value={optionText}
+                    onChangeText={setOptionText}
+                    placeholder="Nhập lựa chọn"
+                    multiline={true}
+                    placeholderTextColor="black"
+                    textColor="black"
+                    cursorColor="black"
+                    underlineStyle={{ backgroundColor: "#E0FBE2" }}
+                    backgroundColor="#E0FBE2"
+                />
+
+                <RadioGroup
+                    radioButtons={options}
+                    layout='row'
+                />
+
+                <TouchableOpacity
+                        style={[Style.margin, Style.container]}
+                        onPress={buttonCreateOption}
+                    >
+                        <View style={{
+                            backgroundColor: "#1A4D2E",
+                            width: '80%',
+                            height: 50,
+                            marginLeft: 30,
+                            borderRadius: 0,
+                            
+                        }}>
+                            <Text style={{color: "white", 
+                                alignSelf: "center",
+                                marginTop: 14, 
+                                fontSize: 15, 
+                                fontWeight: "normal"}}>Thêm lựa chọn</Text>
+                        </View>
+                </TouchableOpacity>
+            </View>
         </ScrollView>
-        
+        </PaperProvider>
     );
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -226,6 +264,7 @@ const styles = StyleSheet.create({
         width: 100,
        
     },
+    
 });
 
 export default QuestionCreate;

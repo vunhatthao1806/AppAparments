@@ -37,7 +37,6 @@ import ItemUpdate from './components/admin/creations/items/ItemUpdate';
 import Surveys from './components/admin/creations/surveys/Surveys';
 import SurveyCreate from './components/admin/creations/surveys/SurveyCreate';
 import SurveyQuestion from './components/admin/creations/surveys/SurveyQuestion';
-import QuestionInput from './components/admin/creations/surveys/QuestionInput';
 import QuestionCreate from './components/admin/creations/surveys/QuestionCreate';
 
 const Stack = createNativeStackNavigator();
@@ -266,14 +265,9 @@ const SurveyStack = () => {
         options={{ headerShown: true }}
       />
       <Stack.Screen
-        name="QuestionInput"
-        component={QuestionInput}
-        options={{ headerShown: true }}
-      />
-      <Stack.Screen
         name="QuestionCreate"
         component={QuestionCreate}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       </Stack.Navigator>
   );
@@ -283,7 +277,7 @@ const AdminTab = () => {
     <Tab.Navigator>
       <Tab.Screen
               name="Chat"
-              component={QuestionCreate}
+              component={Chat}
               options={{
                 title: "Tin nhắn",
                 tabBarIcon: () => <Icon source="chat" size={30} color="white" />,

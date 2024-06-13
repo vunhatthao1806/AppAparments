@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
     CarCard, Survey, AnswerUser, PhoneNumber
 from apartments import serializers, paginators, perms
+import requests as external_requests
+import uuid
+import hashlib
+import hmac
 
 
 class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -105,34 +109,26 @@ class TagViewSet(viewsets.ViewSet, generics.ListAPIView):
     serializer_class = serializers.TagSerializer
 
 
-class ReceiptViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
-    queryset = Receipt.objects.select_related('tag').all()
+class ReceiptViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIView, generics.RetrieveAPIView):
+    queryset = Receipt.objects.select_related('tag', 'flat').all()
     serializer_class = serializers.ReceiptDetailSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = paginators.ReceiptPaginator
 
     def post(self, request, *args, **kwargs):
         if (request.user.is_staff):
             return self.create(request, *args, **kwargs)
 
-    def get_object(self):
-        receipt = super().get_object()
-        if receipt.user != self.request.user:
-            self.permission_denied(self.request)
-        return receipt
-
     def get_queryset(self):
-        queryset = self.queryset.filter(status=True)
-
-        # lọc hóa đơn theo tên hóa đơn
+        queryset = Receipt.objects.filter(user=self.request.user)  # Lấy hóa đơn của user đang request
+        # Lọc hóa đơn theo status (true: đã thanh toán, false: chưa thanh toán)
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+        # Tìm kiếm từ khóa
         q = self.request.query_params.get('q')
         if q:
-            queryset = queryset.filter(name__icontains=q)
-
-        # lọc hóa đơn theo từng căn hộ
-        flat_id = self.request.query_params.get('flat_id')
-        if flat_id:
-            queryset = queryset.filter(flat_id=flat_id)
-
+            queryset = queryset.filter(title__icontains=q)
         return queryset
 
 
@@ -216,16 +212,27 @@ class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateA
     permission_classes = [perms.CommentOwner]
 
 
-class UserViewSet(viewsets.ViewSet):
+class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser, ]
+    pagination_class = paginators.AdminPaginator
 
     def get_permissions(self):
-        if self.action in ['current_user']:
-            return [permissions.IsAuthenticated]
-
+        if self.action in ['current_user', 'get_ecabinets']:
+            return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        # Lấy tất cả các user ngoại trừ user đang request
+        if self.request.user.is_authenticated:
+            queryset = queryset.exclude(id=self.request.user.id)
+        # Tìm kiếm từ khóa
+        q = self.request.query_params.get('q')
+        if q:
+            queryset = queryset.filter(username__icontains=q)
+        return queryset
 
     @action(methods=['get', 'patch'], url_path='current_user', detail=False)
     def update_current_user(self, request):
@@ -258,36 +265,28 @@ class UserViewSet(viewsets.ViewSet):
         return paginator.get_paginated_response(serializer.data)
 
 
-# class SurveysViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
-#     queryset = djf_surveys.models.Survey.objects.all()
-#     serializer_class = serializers.SurveysSerializer
-#     # permission_classes = [perms.ManageSurveys]
-#
-#     def post(self, request):
-#         if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn
-#             return Response("Bạn không có quyền thực hiện thao tác này.", status=status.HTTP_403_FORBIDDEN)
-#
-#     def delete(self, request):
-#         if not request.user.is_staff:  # Hoặc sử dụng logic phù hợp với yêu cầu của bạn
-#             return Response("Bạn không có quyền thực hiện thao tác này.", status=status.HTTP_403_FORBIDDEN)
-#
-#     @action(methods=['get'], url_path='questions', detail=True)
-#     def get_surveys(self, request, pk):
-#         questions = self.get_object().questions.all()
-#
-#         return Response(serializers.QuestionSerializer(questions, many=True).data, status=status.HTTP_200_OK)
-#
-#     @action(methods=['get'], url_path='questions_count', detail=True)
-#     def get_survey_questions_count(self, request, pk):
-#         survey = self.get_object()
-#         question_count = survey.questions.count()
-#
-#         return Response({'question_count': question_count}, status=status.HTTP_200_OK)
+class AdminViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = serializers.UserSerializer
+    parser_classes = [parsers.MultiPartParser, ]
+    permission_classes = [perms.AdminOwner]
+
+    @action(methods=['patch'], detail=True, url_path='update_active')
+    def update_user_status(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+            is_active = request.data.get('is_active')
+            user.is_active = is_active
+            user.save()
+            return Response({'message': 'User status updated successfully'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
     queryset = Survey.objects.all()
     serializer_class = serializers.SurveySerializer
+    pagination_class = paginators.SurveyPaginator
 
     @action(methods=['get'], url_path='questions', detail=True)
     def get_questions(self, request, pk):
@@ -342,8 +341,110 @@ class CreateSurveyViewSet(viewsets.ViewSet, generics.CreateAPIView):
         serializer.save(user_create=user)
 
 
-
-
 class CreateQuestionViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = Question.objects.all()
     serializer_class = serializers.CreateQuestionsSerializer
+
+
+class PaymentDetailViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    serializer_class = serializers.PaymentDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            receipt_id = request.query_params.get('receipt_id')
+            payment_detail = serializer.save(receipt_id=receipt_id)
+            # Cập nhật trạng thái của Receipt
+            receipt = payment_detail.receipt
+            receipt.status = True
+            receipt.save()
+            return Response({'message': 'Payment detail created and receipt status updated successfully.'},
+                            status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PaymentViewSet(viewsets.ViewSet):
+    def get_permissions(self):
+        if self.action in ['create-payment']:
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
+
+    @action(methods=['post'], detail=False, url_path='create-payment')
+    def create_payment(self, request):
+        receipt_id = request.query_params.get('receipt_id')
+        total = request.query_params.get('total')
+        if total is None:
+            return Response({'error': 'Total amount is required'}, status=400)
+        # Lưu orderId vào cơ sở dữ liệu
+        new_order = str(uuid.uuid4())
+        receipt = Receipt.objects.get(id=receipt_id)
+        receipt.order_id = new_order
+        receipt.save()
+        # Các thông tin cần thiết
+        partnerCode = "MOMO"
+        accessKey = "F8BBA842ECF85"
+        secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
+        orderInfo = "pay with MoMo"
+        redirectUrl = "http://192.168.1.8:8000/payments/momo-return/"
+        ipnUrl = "http://192.168.1.8:8000/payments/momo-return/"
+        amount = str(total)  # Lấy số tiền từ request của client
+        orderId = new_order
+        requestId = str(uuid.uuid4())
+        requestType = "payWithATM"
+        extraData = ""  # Pass empty value or Encode base64 JsonString
+
+        # Tạo raw signature
+        rawSignature = ("accessKey=" + accessKey +
+                        "&amount=" + amount +
+                        "&extraData=" + extraData +
+                        "&ipnUrl=" + ipnUrl +
+                        "&orderId=" + orderId +
+                        "&orderInfo=" + orderInfo +
+                        "&partnerCode=" + partnerCode +
+                        "&redirectUrl=" + redirectUrl +
+                        "&requestId=" + requestId +
+                        "&requestType=" + requestType)
+        # Tạo signature
+        signature = hmac.new(bytes(secretKey, 'ascii'), bytes(rawSignature, 'ascii'), hashlib.sha256).hexdigest()
+
+        # Tạo JSON request
+        data = {
+            'partnerCode': partnerCode,
+            'partnerName': "Test",
+            'storeId': "MomoTestStore",
+            'requestId': requestId,
+            'amount': amount,
+            'orderId': orderId,
+            'orderInfo': orderInfo,
+            'redirectUrl': redirectUrl,
+            'ipnUrl': ipnUrl,
+            'lang': "vi",
+            'extraData': extraData,
+            'requestType': requestType,
+            'signature': signature
+        }
+        print("Data gửi đi:", data)
+        # Gửi yêu cầu đến endpoint của Momo
+        response = external_requests.post("https://test-payment.momo.vn/v2/gateway/api/create", json=data)
+
+        # Trả về link thanh toán cho client
+        if response.status_code == 200:
+            payUrl = response.json().get('payUrl')
+            print(payUrl)
+            return Response({'payUrl': payUrl})
+        else:
+            return Response({'error': 'Failed to create payment link'}, status=response.status_code)
+
+    @action(methods=['get'], detail=False, url_path='momo-return')
+    def momo_return(self, request):
+        data = request.query_params
+        order_id = data.get('orderId')
+        try:
+            # Kiểm tra và cập nhật trạng thái của receipt
+            receipt = Receipt.objects.get(order_id=order_id)
+            receipt.status = True
+            receipt.save()
+            return Response({'message': 'Payment successful, Receipt updated successfully'})
+        except Exception as e:
+            return Response({'error': f'Error updating receipt status: {str(e)}'}, status=500)

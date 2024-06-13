@@ -51,7 +51,7 @@ class ComplaintAdmin(admin.ModelAdmin):
 
 class ReceiptAdmin(admin.ModelAdmin):
     list_display = ['id', 'title', 'status', 'created_date', 'updated_date']
-    search_fields = ['title', 'status']
+    search_fields = ['name', 'status']
 
 
 class CarCardAdmin(admin.ModelAdmin):

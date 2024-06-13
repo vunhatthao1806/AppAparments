@@ -9,7 +9,11 @@ r.register('ecabinets', views.ECabinetViewSet, 'ecabinets')
 r.register('ecabinet', views.EcabinetAdminViewSet, 'ecabinet')
 r.register('items', views.ItemViewSet, 'items')
 r.register('additem', views.AddItemViewSet, 'additem')
+
 r.register('receipts', views.ReceiptViewSet, 'receipts')
+r.register('payments', views.PaymentViewSet, 'payments')
+r.register('paymentdetails', views.PaymentDetailViewSet, 'paymentdetails'),
+
 
 r.register('phonenumbers', views.PhoneNumberViewSet, 'phonenumbers')
 
@@ -17,8 +21,9 @@ r.register('complaints', views.ComplaintViewSet, 'complaints')
 r.register('addcomplaints', views.AddComplaintViewSet, 'addcomplaints')
 
 r.register('users', views.UserViewSet, 'users')
+r.register('admins', views.AdminViewSet, 'admins')
+
 r.register('comments', views.CommentViewSet, 'comments')
-# r.register('survey', views.SurveysViewSet, 'survey')
 r.register('carcards', views.CarCardViewSet, 'carcards')
 r.register('tags', views.TagViewSet, 'tags')
 

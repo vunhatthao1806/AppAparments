@@ -6,11 +6,16 @@ class ItemPaginator(pagination.PageNumberPagination):
 
 
 class ReceiptPaginator(pagination.PageNumberPagination):
-    page_size = 10
+    page_size = 8
 
 
 class ComplaintPaginator(pagination.PageNumberPagination):
     page_size = 4
 
-# class CommentPaginator(pagination.PageNumberPagination):
-#     page_size = 3
+
+class SurveyPaginator(pagination.PageNumberPagination):
+    page_size = 4
+
+
+class AdminPaginator(pagination.PageNumberPagination):
+    page_size = 4

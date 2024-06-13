@@ -2,7 +2,8 @@ import djf_surveys.models
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question, Choice, AnswerUser, PhoneNumber
+from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question,\
+    Choice, AnswerUser, PhoneNumber, PaymentDetail
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -52,15 +53,23 @@ class TagSerializer(serializers.ModelSerializer):
 class ReceiptSerializer(serializers.ModelSerializer):
     class Meta:
         model = Receipt
-        fields = ['title', 'created_date']
+        fields = ['id', 'title', 'created_date']
 
 
 class ReceiptDetailSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(many= True)
+    tag = TagSerializer()
+    flat = FlatSerializer()
 
     class Meta:
         model = ReceiptSerializer.Meta.model
-        fields = ReceiptSerializer.Meta.fields + ['tags', 'total']
+        fields = ReceiptSerializer.Meta.fields + ['tag', 'total', 'flat']
+
+
+class PaymentDetailSerializer(ImageSerializer):
+
+    class Meta:
+        model = PaymentDetail
+        fields = ['image']
 
 
 class CarCardSerializer(serializers.ModelSerializer):
@@ -211,12 +220,6 @@ class CreateSurveySerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'content']
 
 
-class CreateQuestionsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Question
-        fields = ['id', 'name', 'survey']
-
-
 class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -225,18 +228,18 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
-    # question = QuestionSerializer()
-
     class Meta:
         model = Choice
         fields = ['id', 'name', 'question']
 
 
-class AnswerSerializer(serializers.ModelSerializer):
-    # question = QuestionSerializer()
-    # user = UserSerializer()
-    # survey = SurveySerializer()
+class CreateQuestionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'name', 'survey']
 
+
+class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnswerUser
         fields = ['id', 'question', 'survey', 'user']

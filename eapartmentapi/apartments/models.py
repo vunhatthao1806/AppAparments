@@ -115,8 +115,18 @@ class Receipt(BaseModel):
     tag = models.ForeignKey(Tag, on_delete=models.PROTECT, null=True)
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
+    order_id = models.CharField(max_length=255, null=True, blank=True)
+
     def __str__(self):
         return self.title
+
+
+class PaymentDetail(BaseModel):
+    image = CloudinaryField()
+    receipt = models.OneToOneField(Receipt, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.receipt.title
 
 
 class Interaction(BaseModel):

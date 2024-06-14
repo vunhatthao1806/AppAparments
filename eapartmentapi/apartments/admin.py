@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item, User, Comment, Survey, Question, Choice, \
-    CarCard, Like, AnswerUser, PhoneNumber
+    CarCard, Like, AnswerUser, PhoneNumber, PaymentDetail
 import cloudinary
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 class ApartmentAppAdminSite(admin.AdminSite):
@@ -98,11 +100,57 @@ class SurveyAdmin(admin.ModelAdmin):
     inlines = [QuestionInlineAdmin, ]
 
 
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+
+
+class CustomUserChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+
+
+class UserAdmin(BaseUserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    list_display = ['username', 'first_name', 'last_name']
+    search_fields = ['username']
+    list_filter = ['username', 'first_name', 'last_name']
+    readonly_fields = ['my_avatar']
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email', 'avatar')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'avatar'),
+        }),
+    )
+
+    def my_avatar(self, user):
+        if user.avatar:
+            if isinstance(user.avatar, cloudinary.CloudinaryResource):
+                return mark_safe(f"<img width='300' src='{user.avatar.url}' />")
+
+    class Media:
+        css = {
+            'all': ['/static/css/style.css']
+        }
+
+
 admin.site.register(Flat, FlatAdmin)
 admin.site.register(ECabinet, ECabinetAdmin)
 admin.site.register(Complaint, ComplaintAdmin)
 admin.site.register(Tag, TagAdmin)
+
 admin.site.register(Receipt, ReceiptAdmin)
+admin.site.register(PaymentDetail)
+
 admin.site.register(Item, ItemAdmin)
 admin.site.register(User)
 admin.site.register(Like,LikeAdmin)

@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
-    CarCard, Survey, AnswerUser, PhoneNumber
+    CarCard, Survey, AnswerUser, PhoneNumber, PaymentDetail
 from apartments import serializers, paginators, perms
 import requests as external_requests
 import uuid
@@ -346,7 +346,8 @@ class CreateQuestionViewSet(viewsets.ViewSet, generics.CreateAPIView):
     serializer_class = serializers.CreateQuestionsSerializer
 
 
-class PaymentDetailViewSet(viewsets.ViewSet, generics.CreateAPIView):
+class PaymentDetailViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIView):
+    queryset = PaymentDetail.objects.all()
     serializer_class = serializers.PaymentDetailSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -386,8 +387,8 @@ class PaymentViewSet(viewsets.ViewSet):
         accessKey = "F8BBA842ECF85"
         secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
         orderInfo = "pay with MoMo"
-        redirectUrl = "http://192.168.1.8:8000/payments/momo-return/"
-        ipnUrl = "http://192.168.1.8:8000/payments/momo-return/"
+        redirectUrl = "http://192.168.2.8:8000/payments/momo-return/"
+        ipnUrl = "http://192.168.2.8:8000/payments/momo-return/"
         amount = str(total)  # Lấy số tiền từ request của client
         orderId = new_order
         requestId = str(uuid.uuid4())

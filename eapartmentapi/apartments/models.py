@@ -122,8 +122,8 @@ class Receipt(BaseModel):
 
 
 class PaymentDetail(BaseModel):
-    image = CloudinaryField()
-    receipt = models.OneToOneField(Receipt, on_delete=models.CASCADE)
+    image = CloudinaryField(null=True)
+    receipt = models.OneToOneField(Receipt, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.receipt.title

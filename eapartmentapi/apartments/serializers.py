@@ -1,6 +1,5 @@
 import djf_surveys.models
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question,\
     Choice, AnswerUser, PhoneNumber, PaymentDetail
@@ -186,32 +185,22 @@ class AuthenticatedComplaintDetailSerializer(ComplaintDetailSerializer):
         model = ComplaintDetailSerializer.Meta.model
         fields = ComplaintDetailSerializer.Meta.fields + ['liked']
 
-    # def get_count_likes(self, obj):
-    #     return obj.like_set.count()
-
-
-# class SurveysSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = djf_surveys.models.Survey
-#         fields = ['id', 'name', 'description']
-#
-#
-# class QuestionsSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = djf_surveys.models.Question
-#         fields = ['id', 'label', 'type_field', 'choices']
 
 # djf_surveys.models.Survey
 class SurveySerializer(serializers.ModelSerializer):
     count_users = serializers.SerializerMethodField()
+    user_count = serializers.SerializerMethodField()
     user_create = UserSerializer()
 
     class Meta:
         model = Survey
-        fields = ['id', 'title', 'created_date', 'active', 'content', 'user_create', 'count_users']
+        fields = ['id', 'title', 'created_date', 'active', 'content', 'user_create', 'count_users', 'user_count']
 
     def get_count_users(self, obj):
         return obj.survey_user_done.count()
+
+    def get_user_count(self, obj):
+        return AnswerUser.objects.filter(survey=obj).values('user_id').distinct().count()
 
 
 class CreateSurveySerializer(serializers.ModelSerializer):

@@ -9,6 +9,7 @@ import requests as external_requests
 import uuid
 import hashlib
 import hmac
+from django.db.models import Count
 
 
 class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -145,13 +146,13 @@ class AddComplaintViewSet(viewsets.ViewSet, generics.CreateAPIView):
 class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
     queryset = Complaint.objects.filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
     pagination_class = paginators.ComplaintPaginator
-    serializer_class = serializers.ComplaintDetailSerializer
+    # serializer_class = serializers.ComplaintDetailSerializer
 
     def get_serializer_class(self):
         if self.request.user.is_authenticated:
             return serializers.AuthenticatedComplaintDetailSerializer
 
-        return self.serializer_class
+        return serializers.ComplaintDetailSerializer
 
     def get_queryset(self):
         queryset = self.queryset
@@ -290,7 +291,7 @@ class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
 
     @action(methods=['get'], url_path='questions', detail=True)
     def get_questions(self, request, pk):
-        q = self.get_object().question_set.all()
+        q = self.get_object().questions.all()
 
         return Response(serializers.QuestionSerializer(q, many=True).data, status=status.HTTP_200_OK)
 
@@ -301,6 +302,12 @@ class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return Response(serializers.CreateQuestionsSerializer(q).data,
                         status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['get'], url_path='get_survey_user_counts')
+    def user_count(self, request, pk):
+        survey = self.get_object()
+        user_count = AnswerUser.objects.filter(survey=survey).values('user_id').distinct().count()
+        return Response({'survey_id': survey.id, 'user_count': user_count})
 
 
 class QuestionViewSet(viewsets.ViewSet, generics.ListAPIView):

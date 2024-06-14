@@ -10,7 +10,6 @@ import Context from './configs/Context';
 import { useEffect, useReducer, useState } from 'react';
 import MyUserReducer from './reducers/MyUserReducer';
 
-import Notifiactions from './components/notifications/Notifications';
 import Profile from './components/profiles/profile/Profile';
 import Convenient from './components/profiles/profile/Convenient';
 import AccountInfo from './components/profiles/profile/AccountInfo';
@@ -20,12 +19,15 @@ import Payment from './components/profiles/convenient/Payment';
 import Ecabinet from './components/profiles/convenient/Ecabinet';
 import Survey from './components/profiles/convenient/Survey';
 import Carcard from './components/profiles/convenient/Carcard';
-import Logo from './components/users/Logo';
-import Login from './components/users/Login';
+import CarcardRegister from './components/profiles/convenient/CarCardRegister';
 import Items from './components/profiles/convenient/Items';
 import CarcardDetail from './components/profiles/convenient/CarCardDetail';
+
+import Logo from './components/users/Logo';
+import Login from './components/users/Login';
+
 import EditComment from './components/complaints/EditComment';
-import CarcardRegister from './components/profiles/convenient/CarCardRegister';
+
 import LoginFirst from './components/profiles/profile/LoginFirst';
 
 import ProfileAdmin from './components/admin/profiles/ProfileAdmin';
@@ -44,8 +46,8 @@ import LockAccountDetail from './components/admin/creations/users/LockAccountDet
 import PaymentDetail from './components/profiles/convenient/PaymentDetail';
 import PaymentHistory from './components/profiles/convenient/PaymentHistory';
 import TranferPayment from './components/profiles/convenient/TranferPayment';
-
-
+import SurveysUser from './components/surveys/SurveysUser';
+import SurveyDetail from './components/surveys/SurveyDetail';
 
 const Stack = createNativeStackNavigator();
 
@@ -230,6 +232,23 @@ const LoginStack = ({ user, onInitialSetupComplete }) => {
   );
 };
 
+const SurveyUserStack = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Khảo sát"
+        component={SurveysUser}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="SurveyDetail"
+        component={SurveyDetail}
+        options={{ headerShown: true }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 const Tab = createMaterialBottomTabNavigator();
 const MyTab = () => {
   return (
@@ -252,10 +271,10 @@ const MyTab = () => {
             />
       
       <Tab.Screen
-        name="Survey"
-        component={Survey}
+        name="SurveyUserStack"
+        component={SurveyUserStack}
         options={{
-          title: "Thông báo",
+          title: "Khảo sát",
           tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
           headerTitleAlign: "center",
         }}

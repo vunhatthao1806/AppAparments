@@ -30,8 +30,10 @@ const ComplaintDetail = ({route, navigation}) => {
 
     const loadComplaint = async () => {
         try {
-            let res = await APIs.get(endpoints['complaint-detail'](complaintId));
+            accessToken = await AsyncStorage.getItem("access-token");
+            let res = await authAPI(accessToken).get(endpoints['complaint-detail'](complaintId));
             setComplaint(res.data);
+            // console.log(res.data);
         } catch (ex){
             console.error(ex);
         }
@@ -42,9 +44,10 @@ const ComplaintDetail = ({route, navigation}) => {
             accessToken = await AsyncStorage.getItem("access-token");
             let response = await authAPI(accessToken).post(endpoints["liked"](complaintId));        
             // -----Mới thêm-----
-            setLiked(!liked);
-            console.log(response.data);
+            setLiked(response.data.liked);
             setLikeCount(response.data.likeCount);
+            // click button like thì load lại complaint
+            loadComplaint();
         } catch (ex){
             console.error(ex);
         }
@@ -53,7 +56,6 @@ const ComplaintDetail = ({route, navigation}) => {
     const loadLikeCount = async () => {
         try {
             let res = await APIs.get(endpoints['get_likes'](complaintId));
-            // console.log('loadLikeCount response:', res.data);
             setLikeCount(res.data);
         } catch(ex){
             console.error(ex);
@@ -91,9 +93,9 @@ const ComplaintDetail = ({route, navigation}) => {
             console.error(ex);
         }
     }
-    // const [liked, setLiked] = useState(false);
 
     const handleLike = async () => {
+        // await loadComplaint();
         await loadLike();
         await loadLikeCount();
     };
@@ -168,25 +170,28 @@ const ComplaintDetail = ({route, navigation}) => {
                             />
                         </Card.Content>
                     </Card>
+
+                    <View style={[Style.commentStyle, MyStyle.row, {"justifyContent": "space-between"}]}> 
+                        <View style={Style.buttonContainer}>
+                            <Button 
+                                icon={() => (// -----Mới thêm-----
+                                    <Icon
+                                    source={complaint.liked ? "thumb-up" : "thumb-up-outline"}
+                                    size={30}
+                                    color={'#543310'}
+                                    />)}
+                                mode="outlined" 
+                                onPress={handleLike}>
+                            </Button>
+                        </View>
+                        <View style={Style.tags}>
+                            <Text>Lượt thích: {likeCount}</Text>
+                        </View>
+                    </View>
                 </>}
 
-                <View style={[Style.commentStyle, MyStyle.row, {"justifyContent": "space-between"}]}> 
-                    <View style={Style.buttonContainer}>
-                        <Button 
-                            icon={() => (// -----Mới thêm-----
-                                <Icon
-                                source={liked ? "thumb-up" : "thumb-up-outline"}
-                                size={30}
-                                color={'#543310'}
-                                />)}
-                            mode="outlined" 
-                            onPress={handleLike}>
-                        </Button>
-                    </View>
-                    <View style={Style.tags}>
-                        <Text>Lượt thích: {likeCount}</Text>
-                    </View>
-                </View>
+                
+                
                 
                 <View style={[MyStyle.row, {"justifyContent": "space-between"}]}>
                     <TextInput style={Style.textInput} 

@@ -43,7 +43,7 @@ const SurveyCreate = ({navigation}) => {
                 <View style={MyStyle.row}>
                     <Icon
                         source="pen"
-                        color={'#4F6F52'} 
+                        color={'#543310'} 
                         size={28}
                     />    
                     <Text style={Style.titleComplaint}>
@@ -58,8 +58,8 @@ const SurveyCreate = ({navigation}) => {
                     placeholderTextColor="white"
                     textColor="white"
                     cursorColor="white"
-                    underlineStyle={{ backgroundColor: "#627254" }}
-                    backgroundColor="#627254"
+                    underlineStyle={{ backgroundColor: "#543310" }}
+                    backgroundColor="#543310"
                 />
             </View>
 
@@ -67,7 +67,7 @@ const SurveyCreate = ({navigation}) => {
                 <View style={MyStyle.row}>
                     <Icon
                         source="pen"
-                        color={'#4F6F52'} 
+                        color={'#543310'} 
                         size={28}
                     />    
                     <Text style={Style.titleComplaint}>
@@ -82,8 +82,8 @@ const SurveyCreate = ({navigation}) => {
                     placeholderTextColor="white"
                     textColor="white"
                     cursorColor="white"
-                    underlineStyle={{ backgroundColor: "#627254" }}
-                    backgroundColor="#627254"
+                    underlineStyle={{ backgroundColor: "#543310" }}
+                    backgroundColor="#543310"
                 />
             </View>
 
@@ -94,7 +94,7 @@ const SurveyCreate = ({navigation}) => {
                     onPress={loadCreateSurvey}
                 >
                     <View style={{
-                        backgroundColor: "#4F6F52",
+                        backgroundColor: "#543310",
                         width: '80%',
                         height: 50,
                         marginLeft: 30,

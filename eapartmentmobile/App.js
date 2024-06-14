@@ -30,17 +30,22 @@ import LoginFirst from './components/profiles/profile/LoginFirst';
 
 import ProfileAdmin from './components/admin/profiles/ProfileAdmin';
 import Services from './components/admin/profiles/Services';
+
 import ItemCreate from './components/admin/creations/items/ItemCreate';
 import ItemUpdate from './components/admin/creations/items/ItemUpdate';
+
 import Surveys from './components/admin/creations/surveys/Surveys';
 import SurveyCreate from './components/admin/creations/surveys/SurveyCreate';
 import SurveyQuestion from './components/admin/creations/surveys/SurveyQuestion';
 import QuestionCreate from './components/admin/creations/surveys/QuestionCreate';
+
 import LockAccount from './components/admin/creations/users/LockAccount';
 import LockAccountDetail from './components/admin/creations/users/LockAccountDetail';
 import PaymentDetail from './components/profiles/convenient/PaymentDetail';
 import PaymentHistory from './components/profiles/convenient/PaymentHistory';
 import TranferPayment from './components/profiles/convenient/TranferPayment';
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -183,7 +188,7 @@ const ComplaintStack = () => {
     return (
       <Stack.Navigator>
         <Stack.Screen
-          name="ComplaintStack"
+          name="Complaint"
           component={Complaint}
           options={{ headerShown: false }}
       />
@@ -228,14 +233,21 @@ const LoginStack = ({ user, onInitialSetupComplete }) => {
 const Tab = createMaterialBottomTabNavigator();
 const MyTab = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      shifting={true}
+      activeColor="#F8F4E1" // Màu trắng kem cho tab đang hoạt động
+      inactiveColor="#D7CCC8" // Màu nâu nhạt cho tab không hoạt động
+      barStyle={{
+        backgroundColor: "#3E2723"
+      }}
+    >
       <Tab.Screen
-              name="Payment"
-              component={Payment}
+              name="Chat"
+              component={Chat}
               options={{
                 title: "Tin nhắn",
                 tabBarIcon: () => <Icon source="chat" size={30} color="white" />,
-                headerTitleAlign: "center",
+                headerTitleAlign: "center"
               }}
             />
       
@@ -303,7 +315,14 @@ const SurveyStack = () => {
 
 const AdminTab = () => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+    shifting={true}
+      activeColor="#F8F4E1" // Màu trắng kem cho tab đang hoạt động
+      inactiveColor="#D7CCC8" // Màu nâu nhạt cho tab không hoạt động
+      barStyle={{
+        backgroundColor: "#3E2723"
+      }}
+    >
       <Tab.Screen
               name="Chat"
               component={Chat}

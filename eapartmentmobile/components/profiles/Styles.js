@@ -69,7 +69,7 @@ export default StyleSheet.create({
     height: 150,
     alignSelf: "center",
     marginTop: 20,
-    backgroundColor: "#EEF0E5",
+    backgroundColor: "#F8F4E1",
     borderRadius: 10,
   },
   uploadImage: {

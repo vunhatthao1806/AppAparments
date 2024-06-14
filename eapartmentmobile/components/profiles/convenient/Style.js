@@ -87,5 +87,27 @@ export default StyleSheet.create({
       titletextpayment: {
         fontSize: 20,
         fontWeight: "bold",
+      }, iconupimage: {
+        alignSelf: "center",
+        marginTop: 60,
+      }, textupload: {
+        textAlign: "center",
+        alignItems: "center",
+      },uploadImage: {
+        width: 200,
+        height: 200,
+        borderWidth: 1,
+        borderStyle: "dashed",
+        alignSelf: "center",
+        margin: 20,
+        borderRadius: 10,
+      },backgroundtranfer: {
+        borderWidth: 1,
+        width: 250,
+        height: 250,
+        alignSelf: "center",
+        marginTop: 30,
+        backgroundColor: "#F1E5D1",
+        borderRadius: 10,
       },
 });

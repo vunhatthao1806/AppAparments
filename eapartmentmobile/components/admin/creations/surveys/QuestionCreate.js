@@ -79,7 +79,7 @@ const QuestionCreate = ({route, navigation}) => {
                 }
             });
             
-            Alert.alert("Thong bao", "Dang thanh cong");
+            // Alert.alert("Thong bao", "Dang thanh cong");
         } catch(ex){
             console.error(ex);
         }
@@ -103,10 +103,10 @@ const QuestionCreate = ({route, navigation}) => {
                     options: options,
                 };
                 setQuestions([...questions, newQuestion]);
-                console.log(newQuestion);
+                // console.log(newQuestion);
             }
             setShowQuestions(true);
-            console.log(showQuestions); // Khi click vào nút "Show", đặt showQuestions thành true để hiển thị danh sách câu hỏi
+            // console.log(showQuestions); // Khi click vào nút "Show", đặt showQuestions thành true để hiển thị danh sách câu hỏi
         };
 
         const completeCreate = () => {
@@ -138,7 +138,7 @@ const QuestionCreate = ({route, navigation}) => {
                     onPress={handleShow}
                 >
                     <View style={{
-                        backgroundColor: "#1A4D2E",
+                        backgroundColor: "#543310",
                         width: '80%',
                         height: 50,
                         marginLeft: 30,
@@ -169,11 +169,11 @@ const QuestionCreate = ({route, navigation}) => {
                     onChangeText={setQuestion}
                     multiline={true}
                     placeholder="Nhập câu hỏi"
-                    placeholderTextColor="black"
-                    textColor="black"
-                    cursorColor="black"
-                    underlineStyle={{ backgroundColor: "#E0FBE2" }}
-                    backgroundColor="#E0FBE2"
+                    placeholderTextColor="white"
+                    textColor="white"
+                    cursorColor="white"
+                    underlineStyle={{ backgroundColor: "#543310" }}
+                    backgroundColor="#543310"
                 />
 
                 <TouchableOpacity
@@ -181,7 +181,7 @@ const QuestionCreate = ({route, navigation}) => {
                         onPress={loadCreateQuestion}
                     >
                         <View style={{
-                            backgroundColor: "#1A4D2E",
+                            backgroundColor: "#543310",
                             width: '80%',
                             height: 50,
                             marginLeft: 30,
@@ -209,11 +209,11 @@ const QuestionCreate = ({route, navigation}) => {
                     onChangeText={setOptionText}
                     placeholder="Nhập lựa chọn"
                     multiline={true}
-                    placeholderTextColor="black"
-                    textColor="black"
-                    cursorColor="black"
-                    underlineStyle={{ backgroundColor: "#E0FBE2" }}
-                    backgroundColor="#E0FBE2"
+                    placeholderTextColor="white"
+                    textColor="white"
+                    cursorColor="white"
+                    underlineStyle={{ backgroundColor: "#543310" }}
+                    backgroundColor="#543310"
                 />
 
                 <RadioGroup
@@ -226,7 +226,7 @@ const QuestionCreate = ({route, navigation}) => {
                         onPress={buttonCreateOption}
                     >
                         <View style={{
-                            backgroundColor: "#1A4D2E",
+                            backgroundColor: "#543310",
                             width: '80%',
                             height: 50,
                             marginLeft: 30,

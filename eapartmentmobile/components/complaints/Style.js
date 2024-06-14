@@ -33,7 +33,7 @@ export default StyleSheet.create({
         margin: 6
     },
      marginbot: {
-        marginBottom: 10
+        marginBottom: 10,
     },
     readMore: {
       color: "blue",
@@ -42,8 +42,16 @@ export default StyleSheet.create({
     }, 
     tags:{
         margin: 5,
-        padding: 3,
+        padding: 3
     },
+    // -----Mới thêm-----
+      chipTextSelected: {
+        color: '#F8F4E1', // Trắng kem khi được chọn
+      },
+      chipTextUnselected: {
+        color: '#F8F4E1', // Nâu đậm khi không được chọn
+      },
+    // ----------
     username: {
         fontSize: 15,
         fontWeight: 'bold',
@@ -98,7 +106,8 @@ export default StyleSheet.create({
         marginRight: 10,
         marginLeft: 5     
     },
-    button: {
+    button: {// -----Mới thêm-----
+        backgroundColor: "#F8F4E1",
         borderWidth: 1,
         borderColor: '#000', 
         flexDirection: 'row-reverse',  // Màu viền cho Button
@@ -114,6 +123,8 @@ export default StyleSheet.create({
         bottom: 16,
         right: 16,
         position: 'absolute',
+        // -----Mới thêm-----
+        backgroundColor: "#AF8F6F"
     },
     titleComplaint: {
         fontSize: 20,
@@ -145,12 +156,12 @@ export default StyleSheet.create({
     buttonCreate: {
         margin: 10,
         borderWidth: 2,
-        borderColor: '#F0D9FF', 
-        padding: 15,
-        marginBottom: 10,
+        borderColor: '#543310', 
+        padding: 10,
+        // marginBottom: 10,
         alignItems:"center",
         borderRadius: 30,
-        backgroundColor: "#F0D9FF"
+        backgroundColor: "#543310"
     }, 
     textCreate: {
         fontSize: 20
@@ -207,7 +218,7 @@ export default StyleSheet.create({
         backgroundColor: "#99BC85"
     },
     itemCreate: {
-        backgroundColor: "#627254",
+        
         width: '80%',
         height: 50,
         marginLeft: 30,

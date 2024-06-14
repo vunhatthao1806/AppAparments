@@ -15,6 +15,9 @@ const ComplaintDetail = ({route, navigation}) => {
     const [comment, setComment] = useState('');
     const [content, setContent] = useState("");
     const [liked, setLiked] = useState(false);
+
+    const [like, setLike] = useState(false);
+
     const [likeCount, setLikeCount] = useState(0);
     const complaintId = route.params?.complaintId;
     const { width } = useWindowDimensions();
@@ -38,7 +41,8 @@ const ComplaintDetail = ({route, navigation}) => {
         try {
             accessToken = await AsyncStorage.getItem("access-token");
             let response = await authAPI(accessToken).post(endpoints["liked"](complaintId));        
-            setLiked(response.data.liked);
+            // -----Mới thêm-----
+            setLiked(!liked);
             console.log(response.data);
             setLikeCount(response.data.likeCount);
         } catch (ex){
@@ -87,6 +91,7 @@ const ComplaintDetail = ({route, navigation}) => {
             console.error(ex);
         }
     }
+    // const [liked, setLiked] = useState(false);
 
     const handleLike = async () => {
         await loadLike();
@@ -116,25 +121,34 @@ const ComplaintDetail = ({route, navigation}) => {
         <PaperProvider>
             <ScrollView onScroll={loadMoreInfo}>
                 {complaint===null?<ActivityIndicator/>:<>
-                    <Card style={Style.marginbot}>
-                        
-                        <Text style={Style.title}>{complaint.title}</Text>
-
+                {/* -----Mới thêm----- */}
+                    <Card style={[Style.marginbot, {backgroundColor: 'white', borderRadius: 0}]}>
+                    
                         <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
-                            <Avatar.Image style={Style.marginbot} size={43} source={{ uri: complaint.user.avatar }} />
-                            <View >
+                            <Avatar.Image style={Style.marginbot} size={45} source={{ uri: complaint.user.avatar }} />
+                            <View style={{marginLeft: 5}}>
                                 <Text style={Style.username}>{complaint.user.username}</Text>
                                 <Text style={Style.createdDate}>{moment(complaint.created_date).format("DD/MM/YYYY HH:mm")}</Text>
                             </View>
                         </View>
+
+                        <Text style={Style.title}>{complaint.title}</Text>
 
                         <Card.Cover source={{ uri: complaint.image }} />
                         <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
                             {complaint.complaint_tag && (
                                 <Chip 
                                     key={complaint.complaint_tag.id} 
-                                    style={MyStyle.margin} 
-                                    icon="vacuum">{complaint.complaint_tag.name}</Chip>
+                                    style={[MyStyle.margin, {backgroundColor: "#543310"}]} 
+                                        icon={() => (// -----Mới thêm-----
+                                            <Icon
+                                                source="tag"
+                                                size={20}
+                                                color={'#F8F4E1'}
+                                            />)}
+                                                
+                                        textStyle={{color: '#F8F4E1'}}
+                                    >{complaint.complaint_tag.name}</Chip>
                             )}
                             {complaint.status_tag && (
                                 <Chip 
@@ -159,9 +173,14 @@ const ComplaintDetail = ({route, navigation}) => {
                 <View style={[Style.commentStyle, MyStyle.row, {"justifyContent": "space-between"}]}> 
                     <View style={Style.buttonContainer}>
                         <Button 
-                             icon={liked ? "thumb-up": "thumb-up-outline"}
+                            icon={() => (// -----Mới thêm-----
+                                <Icon
+                                source={liked ? "thumb-up" : "thumb-up-outline"}
+                                size={30}
+                                color={'#543310'}
+                                />)}
                             mode="outlined" 
-                            onPress={handleLike}> Like
+                            onPress={handleLike}>
                         </Button>
                     </View>
                     <View style={Style.tags}>
@@ -174,10 +193,17 @@ const ComplaintDetail = ({route, navigation}) => {
                         multiline={true} 
                         label={"Suy nghĩ của bạn là gì"} 
                         value={comment} 
-                        onChangeText={setComment} />
+                        onChangeText={setComment}
+                        backgroundColor="#F8F4E1"
+                        />
                     <View style={Style.buttonContainer}>
                         <Button style={Style.button}
-                            icon="send-circle" 
+                            icon={() => (// -----Mới thêm-----
+                                <Icon
+                                    source={"send"}
+                                    size={25}
+                                    color={'#543310'}
+                                    />)}
                             mode="contained" 
                             onPress={handleComment}/>
                     </View>

@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
 import axios from "axios";
 import * as Notifications from 'expo-notifications';
+import Styles from "../profiles/Styles";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -175,6 +176,7 @@ const AddComplaint = ({navigation}) => {
         loadComplaints();
         await loadCreatComplaint();
         await sendNotification();
+        navigation.navigate("Complaint");
     }
 
     const StatusTags = tags.filter(t => t.id === 9 || t.id === 10);
@@ -183,22 +185,40 @@ const AddComplaint = ({navigation}) => {
     return (
         <ScrollView>
             <View>
-                <TouchableRipple onPress={chooseAvatar}>
-                            <Text>Chọn hình đại diện...</Text>
-                </TouchableRipple>
+
+                <View style={Styles.backgroundtranfer}>
+                    <View style={Styles.uploadImage}>
+                        <TouchableOpacity onPress={chooseAvatar}>
+                            {selectedImage === null ? (
+                                <View>
+                                    <View style={Styles.iconupimage}>
+                                        <Icon source={"tray-arrow-up"} size={30} />
+                                    </View>
+                                </View>
+                            ) : (
+                                <Image
+                                    source={{ uri: selectedImage.uri }}
+                                    width={100}
+                                    height={100}
+                                    borderRadius={10}
+                                />
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                </View>
                 
-                {selectedImage && (
+                {/* {selectedImage && (
                     <View style={{ alignItems: 'center', marginVertical: 20 }}>
                         <Image source={{ uri: selectedImage.uri }} style={{ width: 200, height: 200 }} />
                     </View>
-                )}
+                )} */}
             </View>
             
             <View style={[Style.margin, Style.container]}>
                 <View style={MyStyle.row}>
                     <Icon
                         source="pen"
-                        color={'#937DC2'} 
+                        color={'#AF8F6F'} 
                         size={28}
                     />    
                     <Text style={Style.titleComplaint}>
@@ -210,6 +230,13 @@ const AddComplaint = ({navigation}) => {
                     value={title}
                     onChangeText={title => setTitle(title)}
                     multiline={true}
+                    backgroundColor="#543310"
+                    placeholder="Nhập tiêu đề"
+                    placeholderTextColor="white"
+                    textColor="white"
+                    cursorColor="white"
+                    underlineStyle={{ backgroundColor: "#543310" }}
+
                 />
             </View>
 
@@ -217,7 +244,7 @@ const AddComplaint = ({navigation}) => {
                 <View style={MyStyle.row}>
                     <Icon
                         source="book-open-variant"
-                        color={'#937DC2'} 
+                        color={'#AF8F6F'} 
                         size={28}
                     />  
                      <Text style={[Style.titleComplaint]}>
@@ -231,6 +258,12 @@ const AddComplaint = ({navigation}) => {
                     onChangeText={content => setContent(content)}
                     multiline={true}
                     style={Style.TextInputComplaint}
+                    backgroundColor="#543310"
+                    placeholder="Nhập nội dung"
+                    placeholderTextColor="white"
+                    textColor="white"
+                    cursorColor="white"
+                    underlineStyle={{ backgroundColor: "#543310" }}
                 />
             </View>
 
@@ -240,15 +273,32 @@ const AddComplaint = ({navigation}) => {
                         Status tag
                     </Text>
                     {StatusTags===null?<ActivityIndicator />:<>
-                    {StatusTags.map(c =>
-                        <Chip mode={checkedStatus ===c.id?"flat":"outlined"} 
-                        key={c.id} 
-                        onPress={() => {
-                            setCheckedStatus(checkedStatus === c.id ? null : c.id);
-                        }}
-                        style={Style.tags}  
-                        icon="shape-plus">{c.name}</Chip>
-                    )}
+                        {StatusTags.map(c =>
+                            <Chip mode={checkedStatus ===c.id?"flat":"outlined"} 
+                            key={c.id} 
+                            onPress={() => {
+                                setCheckedStatus(checkedStatus === c.id ? null : c.id);
+                                
+                            }}
+                            style={[
+                                MyStyle.margin, 
+                                { 
+                                    backgroundColor: checkedStatus === c.id ? "#AF8F6F" : "#543310" // Thay đổi màu nền dựa trên trạng thái được chọn
+                                }
+                            ]}
+                            icon={() => (// -----Mới thêm-----
+                                <Icon
+                                    source="tag"
+                                    size={20}
+                                    color={'#F8F4E1'}
+                                />)}
+                                    
+                            textStyle={{color: '#F8F4E1'}}
+                            >
+                                {c.name}
+                            
+                            </Chip>
+                        )}
                 </>}
                 </View>
 
@@ -263,8 +313,20 @@ const AddComplaint = ({navigation}) => {
                         onPress={() => {
                             setCheckedComplaint(checkedComplaint === c.id ? null : c.id);
                         }}
-                        style={Style.tags}  
-                        icon="shape-plus">{c.name}</Chip>
+                        style={[
+                            MyStyle.margin, 
+                            { 
+                                backgroundColor: checkedComplaint === c.id ? "#AF8F6F" : "#543310" // Thay đổi màu nền dựa trên trạng thái được chọn
+                            }
+                        ]}
+                        icon={() => (// -----Mới thêm-----
+                            <Icon
+                                source="tag"
+                                size={20}
+                                color={'#F8F4E1'}
+                            />)}
+                            textStyle={{color: '#F8F4E1'}}
+                        >{c.name}</Chip>
                     )}
                 </>}
                 </View>
@@ -276,13 +338,13 @@ const AddComplaint = ({navigation}) => {
                 </TouchableOpacity>
             </View>
             
-            {selectedTags.status || selectedTags.complaint ? (
+            {/* {selectedTags.status || selectedTags.complaint ? (
                 <View style={[Style.margin, Style.container]}>
                     <Text>Selected Tags:</Text>
                     {selectedTags.status && <Text>Status: {selectedTags.status}</Text>}
                     {selectedTags.complaint && <Text>Complaint: {selectedTags.complaint}</Text>}
                 </View>
-            ) : null}
+            ) : null} */}
 
             
         </ScrollView>

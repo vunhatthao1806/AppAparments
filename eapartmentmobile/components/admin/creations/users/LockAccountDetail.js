@@ -1,5 +1,5 @@
-import { Alert, Image, TouchableOpacity, View } from "react-native";
-import { Button, Text } from "react-native-paper";
+import { Alert, Image, ScrollView, TouchableOpacity, View } from "react-native";
+import { Button, Divider, Text } from "react-native-paper";
 import { useEffect, useState } from "react";
 import Style from "../../../profiles/convenient/Style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -45,69 +45,101 @@ useEffect(() => {
     loadUser();
 }, [userid]);
 return (
-    <View style={MyStyle.container}>
+    <ScrollView style={MyStyle.container}>
         {user && (
             <View style={[{ marginTop: 0 }]}>
-                <View style={{margin: 10 }}>
+                <View >
                     <Image
                         source={
                             user.avatar ? { uri: user.avatar } : require("./default.png")
                         }
                         style={{ width: 150, height: 150, borderRadius: 100, marginLeft: '25%'}}
                     />
-                    <View style={{ marginLeft: 10, marginTop: 30 }}>
-                        <Text style={{ fontSize: 17, fontWeight: "bold" }}>
-                            username: {user.username}
+                    <View style={[{ marginTop: 20,
+                                    borderColor: '#ddd',  // Màu viền
+                                    borderWidth: 1,       // Độ dày viền
+                                    borderRadius: 5,      // Góc bo tròn viền
+                                    padding: 10,          // Khoảng cách bên trong viền
+                                    // marginBottom: 10,     // Khoảng cách giữa các bình luận
+                                    backgroundColor: '#fff', // Màu nền
+                                    marginLeft: 10,
+                                    marginRight: 15,
+                    }]}>
+                        <Text style={{ fontSize: 17, fontWeight: "bold", margin: 10 }}>
+                            Username: {user.username}
                         </Text>
-                        <Text style={{ fontSize: 17 }}>
+                        <Divider/>
+                        <Text style={{ fontSize: 17, margin: 10 }}>
                             Ngày đăng ký: {moment(user.date_joined).format("DD/MM/YYYY")}{" "}
                         </Text>
                     </View>
             </View>
+        <View style={[{ marginTop: 30,
+                        borderColor: '#ddd',  // Màu viền
+                        borderWidth: 1,       // Độ dày viền
+                        borderRadius: 5,      // Góc bo tròn viền
+                        padding: 10,          // Khoảng cách bên trong viền
+                        marginBottom: 10,     // Khoảng cách giữa các bình luận
+                        backgroundColor: '#fff', // Màu nền
+                        marginLeft: 10,
+                        marginRight: 15,
+                    }]}>
           <View
-            style={[Style.ecabinetStyle, {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              margin: 10,
-            }]}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Họ</Text>
-            <Text style={{ fontSize: 20 }}>{user.first_name}</Text>
+              style={[{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                margin: 10,
+              }]}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "bold" }}>Họ: </Text>
+              <Text style={{ fontSize: 17 }}>{user.first_name}</Text>
           </View>
+          <Divider/>
           <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              margin: 10,
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Tên</Text>
-            <Text style={{ fontSize: 20 }}>{user.last_name}</Text>
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                margin: 10,
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "bold" }}>Tên: </Text>
+              <Text style={{ fontSize: 17 }}>{user.last_name}</Text>
           </View>
+          <Divider/>
           <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              margin: 10,
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Email</Text>
-            <Text style={{ fontSize: 20 }}>{user.email}</Text>
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                margin: 10,
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "bold" }}>Email: </Text>
+              <Text style={{ fontSize: 17 }}>{user.email}</Text>
           </View>
+          <Divider/>
           <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              margin: 10,
-            }}
-          >
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-              Trạng thái tài khoản
-            </Text>
-            <Text style={{ fontSize: 20 }}>
-              {user.is_active === false ? "Đang khóa" : "Hoạt động"}
-            </Text>
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                margin: 10,
+              }}
+            >
+              <Text style={{ fontSize: 17, fontWeight: "bold", marginTop: '7%' }}>
+                Trạng thái tài khoản: 
+              </Text>
+              <Text style={{ fontSize: 17,
+                margin: 10,
+                padding: 10, // Thêm padding để có không gian cho border
+                borderWidth: 2, // Độ dày của border
+                backgroundColor: user.is_active === false ? "red" : "green",
+                color: "white",
+                borderRadius: 10,
+                borderColor: user.is_active === false ? "red" : "green"
+               }}>
+                {user.is_active === false ? "Đang khóa" : "Hoạt động"}
+              </Text>
           </View>
+        </View>
           <TouchableOpacity>
             {user.is_active === true ? (
               <Button
@@ -133,7 +165,7 @@ return (
           </TouchableOpacity>
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 };
 export default LockAccountDetail;

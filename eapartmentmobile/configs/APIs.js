@@ -38,7 +38,7 @@ export const endpoints = {
     'carcard-detail': (carCardId) => `/carcards/${carCardId}/`,
     'carcards': '/carcards/',
     'receipts': "/receipts/",
-    'receipt-detail': (receiptid) => `/receipts/${receiptid}`,
+    'receipt-detail': (receiptid) => `/receipts/${receiptid}/`,
     "create-payment": "/payments/create-payment/",
     'tranferpayment': "/paymentdetails/",
 };

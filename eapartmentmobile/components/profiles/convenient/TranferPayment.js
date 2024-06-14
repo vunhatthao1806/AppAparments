@@ -1,6 +1,6 @@
-import { Alert, Image, View } from "react-native";
+import { Alert, Image, View, TouchableOpacity } from "react-native";
 import Style from "./Style";
-import { TouchableOpacity } from "react-native-gesture-handler";
+// import {  } from "react-native-gesture-handler";
 import { Button, Icon, Text } from "react-native-paper";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -16,43 +16,43 @@ const TranferPayment = ({ route }) => {
     let { status } = await ImagePicker.getMediaLibraryPermissionsAsync();
     if (status !== "granted") alert("Từ chối quyền truy cập");
     else {
-      let res = await ImagePicker.launchImageLibraryAsync();
-      if (!res.canceled) {
-        const image = res.assets[0];
-        setImage(image);
+        let res = await ImagePicker.launchImageLibraryAsync();
+        if (!res.canceled) {
+          const image = res.assets[0];
+          setImage(image);
       }
     }
   };
-  const confirm = async () => {
-    const filename = image.uri.split("/").pop();
-    const match = /\.(\w+)$/.exec(filename);
-    const fileType = match ? `image/${match[1]}` : `image`;
-    if (image) {
-      const form = new FormData();
-      form.append("image", {
-        uri: image.uri,
-        type: fileType,
-        name: filename,
-      });
-      console.log(image.uri);
-      console.log(fileType);
-      console.log(filename);
-      setLoading(true);
-      try {
-        let accessToken = await AsyncStorage.getItem("access-token");
-        let url = `${endpoints["tranferpayment"]}?receipt_id=${receiptid}`;
-        let res = await authAPI(accessToken).post(url, form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+    const confirm = async () => {
+      const filename = image.uri.split("/").pop();
+      const match = /\.(\w+)$/.exec(filename);
+      const fileType = match ? `image/${match[1]}` : `image`;
+      if (image) {
+        const form = new FormData();
+        form.append("image", {
+          uri: image.uri,
+          type: fileType,
+          name: filename,
         });
-        Alert.alert("Thông báo", "Xác nhận thành công!!!");
-      } catch (ex) {
-        console.error(ex);
-      } finally {
-        setLoading(false);
+        console.log(image.uri);
+        console.log(fileType);
+        console.log(filename);
+        setLoading(true);
+        try {
+          let accessToken = await AsyncStorage.getItem("access-token");
+          let url = `${endpoints["tranferpayment"]}?receipt_id=${receiptid}`;
+          let res = await authAPI(accessToken).post(url, form, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          Alert.alert("Thông báo", "Xác nhận thành công!!!");
+        } catch (ex) {
+          console.error(ex);
+        } finally {
+          setLoading(false);
+        }
       }
-    }
   };
   return (
     <View style={MyStyle.container}>
@@ -62,12 +62,12 @@ const TranferPayment = ({ route }) => {
             {image ? (
               <Image
                 source={{ uri: image.uri }}
-                width={"100%"}
-                height={"100%"}
+                width={'100%'}
+                height={'100%'}
                 borderRadius={10}
               />
             ) : (
-              <View>
+              <View >
                 <View style={Style.iconupimage}>
                   <Icon source={"tray-arrow-up"} size={30} />
                 </View>
@@ -84,7 +84,7 @@ const TranferPayment = ({ route }) => {
         <TouchableOpacity onPress={confirm}>
           <Button
             mode="contained"
-            style={{ width: "90%", alignSelf: "center" }}
+            style={{ width: "90%", alignSelf: "center", marginTop: 50 }}
             buttonColor="#40A578"
           >
             Xác nhận

@@ -1,6 +1,6 @@
 import { ScrollView, Text, TouchableOpacity, View, useWindowDimensions } from "react-native";
 import {StyleProp,ViewStyle,Animated,Platform,SafeAreaView,I18nManager} from 'react-native';
-import { AnimatedFAB } from 'react-native-paper';
+import { AnimatedFAB, Icon } from 'react-native-paper';
 import MyStyle from "../../styles/MyStyle";
 import { useEffect, useState } from "react";
 import APIs, { endpoints } from "../../configs/APIs";
@@ -95,98 +95,136 @@ const  Complaint = ({navigation, animatedValue,
         }
     };
 
-  const fabStyle = { [animateFrom]: 20 };
+  const fabStyle = { [animateFrom]: 16 };
   const ComplaintTags = tags.filter(t => t.id >= 3 && t.id <= 8 );
+
 
     return (
         <View style={[MyStyle.container]}>
             <Text style={[Style.cates, Style.margin]}>Bản tin góp ý</Text>
-
+            
             <View style={[MyStyle.row, MyStyle.wrap]}>
                 <Chip mode={!complaint_tagId?"flat":"outlined"} 
-                onPress={() => search("", setComplaint_tagId)} style={Style.tags} icon="shape-plus">Tất cả</Chip>
+                    onPress={() => search("", setComplaint_tagId)} // -----Mới thêm-----
+                    style={[Style.tags, !complaint_tagId ? {backgroundColor: "#AF8F6F"} : {backgroundColor: "#543310"}]} 
+                    textStyle={{color: '#F8F4E1'}}
+                    icon={() => (
+                        <Icon
+                            source="tag"
+                            size={20}
+                            color={!complaint_tagId ? Style.chipTextSelected.color : Style.chipTextUnselected.color}
+                        />)}
+                    >Tất cả</Chip>
 
                 {ComplaintTags===null?<ActivityIndicator />:<>
                     {ComplaintTags.map(c => 
-                        <Chip mode={c.id===complaint_tagId?"flat":"outlined"} 
-                        key={c.id} 
-                        onPress={() => search(c.id, setComplaint_tagId)} 
-                        style={Style.tags}  
-                        icon="shape-plus">{c.name}</Chip>
+                        <Chip 
+                            mode={c.id===complaint_tagId?"flat":"outlined"} 
+                            key={c.id} 
+                            onPress={() => search(c.id, setComplaint_tagId)} 
+                            textStyle={{color: '#F8F4E1'}}// -----Mới thêm-----
+                            style={[Style.tags,c.id === complaint_tagId ? {backgroundColor: "#AF8F6F"} : {backgroundColor: "#543310"}]}  
+                            icon={() => (
+                                <Icon
+                                    source="tag"
+                                    size={20}
+                                    color={!complaint_tagId ? Style.chipTextSelected.color : Style.chipTextUnselected.color}
+                                />)}
+                            
+                            >{c.name}</Chip>
                     )}
                 </>}
-
-            </View>
-            {/* <SafeAreaView style={Style.container}> */}
-                <ScrollView onScroll={Scroll}>
-                    {complaints===null?<ActivityIndicator/>:<>
-                    {complaints.map(c => (
-                        <TouchableOpacity key={c.id} onPress={() => navigation.navigate('ComplaintDetail', {'complaintId': c.id})} >
-                            <Card key={c.id} >
-
-                                <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
-                                    <Avatar.Image size={43} source={{ uri: c.user.avatar }} />
-                                    <View >
-                                        <Text style={Style.username}>{c.user.username}</Text>
-                                        <Text style={Style.createdDate}>{moment(c.created_date).format("DD/MM/YYYY HH:mm")}</Text>
-                                    </View>
-                                </View>
-                                
-                                <Text style={Style.title}>{c.title}</Text>
-
-                                <Card.Cover source={{ uri: c.image }} />
-                                <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
-                                    {c.complaint_tag && (
-                                        <Chip key={c.complaint_tag.id} style={MyStyle.margin} icon="vacuum">{c.complaint_tag.name}</Chip>
-                                    )}
-                                    {c.status_tag && (
-                                        <Chip 
-                                            key={c.status_tag.id} 
-                                            style={{
-                                                ...MyStyle.margin, 
-                                                ...MyStyle.statustag, 
-                                                backgroundColor: c.status_tag.name === "Chưa xử lý" ? "#FF8F8F" : "#B0EBB4"
-                                            }}
-                                            >
-                                                {c.status_tag.name}
-                                        </Chip>
-                                    )}
-                                </View>
-                                <Card.Content style={Style.cardContent}>
-                                    <RenderHTML
-                                        contentWidth={width} 
-                                        //source={{html: c.content}}
-                                        source={{  html: showFullContent[c.id] ? c.content : `${c.content.slice(0, maxContentLength)}...` }}
-                                        // defaultTextProps={{ style: Style.text }} 
-                                    />
-
-                                    {!showFullContent[c.id] && c.content.length > maxContentLength && (
-                                        <TouchableOpacity onPress={() => handleToggleContent(c.id)}>
-                                            <Text style={Style.readMore}>Đọc thêm</Text>
-                                        </TouchableOpacity>
-                                    )}
-                                    {showFullContent[c.id] && (
-                                        <TouchableOpacity onPress={() => handleToggleContent(c.id)}>
-                                            <Text style={Style.readMore}>Thu gọn</Text>
-                                        </TouchableOpacity>
-                                    )}
-                                </Card.Content>
-                            </Card> 
-
-                        </TouchableOpacity>
-                    ))}
-                </>}
-                </ScrollView>
                 
-                <AnimatedFAB
-                    icon={'plus'}
-                    label={'Add complaint'}
+            </View >
+            {/* <SafeAreaView style={Style.container}> */}
+            <ScrollView>{/* // -----Mới đổi View-> scrollview----- */}
+                <ScrollView onScroll={Scroll} >
+                    {complaints===null?<ActivityIndicator/>:<>
+                        {complaints.map(c => (
+                            <TouchableOpacity key={c.id} onPress={() => navigation.navigate('ComplaintDetail', {'complaintId': c.id})} >
+                                {/* // -----Mới thêm----- */}
+                                <Card key={c.id} style={{backgroundColor: 'white'}}> 
+
+                                    <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
+                                        <Avatar.Image size={43} source={{ uri: c.user.avatar }} />
+                                        <View >
+                                            <Text style={Style.username}>{c.user.username}</Text>
+                                            <Text style={Style.createdDate}>{moment(c.created_date).format("DD/MM/YYYY HH:mm")}</Text>
+                                        </View>
+                                    </View>
+                                    
+                                    <Text style={Style.title}>{c.title}</Text>
+
+                                    <Card.Cover source={{ uri: c.image }} />
+                                    <View style={[MyStyle.row, MyStyle.wrap, MyStyle.margin]}>
+                                        {c.complaint_tag && (
+                                            <Chip key={c.complaint_tag.id} 
+                                                style={[MyStyle.margin, {backgroundColor: "#543310"}]} 
+                                                icon={() => (// -----Mới thêm-----
+                                                    <Icon
+                                                        source="tag"
+                                                        size={20}
+                                                        color={!complaint_tagId ? Style.chipTextSelected.color : Style.chipTextUnselected.color}
+                                                    />)}
+                                                
+                                                textStyle={{color: '#F8F4E1'}}
+                                                >
+                                                {c.complaint_tag.name}
+                                                </Chip>
+                                        )}
+                                        {c.status_tag && (
+                                            <Chip 
+                                                key={c.status_tag.id} 
+                                                style={{
+                                                    ...MyStyle.margin, 
+                                                    ...MyStyle.statustag, 
+                                                    backgroundColor: c.status_tag.name === "Chưa xử lý" ? "#FF8F8F" : "#B0EBB4"
+                                                }}
+                                                >
+                                                    {c.status_tag.name}
+                                            </Chip>
+                                        )}
+                                    </View>
+                                    <Card.Content style={Style.cardContent}>
+                                        <RenderHTML
+                                            contentWidth={width} 
+                                            source={{  html: showFullContent[c.id] ? c.content : `${c.content.slice(0, maxContentLength)}...` }}
+                                        />
+
+                                        {!showFullContent[c.id] && c.content.length > maxContentLength && (
+                                            <TouchableOpacity onPress={() => handleToggleContent(c.id)}>
+                                                <Text style={Style.readMore}>Đọc thêm</Text>
+                                            </TouchableOpacity>
+                                        )}
+                                        {showFullContent[c.id] && (
+                                            <TouchableOpacity onPress={() => handleToggleContent(c.id)}>
+                                                <Text style={Style.readMore}>Thu gọn</Text>
+                                            </TouchableOpacity>
+                                        )}
+                                    </Card.Content>
+                                </Card> 
+
+                            </TouchableOpacity>
+                        ))}
+                    </>}
+                </ScrollView>
+            </ScrollView>
+                <AnimatedFAB // -----Mới thêm-----
+                    icon={() => (
+                        <Icon
+                            source="plus"
+                            size={20}
+                            color="#543310"
+                        />)}
+                    
+                    label={'ĐĂNG BÀI VIẾT'}
                     extended={isExtended}
                     onPress={() => navigation.navigate('AddComplaint')}
                     visible={visible}
                     animateFrom={'right'}
                     iconMode={'static'}
                     style={[Style.fabStyle, style, fabStyle]}
+                    labelStyle={{ color: '#FFFFFF' }}
                 />
         {/* </SafeAreaView> */}
         </View>

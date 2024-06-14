@@ -11,7 +11,7 @@ import Styles from "../../../profiles/Styles";
 import Style from "../../../complaints/Style";
 import MyStyle from "../../../../styles/MyStyle";
 
-const ItemCreate = () => {
+const ItemCreate = ({navigation}) => {
     const [tags, setTags] = useState([]);
     const [ecabinets, setEcabinets] = useState([]);
 
@@ -109,6 +109,7 @@ const ItemCreate = () => {
         
         await loadCreateItem();
         sendSms();
+        navigation.navigate("Services");
     }
 
     const hideMiddleDigits = (phoneNumber) => {
@@ -194,7 +195,7 @@ const ItemCreate = () => {
                 <View style={MyStyle.row}>
                     <Icon
                         source="pen"
-                        color={'#4F6F52'} 
+                        color={'#543310'} 
                         size={28}
                     />    
                     <Text style={Style.titleComplaint}>
@@ -209,8 +210,8 @@ const ItemCreate = () => {
                     placeholderTextColor="white"
                     textColor="white"
                     cursorColor="white"
-                    underlineStyle={{ backgroundColor: "#627254" }}
-                    backgroundColor="#627254"
+                    underlineStyle={{ backgroundColor: "#543310" }}
+                    backgroundColor="#543310"
                 />
             </View>
 
@@ -234,7 +235,21 @@ const ItemCreate = () => {
                             onPress={() => {
                                 setCheckedStatus(checkedStatus === c.id ? null : c.id);
                             }}
-                            style={[Style.tags, checkedStatus === c.id ? Style.chipUnselected : Style.chipSelected]}  
+                            style={[
+                                MyStyle.margin, 
+                                { 
+                                    backgroundColor: checkedStatus === c.id ? "#AF8F6F" : "#543310" // Thay đổi màu nền dựa trên trạng thái được chọn
+                                }
+                            ]}
+                            icon={() => (// -----Mới thêm-----
+                                <Icon
+                                    source="tag"
+                                    size={20}
+                                    color={'#F8F4E1'}
+                                />)}
+                                    
+                            textStyle={{color: '#F8F4E1'}}
+                            // style={[Style.tags, checkedStatus === c.id ? Style.chipUnselected : Style.chipSelected]}  
                         >{c.name}
                         </Chip>
                     )}
@@ -246,7 +261,7 @@ const ItemCreate = () => {
                 <View style={MyStyle.row}>
                     <Icon
                         source="file-cabinet"
-                        color={'#4F6F52'} 
+                        color={'#543310'} 
                         size={28}
                     />    
                     <Text style={Style.titleComplaint}> Ecabinets</Text>
@@ -262,7 +277,7 @@ const ItemCreate = () => {
                             width: '100%',
                             borderWidth: 1,
                             borderColor: '#ccc',
-                            backgroundColor: "#627254", }}
+                            backgroundColor: "#543310", }}
                             onValueChange={(itemValue) => {
                                 setSelectedEcabinet(itemValue);
                                 const selectedCabinet = ecabinets.find(e => e.id === itemValue);
@@ -279,15 +294,7 @@ const ItemCreate = () => {
                         ))}
                     </Picker>
                 )}
-                {/* {selectedEcabinet && <Text>Bạn đã chọn: {selectedEcabinet}</Text>} */}
-{/* 
-                {selectedEcabinet && (
-                    <>
-                        <Text>Bạn đã chọn: {ecabinets.find(e => e.id === selectedEcabinet)?.name}</Text>
-                        <Text>Số điện thoại của chủ sở hữu: {ownerPhoneNumber}</Text>
-                    </>
-                )}   */}
-                    
+
                 <View>
                     <TextInput
                         style={{ marginTop: 20 }}
@@ -299,21 +306,21 @@ const ItemCreate = () => {
                         disabled={true}
                     />
                     <TextInput
-                        style={{ marginTop: 20, backgroundColor: "#627254" }}
-                        label="Tin nhắn"
+                        style={{ marginTop: 20, backgroundColor: "#543310" }}
+                        
                         placeholder="Nhập tin nhắn"
                         multiline={true}
                         value={message}
                         onChangeText={setMessage}
                         textColor="white"
                         cursorColor="white"
-                        labelStyle={{ color: "#fff" }}
+                        labelStyle={{ color: "white" }}
                     />
                 </View>
             </View>
 
             <TouchableOpacity style={[Style.margin, Style.container]} onPress={createItem}>
-                <View style={Style.itemCreate}>
+                <View style={[Style.itemCreate, {backgroundColor: "#543310",}]}>
                     <Text style={Style.textCreate}>Create</Text>
                 </View>
             </TouchableOpacity>

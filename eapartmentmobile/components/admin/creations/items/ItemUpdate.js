@@ -83,7 +83,7 @@ const ItemUpdate = () => {
                 <View style={MyStyle.row}>
                     <Icon
                         source="file-cabinet"
-                        color={'#4F6F52'} 
+                        color={'#543310'} 
                         size={28}
                     />    
                     <Text style={Style.titleComplaint}> Ecabinets</Text>
@@ -99,7 +99,7 @@ const ItemUpdate = () => {
                             width: '100%',
                             borderWidth: 1,
                             borderColor: '#ccc',
-                            backgroundColor: "#627254", }}
+                            backgroundColor: "#543310", }}
                             onValueChange={(itemValue) => {
                                 setSelectedEcabinet(itemValue);
                                 const selectedCabinet = ecabinets.find(e => e.id === itemValue);
@@ -116,7 +116,7 @@ const ItemUpdate = () => {
                         ))}
                     </Picker>                    
                 )}
-                <Text>Bạn đã chọn: {ecabinets.find(e => e.id === selectedEcabinet)?.name}</Text>
+                {/* <Text>Bạn đã chọn: {ecabinets.find(e => e.id === selectedEcabinet)?.name}</Text> */}
             </View>
             <ScrollView contentContainerStyle={{flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', padding: 8,}}>
                     {selectedEcabinet && (

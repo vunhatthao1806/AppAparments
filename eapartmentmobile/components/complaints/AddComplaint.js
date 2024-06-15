@@ -154,9 +154,6 @@ const AddComplaint = ({navigation}) => {
                 },
               }
             );
-      
-            // Xử lý kết quả trả về từ server
-            // alert("Thông báo", "Đăng ký thành công!!!");
         } catch(ex) {
             console.error(ex);
         }

@@ -98,7 +98,6 @@ const  Complaint = ({navigation, animatedValue,
   const fabStyle = { [animateFrom]: 16 };
   const ComplaintTags = tags.filter(t => t.id >= 3 && t.id <= 8 );
 
-
     return (
         <View style={[MyStyle.container]}>
             <Text style={[Style.cates, Style.margin]}>Bản tin góp ý</Text>
@@ -137,8 +136,8 @@ const  Complaint = ({navigation, animatedValue,
                 
             </View >
             {/* <SafeAreaView style={Style.container}> */}
-            <ScrollView>{/* // -----Mới đổi View-> scrollview----- */}
-                <ScrollView onScroll={Scroll} >
+            <ScrollView onScroll={Scroll}>
+                <ScrollView  >
                     {complaints===null?<ActivityIndicator/>:<>
                         {complaints.map(c => (
                             <TouchableOpacity key={c.id} onPress={() => navigation.navigate('ComplaintDetail', {'complaintId': c.id})} >

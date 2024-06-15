@@ -28,7 +28,7 @@ const SurveyCreate = ({navigation}) => {
                     }
                 }
             )
-            // console.log(res.data.id);
+            console.log(res.data.id);
             
             Alert.alert("Thông báo", "Đăng ký thành công!!!");
             navigation.navigate("QuestionCreate", {'surveyId': res.data.id})

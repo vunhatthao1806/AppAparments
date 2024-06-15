@@ -231,4 +231,4 @@ class CreateQuestionsSerializer(serializers.ModelSerializer):
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = AnswerUser
-        fields = ['id', 'question', 'survey', 'user']
+        fields = ['id', 'question', 'survey', 'choice']

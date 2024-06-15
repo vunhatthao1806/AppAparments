@@ -36,7 +36,7 @@ class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAP
     def perform_create(self, serializer):
         user = self.request.user
         flat = Flat.objects.filter(user_id=user.id).first()
-        serializer.save(flat=flat)
+        serializer.save(user=user, flat=flat)
 
     # tìm kiếm tủ đồ
     def get_queryset(self):
@@ -334,9 +334,13 @@ class ChoiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIVi
     serializer_class = serializers.ChoiceSerializer
 
 
-class AnswerViewSet(viewsets.ViewSet, generics.ListAPIView):
+class AnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView, generics.DestroyAPIView):
     queryset = AnswerUser.objects.all()
     serializer_class = serializers.AnswerSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
 
 
 class CreateSurveyViewSet(viewsets.ViewSet, generics.CreateAPIView):

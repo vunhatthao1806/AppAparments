@@ -173,7 +173,6 @@ class Choice(models.Model):
 
 
 class AnswerUser(models.Model):
-
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE, null=True)

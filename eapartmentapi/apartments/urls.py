@@ -33,6 +33,7 @@ r.register('questions', views.QuestionViewSet, 'questions')
 r.register('createquestions', views.CreateQuestionViewSet, 'createquestions')
 r.register('choices', views.ChoiceViewSet, 'choices')
 r.register('answers', views.AnswerViewSet, 'answers')
+# r.register('createanswers', views.CreateAnswerViewSet, 'createanswers')
 
 urlpatterns = [
     path('', include(r.urls)),

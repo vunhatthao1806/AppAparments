@@ -20,8 +20,16 @@ class User(AbstractUser):
     avatar = CloudinaryField(null=True)
     first_login = models.BooleanField(default=True)
 
-    survey_user_done = models.ManyToManyField('Survey', related_name='survey_user_done')
+    survey_user_done = models.ManyToManyField('Survey', through='SurveyUserDone', related_name='survey_user_done')
     expo_push_token = models.CharField(max_length=255, null=True, blank=True)
+
+
+class SurveyUserDone(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    survey = models.ForeignKey('Survey', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['-created_date']
 
 
 class ECabinet(BaseModel):
@@ -151,6 +159,7 @@ class Survey(BaseModel):
     content = RichTextField()
 
     user_create = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_create')
+    # status = models.BooleanField(blank=True, null=True)
 
     def __str__(self):
         return self.title

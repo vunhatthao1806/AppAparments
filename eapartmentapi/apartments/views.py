@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
-    CarCard, Survey, AnswerUser, PhoneNumber, PaymentDetail
+    CarCard, Survey, AnswerUser, PhoneNumber, PaymentDetail, SurveyUserDone
 from apartments import serializers, paginators, perms
 import requests as external_requests
 import uuid
@@ -284,7 +284,7 @@ class AdminViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
 
-class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
+class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIView):
     queryset = Survey.objects.all()
     serializer_class = serializers.SurveySerializer
     pagination_class = paginators.SurveyPaginator
@@ -306,8 +306,33 @@ class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView):
     @action(detail=True, methods=['get'], url_path='get_survey_user_counts')
     def user_count(self, request, pk):
         survey = self.get_object()
-        user_count = AnswerUser.objects.filter(survey=survey).values('user_id').distinct().count()
+        user_count = SurveyUserDone.objects.filter(survey=survey).values('user_id').distinct().count()
         return Response({'survey_id': survey.id, 'user_count': user_count})
+
+
+class SurveyUserDoneViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView):
+    queryset = SurveyUserDone.objects.all()
+    serializer_class = serializers.SurveyUserDoneSerializer
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
+
+    @action(methods=['get'], url_path='survey_new', detail=False)
+    def get_survey_new(self, request):
+        user = request.user
+        completed_survey_ids = SurveyUserDone.obsjects.filter(user=user).values_list('survey_id', flat=True)
+        new_surveys = Survey.objects.exclude(id__in=completed_survey_ids)
+        serializer = serializers.SurveySerializer(new_surveys, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], url_path='survey_history', detail=False)
+    def get_survey_history(self, request):
+        user = request.user
+        completed_survey_ids = SurveyUserDone.objects.filter(user=user).values_list('survey_id', flat=True)
+        new_surveys = Survey.objects.filter(id__in=completed_survey_ids)
+        serializer = serializers.SurveySerializer(new_surveys, many=True)
+        return Response(serializer.data)
 
 
 class QuestionViewSet(viewsets.ViewSet, generics.ListAPIView):

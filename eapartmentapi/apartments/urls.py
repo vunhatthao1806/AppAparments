@@ -28,6 +28,7 @@ r.register('carcards', views.CarCardViewSet, 'carcards')
 r.register('tags', views.TagViewSet, 'tags')
 
 r.register('surveys', views.SurveyViewSet, 'surveys')
+r.register('surveys_user_done', views.SurveyUserDoneViewSet, 'surveys_user_done')
 r.register('createsurveys', views.CreateSurveyViewSet, 'createsurveys')
 r.register('questions', views.QuestionViewSet, 'questions')
 r.register('createquestions', views.CreateQuestionViewSet, 'createquestions')

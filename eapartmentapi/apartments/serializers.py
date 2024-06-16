@@ -2,7 +2,7 @@ import djf_surveys.models
 from rest_framework import serializers
 
 from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question,\
-    Choice, AnswerUser, PhoneNumber, PaymentDetail
+    Choice, AnswerUser, PhoneNumber, PaymentDetail, SurveyUserDone
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -201,6 +201,12 @@ class SurveySerializer(serializers.ModelSerializer):
 
     def get_user_count(self, obj):
         return AnswerUser.objects.filter(survey=obj).values('user_id').distinct().count()
+
+
+class SurveyUserDoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SurveyUserDone
+        fields = ['id', 'survey', 'active']
 
 
 class CreateSurveySerializer(serializers.ModelSerializer):

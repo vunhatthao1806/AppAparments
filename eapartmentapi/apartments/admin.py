@@ -1,7 +1,10 @@
 from django.contrib import admin
+from django.db.models import Count
+from django.template.response import TemplateResponse
+from django.urls import path
 from django.utils.html import mark_safe
 from apartments.models import Flat, ECabinet, Complaint, Tag, Receipt, Item, User, Comment, Survey, Question, Choice, \
-    CarCard, Like, AnswerUser, PhoneNumber, PaymentDetail
+    CarCard, Like, AnswerUser, PhoneNumber, PaymentDetail, SurveyUserDone
 import cloudinary
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -9,6 +12,18 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 class ApartmentAppAdminSite(admin.AdminSite):
     site_header = "HỆ THỐNG QUẢN LÝ CHUNG CƯ"
+
+    class MyAdminSite(admin.AdminSite):
+        site_header = 'iCourse'
+
+        def get_urls(self):
+            return [path('cate-stats/', self.stats_view)] + super().get_urls()
+
+        def stats_view(self, request):
+            stats = AnswerUser.objects.filter(survey_id=1).annotate(counter=Count('choice__id')).values('id', 'user', 'question', 'choice', 'counter')
+            return TemplateResponse(request, 'admin/stats.html', {
+                'stats': stats
+            })
 
 
 admin_site = ApartmentAppAdminSite('myapartment')
@@ -143,6 +158,10 @@ class UserAdmin(BaseUserAdmin):
         }
 
 
+class SurveyUserDoneAdmin(admin.ModelAdmin):
+    list_display = ['id', 'survey', 'user', 'active']
+
+
 admin.site.register(Flat, FlatAdmin)
 admin.site.register(ECabinet, ECabinetAdmin)
 admin.site.register(Complaint, ComplaintAdmin)
@@ -153,6 +172,8 @@ admin.site.register(PaymentDetail)
 
 admin.site.register(Item, ItemAdmin)
 admin.site.register(User)
+admin.site.register(SurveyUserDone, SurveyUserDoneAdmin)
+
 admin.site.register(Like,LikeAdmin)
 admin.site.register(Comment, CommentAdmin)
 admin.site.register(CarCard, CarCardAdmin)

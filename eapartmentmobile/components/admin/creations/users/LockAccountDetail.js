@@ -73,8 +73,8 @@ return (
                             Ngày đăng ký: {moment(user.date_joined).format("DD/MM/YYYY")}{" "}
                         </Text>
                     </View>
-            </View>
-        <View style={[{ marginTop: 30,
+                  </View>
+                <View style={[{ marginTop: 30,
                         borderColor: '#ddd',  // Màu viền
                         borderWidth: 1,       // Độ dày viền
                         borderRadius: 5,      // Góc bo tròn viền
@@ -84,13 +84,13 @@ return (
                         marginLeft: 10,
                         marginRight: 15,
                     }]}>
-          <View
-              style={[{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                margin: 10,
-              }]}
-            >
+                <View
+                    style={[{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      margin: 10,
+                    }]}
+                  >
               <Text style={{ fontSize: 17, fontWeight: "bold" }}>Họ: </Text>
               <Text style={{ fontSize: 17 }}>{user.first_name}</Text>
           </View>
@@ -138,7 +138,7 @@ return (
                }}>
                 {user.is_active === false ? "Đang khóa" : "Hoạt động"}
               </Text>
-          </View>
+          </View> 
         </View>
           <TouchableOpacity>
             {user.is_active === true ? (

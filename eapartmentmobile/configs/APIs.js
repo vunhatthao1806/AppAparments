@@ -37,6 +37,10 @@ export const endpoints = {
   'add_item': '/additem/',
 
   'surveys': '/surveys/',
+  'survey_user_done': '/surveys_user_done/' ,
+  'survey_new': '/surveys_user_done/survey_new/',
+  'survey_history': '/surveys_user_done/survey_history/',
+
   'questions':(surveyId) => `/surveys/${surveyId}/questions/`,
   'get_choices':(questionId) => `/questions/${questionId}/choices/`,
   'create_surveys': '/createsurveys/',

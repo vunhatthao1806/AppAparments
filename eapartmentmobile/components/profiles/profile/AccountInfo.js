@@ -1,4 +1,4 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text, View, ScrollView } from "react-native";
 import Context from "../../../configs/Context";
 import moment from "moment";
 import MyStyle from "../../../styles/MyStyle";
@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import Styles from "../Styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI, endpoints } from "../../../configs/APIs";
+import { Divider } from "react-native-paper";
 
 const AccountInfo = () => {
     const [user, setUser] = useState('');
@@ -26,7 +27,6 @@ const AccountInfo = () => {
     }, []);
 
     return (
-      <View style={[MyStyle.container]}>
         <View>
           <Image
             style={Styles.accountinfoImage}
@@ -155,7 +155,6 @@ const AccountInfo = () => {
             }}
           ></View>
         </View>
-      </View>
     );
   };
   export default AccountInfo;

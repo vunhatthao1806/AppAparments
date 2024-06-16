@@ -48,6 +48,7 @@ import PaymentHistory from './components/profiles/convenient/PaymentHistory';
 import TranferPayment from './components/profiles/convenient/TranferPayment';
 import SurveysUser from './components/surveys/SurveysUser';
 import SurveyDetail from './components/surveys/SurveyDetail';
+import SurveysHistory from './components/surveys/SurveysHistory';
 
 const Stack = createNativeStackNavigator();
 
@@ -236,13 +237,18 @@ const SurveyUserStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Khảo sát"
+        name="SurveysUser"
         component={SurveysUser}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="SurveyDetail"
         component={SurveyDetail}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="SurveysHistory"
+        component={SurveysHistory}
         options={{ headerShown: true }}
       />
     </Stack.Navigator>
@@ -275,7 +281,7 @@ const MyTab = () => {
         component={SurveyUserStack}
         options={{
           title: "Khảo sát",
-          tabBarIcon: () => <Icon source="bell" size={30} color="white" />,
+          tabBarIcon: () => <Icon source="form-select" size={30} color="white" />,
           headerTitleAlign: "center",
         }}
       />

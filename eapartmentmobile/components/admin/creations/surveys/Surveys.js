@@ -125,7 +125,7 @@ const Surveys = ({navigation}) => {
                                                     color={'#DDDDDD'}
                                                     size={20}
                                                 />
-                                                <Text style={{flexWrap: 'wrap', fontWeight: "bold", marginLeft: 5, marginBottom: 5, marginTop: -1}}>{c.count_users}</Text>
+                                                <Text style={{flexWrap: 'wrap', fontWeight: "bold", marginLeft: 5, marginBottom: 5, marginTop: -1}}>{c.user_count}</Text>
                                     </View>
                                 </View>
                                 

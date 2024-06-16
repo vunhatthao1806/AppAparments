@@ -138,7 +138,11 @@ const  Complaint = ({navigation, animatedValue,
             {/* <SafeAreaView style={Style.container}> */}
             <ScrollView onScroll={Scroll}>
                 <ScrollView  >
-                    {complaints===null?<ActivityIndicator/>:<>
+                    {complaints.length == 0 ?<>
+                        <View style={Style.noCommentContainer}>
+                            <Text style={Style.noCommentText}>Chưa có bài viết nào!</Text>
+                        </View>
+                    </>:<>
                         {complaints.map(c => (
                             <TouchableOpacity key={c.id} onPress={() => navigation.navigate('ComplaintDetail', {'complaintId': c.id})} >
                                 {/* // -----Mới thêm----- */}

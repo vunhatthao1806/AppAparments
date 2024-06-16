@@ -88,24 +88,6 @@ const Convenient = ({ navigation }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("Survey")}>
-              <View style={{ alignItems: "center" }}>
-                <IconButton
-                  icon="form-select"
-                  size={50}
-                  iconColor="rgba(60,32,22,0.8)"
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#212121",
-                    fontSize: 20,
-                  }}
-                >
-                  Khảo sát
-                </Text>
-              </View>
-            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

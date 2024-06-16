@@ -57,6 +57,7 @@ const QuestionCreate = ({route, navigation}) => {
             });
             
             setQuesId(res.data.id);
+            Alert.alert("Thong bao", "Tao cau hoi thanh cong");
             return res.data.id;
         } catch (ex) {
             console.error(ex);
@@ -112,6 +113,7 @@ const QuestionCreate = ({route, navigation}) => {
         const completeCreate = () => {
             loadSurveys();
             Alert.alert("Thông báo", "Tạo bài khảo sát hoàn tất!");
+            loadSurveys();
             navigation.navigate("Surveys");
         }
 
@@ -121,7 +123,7 @@ const QuestionCreate = ({route, navigation}) => {
 
             <Appbar.Header> 
                 <Appbar.Content title="Surveys" />
-                <Appbar.Action icon="calendar" onPress={completeCreate} />
+                <Appbar.Action icon="check-decagram" onPress={completeCreate} />
             </Appbar.Header>
 
             {showQuestions && questions.map((question, index) => (

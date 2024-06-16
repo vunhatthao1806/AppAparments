@@ -61,7 +61,7 @@ const ChangePass = () => {
         if (key === "password") form.append(key, usercurrent[key]);
       let accessToken = await AsyncStorage.getItem("access-token");
       let res = await authAPI(accessToken).patch(
-        endpoints["current-user"],
+        endpoints["current_user"],
         form,
         {
           headers: {

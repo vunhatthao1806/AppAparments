@@ -18,7 +18,42 @@ const SurveyDetail = ({route, navigation}) => {
     const [loading,setLoading] = useState(false);
     const [selectedId, setSelectedId] = useState({});
 
-    const [answers, setAnswers] = useState([]);
+    const [surveys, setSurveys] = useState([]);
+    const [surveyUserDone, setSurveyUserDone] = useState([]);
+
+    const loadSurveysNew = async () => {
+        try {
+            let accessToken = await AsyncStorage.getItem("access-token");
+            let res = await authAPI(accessToken).get(endpoints['survey_new']);
+
+            setSurveys(res.data);
+        } catch(ex){
+            console.error(ex);
+        }
+    }
+
+    const loadSurveyUserDone = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("survey", surveyId);
+            formData.append("active", 'False');
+
+            let accessToken = await AsyncStorage.getItem("access-token");
+            let res = await authAPI(accessToken).post(endpoints['survey_user_done'],
+                formData,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    }
+                }
+            );
+
+            setSurveyUserDone(res.data);
+            console.log(res.data);
+        } catch(ex) {
+            console.error(ex);
+        }
+    }
 
     const loadQuestions = async () => {
         setLoading(true);
@@ -26,9 +61,7 @@ const SurveyDetail = ({route, navigation}) => {
             let accessToken = await AsyncStorage.getItem("access-token");
             let res = await authAPI(accessToken).get(endpoints["questions"](surveyId));
             setQuestions(res.data);
-
-            // Load choices for all questions
-            res.data.forEach(question => loadChoices2(question.id));
+            res.data.forEach(question => loadChoices(question.id));
         } catch(ex) {
             console.error(ex);
         }finally {
@@ -36,7 +69,7 @@ const SurveyDetail = ({route, navigation}) => {
         }
     }
 
-    const loadChoices2 = async (questionId) => {
+    const loadChoices = async (questionId) => {
         try {
             let accessToken = await AsyncStorage.getItem("access-token");
             let res = await authAPI(accessToken).get(endpoints["get_choices"](questionId));
@@ -48,6 +81,7 @@ const SurveyDetail = ({route, navigation}) => {
             console.error(ex);
         }
     };
+
     // questionId, choiceId
     const loadCreateAnswer = async () => { 
         try {
@@ -61,7 +95,7 @@ const SurveyDetail = ({route, navigation}) => {
                 formData.append("question", questionId);
                 formData.append("choice", choiceId);
 
-                const request = authAPI(accessToken).post(endpoints["answers"],
+                let request = authAPI(accessToken).post(endpoints["answers"],
                     formData,
                     {
                         headers: {
@@ -70,31 +104,22 @@ const SurveyDetail = ({route, navigation}) => {
                     });
                 promises.push(request);
             }
-
             await Promise.all(promises);
             Alert.alert("Thông báo", "Lưu tất cả câu trả lời thành công!");
-            navigation.navigate("Khảo sát");
+            loadSurveyUserDone();
+            loadSurveysNew();
+            navigation.navigate("SurveysUser");
+            
         } catch (ex) {
             console.error(ex);
             Alert.alert("Thông báo", "Lưu câu trả lời thất bại!");
         }
     }
 
-    const loadDeleteAnswer = async (answerId) => {
-        try {
-            let accessToken = await AsyncStorage.getItem("access-token");
-            await authAPI(accessToken).delete(endpoints["delete_answers"](answerId));
-        } catch (ex) {
-            console.error(ex);
-        }
-    };
-
-    
-
     useEffect(() => {
         if (questions.length > 0) {
             questions.forEach(q => {
-                loadChoices2(q.id);
+                loadChoices(q.id);
             });
         }
     }, [questions]);

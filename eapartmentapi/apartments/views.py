@@ -214,7 +214,7 @@ class CommentViewSet(viewsets.ViewSet, generics.DestroyAPIView, generics.UpdateA
 
 
 class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
-    queryset = User.objects.filter(is_active=True)
+    queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser, ]
     pagination_class = paginators.AdminPaginator
@@ -225,7 +225,7 @@ class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
         return [permissions.AllowAny()]
 
     def get_queryset(self):
-        queryset = User.objects.all()
+        queryset = User.objects.filter(is_staff=False)
         # Lấy tất cả các user ngoại trừ user đang request
         if self.request.user.is_authenticated:
             queryset = queryset.exclude(id=self.request.user.id)
@@ -321,7 +321,7 @@ class SurveyUserDoneViewSet(viewsets.ViewSet, generics.ListAPIView, generics.Cre
     @action(methods=['get'], url_path='survey_new', detail=False)
     def get_survey_new(self, request):
         user = request.user
-        completed_survey_ids = SurveyUserDone.obsjects.filter(user=user).values_list('survey_id', flat=True)
+        completed_survey_ids = SurveyUserDone.objects.filter(user=user).values_list('survey_id', flat=True)
         new_surveys = Survey.objects.exclude(id__in=completed_survey_ids)
         serializer = serializers.SurveySerializer(new_surveys, many=True)
         return Response(serializer.data)

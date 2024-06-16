@@ -159,7 +159,6 @@ class Survey(BaseModel):
     content = RichTextField()
 
     user_create = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_create')
-    # status = models.BooleanField(blank=True, null=True)
 
     def __str__(self):
         return self.title

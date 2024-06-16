@@ -171,7 +171,7 @@ admin.site.register(Receipt, ReceiptAdmin)
 admin.site.register(PaymentDetail)
 
 admin.site.register(Item, ItemAdmin)
-admin.site.register(User)
+admin.site.register(User, UserAdmin)
 admin.site.register(SurveyUserDone, SurveyUserDoneAdmin)
 
 admin.site.register(Like,LikeAdmin)

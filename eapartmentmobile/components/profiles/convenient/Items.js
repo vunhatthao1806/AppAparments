@@ -42,7 +42,12 @@ const Items = ({route}) => {
 
     return (
         <ScrollView contentContainerStyle={Style.container}>
-        {items.map(item => (
+            {items.length == 0 ? <>
+                <View style={Style.noCommentContainer}>
+                            <Text style={Style.noCommentText}>Chưa có hàng cần lấy trong tủ!</Text>
+                        </View>
+            </> : <>
+                {items.map(item => (
             <View key={item.id} style={Style.cardContainer}>
                 <Card style={Style.card}>
 
@@ -66,6 +71,8 @@ const Items = ({route}) => {
                 </Card>
             </View>
         ))}
+            </>}
+        
         
     </ScrollView>
     );

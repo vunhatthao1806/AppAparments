@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import { Avatar, Button, List } from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
 import Context from "../../../configs/Context";
@@ -56,6 +56,7 @@ const Profile = ({ navigation }) => {
           }
         );
         Alert.alert("Thông báo", "Cập nhật ảnh thành công!!!");
+        loadCurrentUser();
       } catch (ex) {
         console.error(ex);
       }

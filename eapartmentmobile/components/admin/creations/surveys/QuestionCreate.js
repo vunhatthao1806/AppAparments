@@ -57,7 +57,7 @@ const QuestionCreate = ({route, navigation}) => {
             });
             
             setQuesId(res.data.id);
-            Alert.alert("Thong bao", "Tao cau hoi thanh cong");
+            Alert.alert("Thông báo", "Tạo câu hỏi thành công!");
             return res.data.id;
         } catch (ex) {
             console.error(ex);
@@ -104,10 +104,8 @@ const QuestionCreate = ({route, navigation}) => {
                     options: options,
                 };
                 setQuestions([...questions, newQuestion]);
-                // console.log(newQuestion);
             }
             setShowQuestions(true);
-            // console.log(showQuestions); // Khi click vào nút "Show", đặt showQuestions thành true để hiển thị danh sách câu hỏi
         };
 
         const completeCreate = () => {

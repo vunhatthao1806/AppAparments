@@ -30,15 +30,6 @@ const Services = ({ navigation }) => {
       <ScrollView>
         <ImageBackground style={Styles.image} source={require("./home.jpg")}>
           <View>
-            <Searchbar
-              style={Styles.searchbar}
-              placeholder="Tìm kiếm"
-              iconColor="white"
-              placeholderTextColor="white"
-              color="white"
-            />
-          </View>
-          <View>
             <Avatar.Image
               style={Styles.avatarconvenient}
               source={{ uri: userInfo.avatar } }
@@ -52,45 +43,7 @@ const Services = ({ navigation }) => {
           </Text>
         </View>
         <View style={{ marginTop: 20 }}>
-          <View style={Styles.row}>
-            <TouchableOpacity onPress={() => navigation.navigate("Surveys")}>
-              <View style={{ alignItems: "center" }}>
-                <IconButton
-                  icon="playlist-edit"
-                  size={50}
-                  iconColor="rgba(60,32,22,0.8)"
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#212121",
-                    fontSize: 20,
-                  }}
-                >
-                  Khảo sát
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("ItemCreate")}>
-              <View style={{ alignItems: "center" }}>
-                <IconButton
-                  icon="archive-plus"
-                  size={50}
-                  iconColor="rgba(60,32,22,0.8)"
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#212121",
-                    fontSize: 20,
-                  }}
-                >
-                  {"Thêm hàng \n hóa mới"}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-          <View style={Styles.row}>
+        <View style={Styles.row}>
             
             <TouchableOpacity onPress={() => navigation.navigate("ItemUpdate")}>
               <View style={{ alignItems: "center" }}>
@@ -129,6 +82,27 @@ const Services = ({ navigation }) => {
               </View>
             </TouchableOpacity>
           </View>
+          <View>
+            <TouchableOpacity onPress={() => navigation.navigate("ItemCreate")}>
+              <View style={{ alignItems: "center" }}>
+                <IconButton
+                  icon="archive-plus"
+                  size={50}
+                  iconColor="rgba(60,32,22,0.8)"
+                />
+                <Text
+                  style={{
+                    textAlign: "center",
+                    color: "#212121",
+                    fontSize: 20,
+                  }}
+                >
+                  {"Thêm hàng \n hóa mới"}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          
           
         </View>
       </ScrollView>

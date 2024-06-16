@@ -1,4 +1,4 @@
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import Styles from "../Styles";
 import { useEffect, useState } from "react";
 import { authAPI, endpoints } from "../../../configs/APIs";
@@ -47,7 +47,8 @@ const Carcard = ({ navigation }) => {
   };
 
   return (
-    <ScrollView onScroll={loadMore}>
+    <ScrollView 
+      onScroll={loadMore}>
       {loading && <ActivityIndicator />}
       {carcard.map(c => (
         <View style={Style.ecabinetStyle}>

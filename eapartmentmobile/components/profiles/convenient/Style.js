@@ -109,5 +109,14 @@ export default StyleSheet.create({
         marginTop: 30,
         backgroundColor: "#F1E5D1",
         borderRadius: 10,
-      },
+      },noCommentContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 100, // Chiều cao đủ lớn để căn giữa
+    },
+    noCommentText: {
+        fontSize: 16,
+        color: 'grey',
+    },
 });

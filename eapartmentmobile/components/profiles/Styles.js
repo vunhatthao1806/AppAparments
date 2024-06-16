@@ -39,7 +39,7 @@ export default StyleSheet.create({
   },
   avatarconvenient: {
     position: "absolute",
-    left: 130,
+    left: 120,
     top: 140,
   },
   row: {
@@ -49,7 +49,7 @@ export default StyleSheet.create({
   accountinfoImage: {
     marginTop: 20,
     width: "40%",
-    height: "30%",
+    height: "50%",
     alignSelf: "center",
   },imageEca: {
     width: 100,

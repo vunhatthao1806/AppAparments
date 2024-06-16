@@ -64,7 +64,6 @@ const SurveysUser = ({navigation}) => {
     return (
         <PaperProvider>
             <Appbar.Header style={{backgroundColor: "white"}}> 
-                {/* <Appbar.BackAction onPress={() => {}} /> */}
                 <Appbar.Content title="Bài khảo sát" />
                 <Appbar.Action icon="clipboard-clock-outline" onPress={() => navigation.navigate('SurveysHistory')}/>
             </Appbar.Header>
@@ -111,19 +110,9 @@ const SurveysUser = ({navigation}) => {
                                     <RenderHTML
                                         contentWidth={width}
                                         source={{ html: c.content}} 
-                                        // source={{  html: `${c.content.slice(0, maxContentLength)}...` }}
                                     />
                                 </View>
-                                <View>
-                            {/* <View style={{flexDirection: 'row', justifyContent: "flex-end", marginTop: 2}}>
-                                    <Icon
-                                            source="eye"
-                                            color={'#DDDDDD'}
-                                            size={20}
-                                        />
-                                    <Text style={{flexWrap: 'wrap', fontWeight: "bold", marginLeft: 10}}>{c.user_count}</Text>
-                                </View> */}
-                            
+                            <View>
                         </View>
                                 
                             </View>

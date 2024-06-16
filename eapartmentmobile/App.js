@@ -266,7 +266,7 @@ const MyTab = () => {
         backgroundColor: "#3E2723"
       }}
     >
-      <Tab.Screen
+      {/* <Tab.Screen
               name="Chat"
               component={Chat}
               options={{
@@ -274,7 +274,7 @@ const MyTab = () => {
                 tabBarIcon: () => <Icon source="chat" size={30} color="white" />,
                 headerTitleAlign: "center"
               }}
-            />
+            /> */}
       
       <Tab.Screen
         name="SurveyUserStack"
@@ -349,16 +349,6 @@ const AdminTab = () => {
       }}
     >
       <Tab.Screen
-              name="Chat"
-              component={Chat}
-              options={{
-                title: "Tin nhắn",
-                tabBarIcon: () => <Icon source="chat" size={30} color="white" />,
-                headerTitleAlign: "center",
-              }}
-            />
-      
-      <Tab.Screen
         name="SurveyStack"
         component={SurveyStack}
         options={{
@@ -410,7 +400,6 @@ const App = () => {
   const handleInitialSetupComplete = () => {
       setIsInitialSetupComplete(true);
       dispatch({ type: "updateFirstLogin" });
-      console.log(user.is_staff);
   };
 
   return (

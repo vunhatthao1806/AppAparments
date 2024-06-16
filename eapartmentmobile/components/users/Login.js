@@ -32,10 +32,6 @@ const Login = () => {
         payload: user.data,
       });
     } catch (ex) {
-      console.error(
-        "Error response:",
-        ex.response ? ex.response.data : ex.message
-      );
       Alert.alert("Cảnh báo", "Tên đăng nhập hoặc mật khẩu không hợp lệ!!!", [
         {
           text: "OK",

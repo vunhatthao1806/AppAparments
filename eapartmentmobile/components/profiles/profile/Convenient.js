@@ -2,25 +2,37 @@ import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from "react
 import MyStyle from "../../../styles/MyStyle";
 import Styles from "../Styles";
 import { Avatar, IconButton, Searchbar } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authAPI, endpoints } from "../../../configs/APIs";
+import { useEffect, useState } from "react";
 
 const Convenient = ({ navigation }) => {
+
+  const [user, setUser] = useState('');
+
+  const loadCurrentUser = async () => {
+      try {
+          let accessToken = await AsyncStorage.getItem("access-token");
+          let res = await authAPI(accessToken).get(endpoints["current_user"]);
+          setUser(res.data);
+
+      } catch(ex){
+          console.error(ex);
+      }
+  };
+
+  useEffect(() => {
+    loadCurrentUser();
+}, []);
+
   return (
     <View style={MyStyle.container}>
       <ScrollView>
         <ImageBackground style={Styles.image} source={require("./home.jpg")}>
           <View>
-            <Searchbar
-              style={Styles.searchbar}
-              placeholder="Tìm kiếm"
-              iconColor="white"
-              placeholderTextColor="white"
-              color="white"
-            />
-          </View>
-          <View>
             <Avatar.Image
               style={Styles.avatarconvenient}
-              source={require("./avatar.jpg")}
+              source={{ uri: user.avatar } }
               size={130}
             />
           </View>

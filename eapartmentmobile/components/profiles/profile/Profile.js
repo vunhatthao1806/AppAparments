@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import { Avatar, Button, List } from "react-native-paper";
 import { useContext, useEffect, useState } from "react";
 import Context from "../../../configs/Context";
@@ -9,14 +9,24 @@ import Styles from "../Styles";
 import { authAPI, endpoints } from "../../../configs/APIs";
 
 const Profile = ({ navigation }) => {
-  const [userInfo, setUserInfo] = useState('');
   const [user, dispatch] = useContext(Context);
-  const userAvatar = user ? user.avatar : null;
+  //const userAvatar = user ? user.avatar : null;
+  const [userInfo, setUserInfo] = useState("");
   const [avatar, setAvatar] = useState(null);
   const logout = () => {
     dispatch({
       type: "logout",
     });
+  };
+  const loadCurrentUser = async () => {
+    try {
+      let accessToken = await AsyncStorage.getItem("access-token");
+      let res = await authAPI(accessToken).get(endpoints["current_user"]);
+      setUserInfo(res.data);
+      // console.info(userInfo);
+    } catch (ex) {
+      console.error(ex);
+    }
   };
   const chooseAvatar = async () => {
     let { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -34,16 +44,13 @@ const Profile = ({ navigation }) => {
     const filename = image.uri.split("/").pop();
     const match = /\.(\w+)$/.exec(filename);
     const fileType = match ? `image/${match[1]}` : `image`;
-    if (avatar) {
+    if (image) {
       const form = new FormData();
       form.append("avatar", {
         uri: image.uri,
         type: fileType,
         name: filename,
       });
-      console.log(image.uri);
-      console.log(fileType);
-      console.log(filename);
       try {
         let accessToken = await AsyncStorage.getItem("access-token");
         let res = await authAPI(accessToken).patch(
@@ -56,40 +63,28 @@ const Profile = ({ navigation }) => {
           }
         );
         Alert.alert("Thông báo", "Cập nhật ảnh thành công!!!");
+        loadCurrentUser();
       } catch (ex) {
         console.error(ex);
       }
     }
   };
-
-  const loadCurrentUser = async () => {
-    try {
-        let accessToken = await AsyncStorage.getItem("access-token");
-        let res = await authAPI(accessToken).get(endpoints["current_user"]);
-        setUserInfo(res.data);
-    } catch(ex){
-        console.error(ex);
-    }
-  };
-
   useEffect(() => {
     loadCurrentUser();
-  },[])
-
+  }, []);
   return (
     <View style={MyStyle.container}>
       <View style={Styles.avatarbackground}>
         <Avatar.Image
           style={Styles.avatarprofile}
-          // source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
-          source={{ uri: userInfo.avatar } }
+          //source={userAvatar ? { uri: userAvatar } : require("./avatar.jpg")}
+          source={{ uri: userInfo.avatar }}
           size={150}
         />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={chooseAvatar}>
           <Button
             icon="camera"
             mode="contained"
-            onPress={chooseAvatar}
             style={{
               width: 50,
               position: "absolute",

@@ -116,7 +116,12 @@ const Payment = ({navigation}) => {
           </View>
         </TouchableWithoutFeedback>
         <ScrollView onScroll={loadMore}>
-          {receipts.map((r) => (
+          {receipts.length == 0 ? <>
+            <View style={Style.noCommentContainer}>
+                            <Text style={Style.noCommentText}>Chưa có hóa đơn nào cần thanh toán!</Text>
+                        </View>
+          </> : <>
+            {receipts.map((r) => (
             <TouchableOpacity key={r.id} onPress={() => handlePress(r)}>
               <View style={[Style.ecabinetStyle, getBackgroundColor(r.tag.name)]}>
                 <List.Item
@@ -129,6 +134,8 @@ const Payment = ({navigation}) => {
               </View>
             </TouchableOpacity>
           ))}
+          </>}
+          
         </ScrollView>
       </View>
     );

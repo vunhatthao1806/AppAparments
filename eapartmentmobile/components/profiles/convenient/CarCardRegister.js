@@ -11,15 +11,19 @@ import {
   import { Button, Icon, TextInput } from "react-native-paper";
   import MyStyle from "../../../styles/MyStyle";
   import Styles from "../Styles";
-  import { useState } from "react";
+  import { useEffect, useState } from "react";
   import * as ImagePicker from "expo-image-picker";
   import AsyncStorage from "@react-native-async-storage/async-storage";
   import { authAPI, endpoints } from "../../../configs/APIs";
 
-  const CarcardRegister = () => {
+  const CarcardRegister = ({navigation}) => {
     const [type, setType] = useState(false);
     const [number_plate, setNumber_plate] = useState(false);
     const [loading, setLoading] = useState(false);
+
+    const [carcard, setCarcard] = useState([]);
+    const [page, setPage] = useState(1);
+
     const [images, setImages] = useState({
       image_mrc_m1: null,
       image_mrc_m2: null,
@@ -43,6 +47,7 @@ import {
         name: "number_plate",
       },
     ];
+
     const Register = async () => {
       setLoading(true);
       try {
@@ -79,6 +84,7 @@ import {
   
         // Xử lý kết quả trả về từ server
         Alert.alert("Thông báo", "Đăng ký thành công!!!");
+        navigation.navigate("Carcard");
       } catch (error) {
         // Xử lý lỗi
         console.error(error);

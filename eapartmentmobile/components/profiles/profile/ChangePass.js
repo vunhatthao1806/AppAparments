@@ -22,21 +22,21 @@ const ChangePass = () => {
   const fields = [
     {
       label: "Mật khẩu hiện tại",
-      icon: passwordVisible ? "eye-off" : "eye",
+      icon: passwordVisible ? "eye" : "eye-off",
       secureTextEntry: !passwordVisible,
       name: "currentpassword",
       onPressIcon: () => setPasswordVisible(!passwordVisible),
     },
     {
       label: "Mật khẩu mới",
-      icon: newPasswordVisible ? "eye-off" : "eye",
+      icon: newPasswordVisible ? "eye" : "eye-off",
       secureTextEntry: !newPasswordVisible,
       name: "password",
       onPressIcon: () => setNewPasswordVisible(!newPasswordVisible),
     },
     {
       label: "Xác nhận mật khẩu",
-      icon: confirmPasswordVisible ? "eye-off" : "eye",
+      icon: confirmPasswordVisible ? "eye" : "eye-off",
       secureTextEntry: !confirmPasswordVisible,
       name: "confirm",
       onPressIcon: () => setConfirmPasswordVisible(!confirmPasswordVisible),

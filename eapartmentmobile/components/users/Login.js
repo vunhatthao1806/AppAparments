@@ -1,4 +1,15 @@
-import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import MyStyle from "../../styles/MyStyle";
 import Style from "./Style";
 import { Avatar, Button, TextInput } from "react-native-paper";
@@ -15,9 +26,9 @@ const Login = () => {
     try {
       const data = qs.stringify({
         grant_type: "password",
-        client_id: "wBRF6aSG5YAxeOZ0KvaeM0YTnsPR4O9TONrw36Wq",
+        client_id: "EnAqIZNuEatmVCWbltznlP1uqtt8Fwzpg2458XSW",
         client_secret:
-          "tiOxzvEoPpNKx9hnyuz5B20miu3Q5KK06jNuEpJEBkHH86AHD5a9uWoQymtTqyqFQD3eHdVZvDADRkdXvupvsi47eV5yDi6UiQ8ccCmWCt4YMnckTme1bHjtiyU7Y8d1",
+          "m3oBaW5JA0Qu3N7rt3oFuJv3rauY3XQhA2t5L48fhoFtW7F9ZhxjfmH0KCsK80rO7edCmaQnEqpxDrNvAKzZSPcWsWJe4oNfqOwLdmX7qyfjuAKcpVrcrRKvZ2Z7vcKz",
         username: username,
         password: password,
       });
@@ -51,10 +62,10 @@ const Login = () => {
           keyboardShouldPersistTaps="handled"
         >
           <View>
-          <Image
-            source={require('./apartment.webp')}
-            style={Style.imageOnTop}
-          />
+            <Image
+              source={require("./apartment.webp")}
+              style={Style.imageOnTop}
+            />
           </View>
           <View style={Style.containerLogin}>
             <Text style={Style.titleLogin}>Đăng nhập</Text>

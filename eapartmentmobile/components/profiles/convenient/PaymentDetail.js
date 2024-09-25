@@ -47,7 +47,7 @@ const PaymentDetail = ({ route, navigation }) => {
             />
             <View style={{ marginLeft: 10, marginTop: 10 }}>
               <Text style={{ fontSize: 17 }}>
-                Căn hộ số: {receipt.flat.apartment_num}
+                Căn hộ số: {receipt.flat.apartment_number}
               </Text>
               <Text style={{ fontSize: 17 }}>No Bill: {receipt.id}</Text>
               <Text style={{ fontSize: 17 }}>
@@ -79,7 +79,7 @@ const PaymentDetail = ({ route, navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("TranferPayment", {'receiptid': receiptid})
+              navigation.navigate("TranferPayment", { receiptid: receiptid })
             }
           >
             <Button

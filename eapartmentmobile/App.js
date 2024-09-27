@@ -1,54 +1,56 @@
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import Complaint from "./components/complaints/Complaint";
 import AddComplaint from "./components/complaints/AddComplaint";
 import { NavigationContainer } from "@react-navigation/native";
-import { Icon } from 'react-native-paper';
-import ComplaintDetail from './components/complaints/ComplaintDetail';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Chat from './components/chats/Chat';
-import Context from './configs/Context';
-import { useEffect, useReducer, useState } from 'react';
-import MyUserReducer from './reducers/MyUserReducer';
+import { Icon } from "react-native-paper";
+import ComplaintDetail from "./components/complaints/ComplaintDetail";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Chat from "./components/chats/Chat";
+import Context from "./configs/Context";
+import { useEffect, useReducer, useState } from "react";
+import MyUserReducer from "./reducers/MyUserReducer";
 
-import Profile from './components/profiles/profile/Profile';
-import Convenient from './components/profiles/profile/Convenient';
-import AccountInfo from './components/profiles/profile/AccountInfo';
-import ChangePass from './components/profiles/profile/ChangePass';
+import Profile from "./components/profiles/profile/Profile";
+import Convenient from "./components/profiles/profile/Convenient";
+import AccountInfo from "./components/profiles/profile/AccountInfo";
+import ChangePass from "./components/profiles/profile/ChangePass";
 
-import Payment from './components/profiles/convenient/Payment';
-import Ecabinet from './components/profiles/convenient/Ecabinet';
-import Survey from './components/profiles/convenient/Survey';
-import Carcard from './components/profiles/convenient/Carcard';
-import CarcardRegister from './components/profiles/convenient/CarCardRegister';
-import Items from './components/profiles/convenient/Items';
-import CarcardDetail from './components/profiles/convenient/CarCardDetail';
+import Payment from "./components/profiles/convenient/Payment";
+import Ecabinet from "./components/profiles/convenient/Ecabinet";
+import Survey from "./components/profiles/convenient/Survey";
+import Carcard from "./components/profiles/convenient/Carcard";
+import CarcardRegister from "./components/profiles/convenient/CarCardRegister";
+import Items from "./components/profiles/convenient/Items";
+import CarcardDetail from "./components/profiles/convenient/CarCardDetail";
 
-import Logo from './components/users/Logo';
-import Login from './components/users/Login';
+import Logo from "./components/users/Logo";
+import Login from "./components/users/Login";
 
-import EditComment from './components/complaints/EditComment';
+import EditComment from "./components/complaints/EditComment";
 
-import LoginFirst from './components/profiles/profile/LoginFirst';
+import LoginFirst from "./components/profiles/profile/LoginFirst";
 
-import ProfileAdmin from './components/admin/profiles/ProfileAdmin';
-import Services from './components/admin/profiles/Services';
+import ProfileAdmin from "./components/admin/profiles/ProfileAdmin";
+import Services from "./components/admin/profiles/Services";
 
-import ItemCreate from './components/admin/creations/items/ItemCreate';
-import ItemUpdate from './components/admin/creations/items/ItemUpdate';
+import ItemCreate from "./components/admin/creations/items/ItemCreate";
+import ItemUpdate from "./components/admin/creations/items/ItemUpdate";
 
-import Surveys from './components/admin/creations/surveys/Surveys';
-import SurveyCreate from './components/admin/creations/surveys/SurveyCreate';
-import SurveyQuestion from './components/admin/creations/surveys/SurveyQuestion';
-import QuestionCreate from './components/admin/creations/surveys/QuestionCreate';
+import Surveys from "./components/admin/creations/surveys/Surveys";
+import SurveyCreate from "./components/admin/creations/surveys/SurveyCreate";
+import SurveyQuestion from "./components/admin/creations/surveys/SurveyQuestion";
+import QuestionCreate from "./components/admin/creations/surveys/QuestionCreate";
 
-import LockAccount from './components/admin/creations/users/LockAccount';
-import LockAccountDetail from './components/admin/creations/users/LockAccountDetail';
-import PaymentDetail from './components/profiles/convenient/PaymentDetail';
-import PaymentHistory from './components/profiles/convenient/PaymentHistory';
-import TranferPayment from './components/profiles/convenient/TranferPayment';
-import SurveysUser from './components/surveys/SurveysUser';
-import SurveyDetail from './components/surveys/SurveyDetail';
-import SurveysHistory from './components/surveys/SurveysHistory';
+import LockAccount from "./components/admin/creations/users/LockAccount";
+import LockAccountDetail from "./components/admin/creations/users/LockAccountDetail";
+import PaymentDetail from "./components/profiles/convenient/PaymentDetail";
+import PaymentHistory from "./components/profiles/convenient/PaymentHistory";
+import TranferPayment from "./components/profiles/convenient/TranferPayment";
+import SurveysUser from "./components/surveys/SurveysUser";
+import SurveyDetail from "./components/surveys/SurveyDetail";
+import SurveysHistory from "./components/surveys/SurveysHistory";
+import CarCardConfirm from "./components/admin/creations/carcard/CarcardConfirm";
+import CarCardConfirmDetail from "./components/admin/creations/carcard/CarcardConfirmDetail";
 
 const Stack = createNativeStackNavigator();
 
@@ -182,18 +184,28 @@ const AdminStack = () => {
         component={LockAccountDetail}
         options={{ headerShown: true }}
       />
+      <Stack.Screen
+        name="CarcardConfirm"
+        component={CarCardConfirm}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
+        name="CarcardConfirmDetail"
+        component={CarCardConfirmDetail}
+        options={{ headerShown: true }}
+      />
     </Stack.Navigator>
   );
 };
 
 // Nơi để xem complaint và complaint-detail
 const ComplaintStack = () => {
-    return (
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Complaint"
-          component={Complaint}
-          options={{ headerShown: false }}
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Complaint"
+        component={Complaint}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ComplaintDetail"
@@ -203,12 +215,12 @@ const ComplaintStack = () => {
       <Stack.Screen
         name="AddComplaint"
         component={AddComplaint}
-        options={{ headerShown: true, tabBarVisible: false}}
+        options={{ headerShown: true, tabBarVisible: false }}
       />
       <Stack.Screen
         name="EditComment"
         component={EditComment}
-        options={{ headerShown: true, tabBarVisible: false}}
+        options={{ headerShown: true, tabBarVisible: false }}
       />
     </Stack.Navigator>
   );
@@ -217,19 +229,35 @@ const ComplaintStack = () => {
 const LoginStack = ({ user, onInitialSetupComplete }) => {
   return (
     <Stack.Navigator>
-    {user === null ? (
-      <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
-    ) : user.first_login ? (
-      <Stack.Screen name="LoginFirst" options={{ headerShown: false }}>
-        {props => <LoginFirst {...props} onInitialSetupComplete={onInitialSetupComplete} />}
-      </Stack.Screen>
-    ) : user.is_staff ? (
-      <Stack.Screen name="AdminTab" component={AdminTab} options={{ headerShown: false }} />
-    ) : (
-      <Stack.Screen name="MyTab" component={MyTab} options={{ headerShown: false }} />
-    )}
-  </Stack.Navigator>
-
+      {user === null ? (
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+      ) : user.first_login ? (
+        <Stack.Screen name="LoginFirst" options={{ headerShown: false }}>
+          {(props) => (
+            <LoginFirst
+              {...props}
+              onInitialSetupComplete={onInitialSetupComplete}
+            />
+          )}
+        </Stack.Screen>
+      ) : user.is_staff ? (
+        <Stack.Screen
+          name="AdminTab"
+          component={AdminTab}
+          options={{ headerShown: false }}
+        />
+      ) : (
+        <Stack.Screen
+          name="MyTab"
+          component={MyTab}
+          options={{ headerShown: false }}
+        />
+      )}
+    </Stack.Navigator>
   );
 };
 
@@ -253,7 +281,7 @@ const SurveyUserStack = () => {
       />
     </Stack.Navigator>
   );
-}
+};
 
 const Tab = createMaterialBottomTabNavigator();
 const MyTab = () => {
@@ -263,61 +291,63 @@ const MyTab = () => {
       activeColor="#F8F4E1" // Màu trắng kem cho tab đang hoạt động
       inactiveColor="#D7CCC8" // Màu nâu nhạt cho tab không hoạt động
       barStyle={{
-        backgroundColor: "#3E2723"
+        backgroundColor: "#3E2723",
       }}
     >
-      {/* <Tab.Screen
-              name="Chat"
-              component={Chat}
-              options={{
-                title: "Tin nhắn",
-                tabBarIcon: () => <Icon source="chat" size={30} color="white" />,
-                headerTitleAlign: "center"
-              }}
-            /> */}
-      
+      <Tab.Screen
+        name="Chat"
+        component={Chat}
+        options={{
+          title: "Tin nhắn",
+          tabBarIcon: () => <Icon source="chat" size={30} color="white" />,
+          headerTitleAlign: "center",
+        }}
+      />
+
       <Tab.Screen
         name="SurveyUserStack"
         component={SurveyUserStack}
         options={{
           title: "Khảo sát",
-          tabBarIcon: () => <Icon source="form-select" size={30} color="white" />,
+          tabBarIcon: () => (
+            <Icon source="form-select" size={30} color="white" />
+          ),
           headerTitleAlign: "center",
         }}
       />
-      
-      <Tab.Screen
-            name="Compaint"
-            component={ComplaintStack}
-            options={{
-              title: "Phản ánh",
-              tabBarIcon: () => <Icon source="newspaper" size={30} color="white" />,
-              headerTitleAlign: "center",
-              headerShown: false,
-            }}
-          />
 
       <Tab.Screen
-            name="Profile"
-            component={ProfileStack}
-            options={{
-              title: "Tài khoản",
-              tabBarIcon: () => <Icon source="account" size={30} color="white" />,
-              headerTitleAlign: "center",
-              headerShown: false,
-            }}
-            />
+        name="Compaint"
+        component={ComplaintStack}
+        options={{
+          title: "Phản ánh",
+          tabBarIcon: () => <Icon source="newspaper" size={30} color="white" />,
+          headerTitleAlign: "center",
+          headerShown: false,
+        }}
+      />
+
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
+        options={{
+          title: "Tài khoản",
+          tabBarIcon: () => <Icon source="account" size={30} color="white" />,
+          headerTitleAlign: "center",
+          headerShown: false,
+        }}
+      />
     </Tab.Navigator>
   );
-}
+};
 
 const SurveyStack = () => {
   return (
     <Stack.Navigator>
-        <Stack.Screen
-          name="Surveys"
-          component={Surveys}
-          options={{ headerShown: false }}
+      <Stack.Screen
+        name="Surveys"
+        component={Surveys}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="SurveyCreate"
@@ -334,18 +364,18 @@ const SurveyStack = () => {
         component={QuestionCreate}
         options={{ headerShown: false }}
       />
-      </Stack.Navigator>
+    </Stack.Navigator>
   );
- }
+};
 
 const AdminTab = () => {
   return (
     <Tab.Navigator
-    shifting={true}
+      shifting={true}
       activeColor="#F8F4E1" // Màu trắng kem cho tab đang hoạt động
       inactiveColor="#D7CCC8" // Màu nâu nhạt cho tab không hoạt động
       barStyle={{
-        backgroundColor: "#3E2723"
+        backgroundColor: "#3E2723",
       }}
     >
       <Tab.Screen
@@ -353,35 +383,37 @@ const AdminTab = () => {
         component={SurveyStack}
         options={{
           title: "Khảo sát",
-          tabBarIcon: () => <Icon source="playlist-edit" size={30} color="white" />,
+          tabBarIcon: () => (
+            <Icon source="playlist-edit" size={30} color="white" />
+          ),
           headerTitleAlign: "center",
         }}
       />
-      
-      <Tab.Screen
-            name="Compaint"
-            component={ComplaintStack}
-            options={{
-              title: "Phản ánh",
-              tabBarIcon: () => <Icon source="newspaper" size={30} color="white" />,
-              headerTitleAlign: "center",
-              headerShown: false,
-            }}
-          />
 
       <Tab.Screen
-            name="Profile"
-            component={AdminStack}
-            options={{
-              title: "Tài khoản",
-              tabBarIcon: () => <Icon source="account" size={30} color="white" />,
-              headerTitleAlign: "center",
-              headerShown: false,
-            }}
-            />
+        name="Compaint"
+        component={ComplaintStack}
+        options={{
+          title: "Phản ánh",
+          tabBarIcon: () => <Icon source="newspaper" size={30} color="white" />,
+          headerTitleAlign: "center",
+          headerShown: false,
+        }}
+      />
+
+      <Tab.Screen
+        name="Profile"
+        component={AdminStack}
+        options={{
+          title: "Tài khoản",
+          tabBarIcon: () => <Icon source="account" size={30} color="white" />,
+          headerTitleAlign: "center",
+          headerShown: false,
+        }}
+      />
     </Tab.Navigator>
   );
-}
+};
 
 const App = () => {
   const [user, dispatch] = useReducer(MyUserReducer, null);
@@ -391,15 +423,15 @@ const App = () => {
     const timeout = setTimeout(() => {
       setLoading(false);
     }, 3000);
-    
+
     // console.log(user.is_staff);
 
     return () => clearTimeout(timeout);
   }, []);
 
   const handleInitialSetupComplete = () => {
-      setIsInitialSetupComplete(true);
-      dispatch({ type: "updateFirstLogin" });
+    setIsInitialSetupComplete(true);
+    dispatch({ type: "updateFirstLogin" });
   };
 
   return (
@@ -418,17 +450,17 @@ const App = () => {
             <Stack.Screen name="LoginStack" options={{ headerShown: false }}>
               {/* {() => <LoginStack user={user} />} */}
               {() => (
-                  <LoginStack
-                      user={user}
-                      onInitialSetupComplete={handleInitialSetupComplete}
-                  />
-                            )}
+                <LoginStack
+                  user={user}
+                  onInitialSetupComplete={handleInitialSetupComplete}
+                />
+              )}
             </Stack.Screen>
           </Stack.Navigator>
         )}
       </NavigationContainer>
     </Context.Provider>
   );
-}
+};
 
 export default App;

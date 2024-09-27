@@ -3,12 +3,13 @@ from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from apartments.models import Flat, ECabinet, Item, Receipt, Complaint, User, Comment, Like, Tag, Choice, Question, \
-    CarCard, Survey, AnswerUser, PhoneNumber, PaymentDetail, SurveyUserDone
+    CarCard, Survey, AnswerUser, PhoneNumber, PaymentDetail, SurveyUserDone, CarCardTemp
 from apartments import serializers, paginators, perms
 import requests as external_requests
 import uuid
 import hashlib
 import hmac
+from apartments.Utils import send_survey_email, send_confirmcarcard_email
 from django.db.models import Count
 
 
@@ -26,6 +27,51 @@ class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
                 queryset = queryset.filter(active=True)
 
         return queryset
+
+class CarCardTempViewSet (viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIView, generics.RetrieveAPIView):
+    queryset = CarCardTemp.objects.filter(active=False)
+    serializer_class = serializers.CarCardTempSerializer
+    pagination_class = paginators.CarCardTempPaginator
+    def perform_create(self, serializer):
+        user = self.request.user
+        flat = Flat.objects.filter(user_id=user.id).first()
+        serializer.save(user=user, flat=flat)
+    def get_queryset(self):
+        queryset = self.queryset
+
+        if self.action.__eq__('list'):
+            q = self.request.query_params.get('q')
+            if q:
+                queryset = queryset.filter(number_plate__icontains=q)
+        return queryset
+    @action(methods=['patch'], detail=True, url_path='confirm_carcard')
+    def update_carcard_status(self, request, pk):
+        cardcardtemp = CarCardTemp.objects.get(pk=pk)
+        try:
+            #Cập nhật active của bảng carcardtemp
+            active = request.data.get('active')
+            cardcardtemp.active = active
+            cardcardtemp.save()
+            #Copy dữ liệu sang carcard
+            CarCard.objects.create(
+                user=cardcardtemp.user,
+                flat=cardcardtemp.flat,
+                number_plate=cardcardtemp.number_plate,
+                type=cardcardtemp.type,
+                image_mrc_m1=cardcardtemp.image_mrc_m1,
+                image_mrc_m2=cardcardtemp.image_mrc_m2,
+                image_idcard_m1=cardcardtemp.image_idcard_m1,
+                image_idcard_m2=cardcardtemp.image_idcard_m2,
+                active=cardcardtemp.active
+            )
+            # Xóa dữ liệu ở bảng carcardtemp
+            cardcardtemp.delete()
+            #Gửi mail xác nhận
+            send_confirmcarcard_email(cardcardtemp.user)
+            return Response({'message': 'Duyệt thành công'}, status=status.HTTP_200_OK)
+        except cardcardtemp.DoesNotExist:
+            return Response({'error': 'Duyệt thất bại'}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
@@ -299,7 +345,6 @@ class SurveyViewSet(viewsets.ViewSet, generics.ListAPIView, generics.UpdateAPIVi
     def create_questions(self, request, pk):
         survey = self.get_object()
         q = Question.objects.create(name=request.data.get('name'), survey=survey)
-
         return Response(serializers.CreateQuestionsSerializer(q).data,
                         status=status.HTTP_201_CREATED)
 
@@ -375,6 +420,7 @@ class CreateSurveyViewSet(viewsets.ViewSet, generics.CreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user_create=user)
+        send_survey_email()
 
 
 class CreateQuestionViewSet(viewsets.ViewSet, generics.CreateAPIView):

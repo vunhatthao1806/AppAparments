@@ -2,7 +2,7 @@ import djf_surveys.models
 from rest_framework import serializers
 
 from apartments.models import Flat, ECabinet, Tag, Receipt, Item, Complaint, User, Comment, CarCard, Like,Survey, Question,\
-    Choice, AnswerUser, PhoneNumber, PaymentDetail, SurveyUserDone
+    Choice, AnswerUser, PhoneNumber, PaymentDetail, SurveyUserDone, CarCardTemp
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -113,6 +113,22 @@ class UserSerializer(serializers.ModelSerializer):
             }
         }
 
+class CarCardTempSerializer(serializers.ModelSerializer):
+    flat = FlatSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
+    def to_representation(self, instance):
+        req = super().to_representation(instance)
+        image_fields = ['image_mrc_m1', 'image_mrc_m2', 'image_idcard_m1', 'image_idcard_m2']
+
+        for field in image_fields:
+            if hasattr(instance, field) and getattr(instance, field):
+                req[field] = getattr(instance, field).url
+
+        return req
+
+    class Meta:
+        model = CarCardTemp
+        fields = ['id', 'type', 'number_plate', 'image_mrc_m1', 'image_mrc_m2', 'image_idcard_m1', 'image_idcard_m2', 'flat', 'user', 'active']
 
 class AddComplaintSerializer(ImageSerializer):
 

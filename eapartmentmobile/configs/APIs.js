@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.1.2:8000/";
+const BASE_URL = "http://192.168.1.7:8000/";
 
 // const BASE_URL = 'http://192.168.1.8:8000/';
 
@@ -57,6 +57,11 @@ export const endpoints = {
 
   carcards: "/carcards/",
   "carcard-detail": (carCardId) => `/carcards/${carCardId}/`,
+  create_carcardtemp: "/carcardtemp/",
+  confirm_carcard: (carcardtempid) =>
+    `/carcardtemp/${carcardtempid}/confirm_carcard/`,
+  carcardtemp: "/carcardtemp/",
+  "carcardtemp-detail": (carcardtempId) => `/carcardtemp/${carcardtempId}/`,
 
   receipts: "/receipts/",
   "receipt-detail": (receiptid) => `/receipts/${receiptid}/`,

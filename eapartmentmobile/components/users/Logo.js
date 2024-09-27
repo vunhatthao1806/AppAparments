@@ -7,10 +7,7 @@ import { Avatar } from "react-native-paper";
 
 const Logo = () => {
   return (
-    <ImageBackground
-      source={require("./apartment.webp")}
-      style={[Style.image, MyStyle.container]}
-    >
+    <ImageBackground source={require("./apartment.webp")} style={[Style.image]}>
       <View style={Style.overlay}>
         <Avatar.Image
           source={require("./TT.png")}

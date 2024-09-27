@@ -19,3 +19,6 @@ class SurveyPaginator(pagination.PageNumberPagination):
 
 class AdminPaginator(pagination.PageNumberPagination):
     page_size = 4
+
+class CarCardTempPaginator(pagination.PageNumberPagination):
+    page_size = 4

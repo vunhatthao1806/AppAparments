@@ -124,6 +124,7 @@ class Receipt(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     order_id = models.CharField(max_length=255, null=True, blank=True)
+    due_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.title
@@ -185,4 +186,16 @@ class AnswerUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     choice = models.ForeignKey(Choice, on_delete=models.CASCADE, null=True)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+
+class CarCardTemp(BaseModel):
+    type = models.CharField(max_length=255)
+    number_plate = models.CharField(max_length=50)
+    image_mrc_m1 = CloudinaryField(null=True)
+    image_mrc_m2 = CloudinaryField(null=True)
+    image_idcard_m1 = CloudinaryField(null=True)
+    image_idcard_m2 = CloudinaryField(null=True)
+    active = models.BooleanField(default=False)
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
 

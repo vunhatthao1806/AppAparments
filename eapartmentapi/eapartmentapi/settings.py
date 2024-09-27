@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-s#=u-+h(ket^q9^hw4l-9(&9!n8cz!(*u^azr1ouu6$s%bi6(0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.2']
+ALLOWED_HOSTS = ['192.168.1.7']
 
 # ALLOWED_HOSTS = ['192.168.1.8']
 
@@ -158,3 +158,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CLIENT_ID = 'wBRF6aSG5YAxeOZ0KvaeM0YTnsPR4O9TONrw36Wq'
 
 CLIENT_SECRET = 'tiOxzvEoPpNKx9hnyuz5B20miu3Q5KK06jNuEpJEBkHH86AHD5a9uWoQymtTqyqFQD3eHdVZvDADRkdXvupvsi47eV5yDi6UiQ8ccCmWCt4YMnckTme1bHjtiyU7Y8d1'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'yanghara2611@gmail.com'
+EMAIL_HOST_PASSWORD = 'iiyi bfps ggeq arti'

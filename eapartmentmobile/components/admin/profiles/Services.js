@@ -1,4 +1,10 @@
-import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+  ImageBackground,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 // import MyStyle from "../../../styles/MyStyle";
 // import Styles from "../Styles";
 import { Avatar, IconButton, Searchbar } from "react-native-paper";
@@ -9,21 +15,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authAPI, endpoints } from "../../../configs/APIs";
 
 const Services = ({ navigation }) => {
-  const [userInfo, setUserInfo] = useState('');
+  const [userInfo, setUserInfo] = useState("");
 
   const loadCurrentUser = async () => {
     try {
-        let accessToken = await AsyncStorage.getItem("access-token");
-        let res = await authAPI(accessToken).get(endpoints["current_user"]);
-        setUserInfo(res.data);
-    } catch(ex){
-        console.error(ex);
+      let accessToken = await AsyncStorage.getItem("access-token");
+      let res = await authAPI(accessToken).get(endpoints["current_user"]);
+      setUserInfo(res.data);
+    } catch (ex) {
+      console.error(ex);
     }
   };
 
   useEffect(() => {
     loadCurrentUser();
-  },[])
+  }, []);
 
   return (
     <View style={MyStyle.container}>
@@ -32,7 +38,7 @@ const Services = ({ navigation }) => {
           <View>
             <Avatar.Image
               style={Styles.avatarconvenient}
-              source={{ uri: userInfo.avatar } }
+              source={{ uri: userInfo.avatar }}
               size={130}
             />
           </View>
@@ -43,8 +49,7 @@ const Services = ({ navigation }) => {
           </Text>
         </View>
         <View style={{ marginTop: 20 }}>
-        <View style={Styles.row}>
-            
+          <View style={Styles.row}>
             <TouchableOpacity onPress={() => navigation.navigate("ItemUpdate")}>
               <View style={{ alignItems: "center" }}>
                 <IconButton
@@ -63,7 +68,9 @@ const Services = ({ navigation }) => {
                 </Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate("LockAccount")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("LockAccount")}
+            >
               <View style={{ alignItems: "center" }}>
                 <IconButton
                   icon="account-cancel"
@@ -82,28 +89,52 @@ const Services = ({ navigation }) => {
               </View>
             </TouchableOpacity>
           </View>
-          <View>
-            <TouchableOpacity onPress={() => navigation.navigate("ItemCreate")}>
-              <View style={{ alignItems: "center" }}>
-                <IconButton
-                  icon="archive-plus"
-                  size={50}
-                  iconColor="rgba(60,32,22,0.8)"
-                />
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#212121",
-                    fontSize: 20,
-                  }}
-                >
-                  {"Thêm hàng \n hóa mới"}
-                </Text>
-              </View>
-            </TouchableOpacity>
+          <View style={Styles.row}>
+            <View>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("ItemCreate")}
+              >
+                <View style={{ alignItems: "center" }}>
+                  <IconButton
+                    icon="archive-plus"
+                    size={50}
+                    iconColor="rgba(60,32,22,0.8)"
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: "#212121",
+                      fontSize: 20,
+                    }}
+                  >
+                    {"Thêm hàng \n hóa mới"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("CarcardConfirm")}
+              >
+                <View style={{ alignItems: "center" }}>
+                  <IconButton
+                    icon="archive-plus"
+                    size={50}
+                    iconColor="rgba(60,32,22,0.8)"
+                  />
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      color: "#212121",
+                      fontSize: 20,
+                    }}
+                  >
+                    {"Duyệt thẻ xe"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
-          
-          
         </View>
       </ScrollView>
     </View>

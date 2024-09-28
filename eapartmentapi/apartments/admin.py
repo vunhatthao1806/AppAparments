@@ -13,17 +13,20 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 class ApartmentAppAdminSite(admin.AdminSite):
     site_header = "HỆ THỐNG QUẢN LÝ CHUNG CƯ"
 
-    class MyAdminSite(admin.AdminSite):
-        site_header = 'iCourse'
+    # class MyAdminSite(admin.AdminSite):
+    #     site_header = 'THỐNG KÊ'
 
-        def get_urls(self):
-            return [path('cate-stats/', self.stats_view)] + super().get_urls()
+    def get_urls(self):
+        return [path('stats/', self.stats_view)] + super().get_urls()
 
-        def stats_view(self, request):
-            stats = AnswerUser.objects.filter(survey_id=1).annotate(counter=Count('choice__id')).values('id', 'user', 'question', 'choice', 'counter')
-            return TemplateResponse(request, 'admin/stats.html', {
-                'stats': stats
-            })
+    def stats_view(self, request):
+        #Đếm số lượng câu trả lời ứng với bài khảo sát dựa trên id
+        # stats = AnswerUser.objects.filter(survey_id=4).values('survey__title').annotate(count=Count('id'))
+        #Đếm số lượng người dung thực hiện khảo sát trên từng khảo sát
+        survey_stats = SurveyUserDone.objects.values('survey__id', 'survey__title').annotate(count=Count('id'))
+        return TemplateResponse(request, 'admin/stats.html', {
+            'survey_stats': survey_stats
+        })
 
 
 admin_site = ApartmentAppAdminSite('myapartment')
@@ -162,24 +165,24 @@ class SurveyUserDoneAdmin(admin.ModelAdmin):
     list_display = ['id', 'survey', 'user', 'active']
 
 
-admin.site.register(Flat, FlatAdmin)
-admin.site.register(ECabinet, ECabinetAdmin)
-admin.site.register(Complaint, ComplaintAdmin)
-admin.site.register(Tag, TagAdmin)
+admin_site.register(Flat, FlatAdmin)
+admin_site.register(ECabinet, ECabinetAdmin)
+admin_site.register(Complaint, ComplaintAdmin)
+admin_site.register(Tag, TagAdmin)
 
-admin.site.register(Receipt, ReceiptAdmin)
-admin.site.register(PaymentDetail)
+admin_site.register(Receipt, ReceiptAdmin)
+admin_site.register(PaymentDetail)
 
-admin.site.register(Item, ItemAdmin)
-admin.site.register(User, UserAdmin)
-admin.site.register(SurveyUserDone, SurveyUserDoneAdmin)
+admin_site.register(Item, ItemAdmin)
+admin_site.register(User, UserAdmin)
+admin_site.register(SurveyUserDone, SurveyUserDoneAdmin)
 
-admin.site.register(Like,LikeAdmin)
-admin.site.register(Comment, CommentAdmin)
-admin.site.register(CarCard, CarCardAdmin)
-admin.site.register(PhoneNumber, PhoneNumberAdmin)
+admin_site.register(Like,LikeAdmin)
+admin_site.register(Comment, CommentAdmin)
+admin_site.register(CarCard, CarCardAdmin)
+admin_site.register(PhoneNumber, PhoneNumberAdmin)
 
-admin.site.register(Survey, SurveyAdmin)
-admin.site.register(Question, QuestionAdmin)
-admin.site.register(Choice, ChoiceAdmin)
-admin.site.register(AnswerUser, AnswerAdmin)
+admin_site.register(Survey, SurveyAdmin)
+admin_site.register(Question, QuestionAdmin)
+admin_site.register(Choice, ChoiceAdmin)
+admin_site.register(AnswerUser, AnswerAdmin)

@@ -3,7 +3,7 @@ from apartments.models import User
 
 
 def send_survey_email():
-    # Lấy các user không phải là ban quản trị
+    # Lấy các user không phải là ban quản trị và không phải là admin
     user = User.objects.filter(is_staff=False)
     # Lặp qua mảng user, lấy email của user và gửi mail cho từng user
     for u in user:

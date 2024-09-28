@@ -1,0 +1,9 @@
+{% extends 'admin/base_site.html' %}
+    {%block content %}
+        <h1>THỐNG KÊ CÁC BÀI KHẢO SÁT</h1>
+        <ul>
+            {% for s in survey_stats %}
+                <li>Tên khảo sát: {{s.survey__title}}   Số lượng người đã khảo sát: {{s.count}}</li>
+            {% endfor %}
+        </ul>
+{% endblock %}

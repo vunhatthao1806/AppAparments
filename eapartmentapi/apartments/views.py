@@ -406,8 +406,11 @@ class ChoiceViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIVi
 
 class AnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView, generics.DestroyAPIView):
     queryset = AnswerUser.objects.all()
-    serializer_class = serializers.AnswerSerializer
 
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return serializers.AnswerSerializer  # Sử dụng serializer để tạo mới
+        return serializers.AnswerDetailSerializer  # Sử dụng serializer để lấy chi tiết
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)

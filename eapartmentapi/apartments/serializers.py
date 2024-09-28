@@ -250,7 +250,22 @@ class CreateQuestionsSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'survey']
 
 
-class AnswerSerializer(serializers.ModelSerializer):
+class AnswerDetailSerializer(serializers.ModelSerializer):
+    question = QuestionSerializer()
+    survey = SurveySerializer()
+    choice = ChoiceSerializer()
     class Meta:
         model = AnswerUser
         fields = ['id', 'question', 'survey', 'choice']
+class AnswerSerializer(serializers.ModelSerializer):
+    # question = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all())
+    # survey = serializers.PrimaryKeyRelatedField(queryset=Survey.objects.all())
+    # choice = serializers.PrimaryKeyRelatedField(queryset=Choice.objects.all())
+
+    class Meta:
+        model = AnswerUser
+        fields = ['id', 'question', 'survey', 'choice']
+
+    # def perform_create(self, serializer):
+    #     user = self.context['request'].user
+    #     serializer.save(user=user)  # Lưu thông tin người dùng

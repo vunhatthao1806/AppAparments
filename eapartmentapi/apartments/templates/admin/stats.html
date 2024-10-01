@@ -1,9 +1,65 @@
 {% extends 'admin/base_site.html' %}
-    {%block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/stats.css' %}">
+{% block content %}
+<div class="container">
+    <div class="table-container">
         <h1>THỐNG KÊ CÁC BÀI KHẢO SÁT</h1>
-        <ul>
+        <table>
+            <tr>
+                <th>Tên khảo sát</th>
+                <th>Số lượng người tham gia</th>
+            </tr>
             {% for s in survey_stats %}
-                <li>Tên khảo sát: {{s.survey__title}}   Số lượng người đã khảo sát: {{s.count}}</li>
+            <tr>
+                <td>{{ s.survey__title }}</td>
+                <td>{{ s.count }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" class="text-center">Không có dữ liệu khảo sát</td>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
+    </div>
+    <div class="chart-container">
+        <div style="width:50%;">
+            <canvas id="myChart"></canvas>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let lables = [];
+    let data = [];
+    {% for s in survey_stats %}
+        lables.push('{{s.survey__title}}')
+        data.push('{{s.count}}')
+    {% endfor %}
+
+    window.onload = function() {
+        const ctx = document.getElementById('myChart');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: lables,
+                datasets: [{
+                    label: 'Số lượng người khảo sát',
+                    data: data,
+                    borderWidth: 1,
+                    backgroundColor:['red','green','blue']
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+</script>
 {% endblock %}

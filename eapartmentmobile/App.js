@@ -51,6 +51,7 @@ import SurveyDetail from "./components/surveys/SurveyDetail";
 import SurveysHistory from "./components/surveys/SurveysHistory";
 import CarCardConfirm from "./components/admin/creations/carcard/CarcardConfirm";
 import CarCardConfirmDetail from "./components/admin/creations/carcard/CarcardConfirmDetail";
+import ForgotPassword from "./components/users/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -230,11 +231,18 @@ const LoginStack = ({ user, onInitialSetupComplete }) => {
   return (
     <Stack.Navigator>
       {user === null ? (
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
+        <>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPassword}
+            options={{ headerShown: false }}
+          />
+        </>
       ) : user.first_login ? (
         <Stack.Screen name="LoginFirst" options={{ headerShown: false }}>
           {(props) => (

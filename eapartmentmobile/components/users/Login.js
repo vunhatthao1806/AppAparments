@@ -18,11 +18,11 @@ import Context from "../../configs/Context";
 import APIs, { authAPI, endpoints } from "../../configs/APIs";
 import qs from "qs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const Login = () => {
+const Login = ({ navigation }) => {
   const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
   const [user, dispatch] = useContext(Context);
-  const login = async () => {
+  const login = async ({ navigation }) => {
     try {
       const data = qs.stringify({
         grant_type: "password",
@@ -97,6 +97,22 @@ const Login = () => {
               secureTextEntry
               underlineStyle={{ backgroundColor: "rgba(60,32,22,0.8)" }}
             />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
+              <Text
+                style={{
+                  margin: 5,
+                  textAlign: "center",
+                  fontSize: 15,
+                  textDecorationLine: "underline",
+                  fontWeight: "bold",
+                }}
+              >
+                Quên mật khẩu?
+              </Text>
+            </TouchableOpacity>
+
             <TouchableOpacity onPress={login}>
               <Button
                 mode="contained"

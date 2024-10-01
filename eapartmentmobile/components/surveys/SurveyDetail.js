@@ -108,11 +108,6 @@ const SurveyDetail = ({ route, navigation }) => {
         formData.append("question", questionId);
         formData.append("choice", choiceId);
 
-        console.log(surveyId);
-        console.log(questionId);
-        console.log(choiceId);
-        console.log(formData);
-
         let request = authAPI(accessToken).post(
           endpoints["answers"],
           formData,

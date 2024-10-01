@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 from django.template.response import TemplateResponse
 from django.urls import path
 from django.utils.html import mark_safe
@@ -20,12 +20,33 @@ class ApartmentAppAdminSite(admin.AdminSite):
         return [path('stats/', self.stats_view)] + super().get_urls()
 
     def stats_view(self, request):
-        #Đếm số lượng câu trả lời ứng với bài khảo sát dựa trên id
-        # stats = AnswerUser.objects.filter(survey_id=4).values('survey__title').annotate(count=Count('id'))
         #Đếm số lượng người dung thực hiện khảo sát trên từng khảo sát
         survey_stats = SurveyUserDone.objects.values('survey__id', 'survey__title').annotate(count=Count('id'))
+        # Lấy các khảo sát kèm theo câu hỏi và lựa chọn tương ứng
+        surveys = Survey.objects.prefetch_related(
+            Prefetch('questions', queryset=Question.objects.prefetch_related('choices'))
+        )
+        survey_questions_choices = []
+        for survey in surveys:
+            questions_choices = []
+            for question in survey.questions.all():  # Sử dụng 'questions'
+                choices = question.choices.all()  # Sử dụng 'choices'
+                # Đếm số lượng câu trả lời cho câu hỏi này
+                answer_count = AnswerUser.objects.filter(question=question).count()
+                questions_choices.append({
+                    'question': question.name,
+                    'choices': [choice.name for choice in choices],
+                    'answer_count': answer_count  # Đếm số lượng câu trả lời cho câu hỏi
+                })
+            survey_questions_choices.append({
+                'survey_id': survey.id,
+                'survey_title': survey.title,
+                'questions_choices': questions_choices
+            })
+
         return TemplateResponse(request, 'admin/stats.html', {
-            'survey_stats': survey_stats
+            'survey_stats': survey_stats,
+            'survey_questions_choices': survey_questions_choices
         })
 
 

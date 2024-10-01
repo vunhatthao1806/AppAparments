@@ -168,14 +168,13 @@ class Survey(BaseModel):
 class Question(BaseModel):
     name = models.CharField(max_length=255)
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, null=True, related_name='questions')
-
     def __str__(self):
         return self.name
 
 
 class Choice(models.Model):
     name = models.CharField(max_length=255)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, related_name='choices')
 
     def __str__(self):
         return self.name

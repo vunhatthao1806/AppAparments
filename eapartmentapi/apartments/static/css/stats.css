@@ -1,0 +1,15 @@
+.container {
+    display: flex; /* Thiết lập flexbox cho div cha */
+    justify-content: space-between; /* Tạo khoảng cách giữa các div */
+    align-items: flex-start; /* Căn chỉnh theo chiều dọc */
+    padding: 20px; /* Thêm khoảng đệm */
+}
+
+.table-container {
+    flex: 1; /* Chiếm 1 phần không gian */
+    margin-right: 20px; /* Thêm khoảng cách bên phải */
+}
+
+.chart-container {
+    flex: 1; /* Chiếm 1 phần không gian */
+}

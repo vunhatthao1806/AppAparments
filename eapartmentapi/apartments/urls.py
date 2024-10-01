@@ -36,9 +36,15 @@ r.register('choices', views.ChoiceViewSet, 'choices')
 r.register('answers', views.AnswerViewSet, 'answers')
 r.register('carcardtemp', views.CarCardTempViewSet, 'carcardtemp')
 # r.register('createanswers', views.CreateAnswerViewSet, 'createanswers')
+# r.register('createanswers', views.CreateAnswerViewSet, 'createanswers')
+r.register('reset-password', views.PasswordResetRequestViewSet,'reset-password')
+
+
 
 urlpatterns = [
     path('', include(r.urls)),
     # path('save-token/', views.save_token, name='save_token'),
     # path('send-notification/', views.send_notification, name='send_notification'),
+    # Truyền 2 tham số uid và token vào viewset, retrieve sẽ get html, create sẽ post set lại pass
+    path('reset-password/<str:uid>/<str:token>/', views.PasswordResetConfirmViewSet.as_view({'get': 'retrieve', 'post': 'create'}), name='reset_password_confirm'),
 ]

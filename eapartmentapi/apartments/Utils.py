@@ -14,7 +14,7 @@ def send_survey_email():
             send_mail(
                 subject,
                 message,
-                'yanghara2611@gmail.com',
+                'arthurvu1010@gmail.com',
                 [u.email],
                 fail_silently=False,
             )
@@ -27,7 +27,19 @@ def send_confirmcarcard_email(user):
         send_mail(
             subject,
             message,
-            'yanghara2611@gmail.com',
+            'arthurvu1010@gmail.com',
+            [user.email],
+            fail_silently=False,
+        )
+
+def send_resetpassword_email(user, resetlink):
+    if user.email:
+        subject = 'Reset Password'
+        message = f'Xin chào {user.first_name + " " + user.last_name},\nVui lòng truy cập đường link sau reset lại mật khẩu: {resetlink} \nLưu ý: Đường link này có giá trị 30 phút kể từ khi email được gửi.\nXin cám ơn.\nBan quản trị tòa nhà'
+        send_mail(
+            subject,
+            message,
+            'arthurvu1010@gmail.com',
             [user.email],
             fail_silently=False,
         )

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import os
 #client_id = EnAqIZNuEatmVCWbltznlP1uqtt8Fwzpg2458XSW
 #client_secret = m3oBaW5JA0Qu3N7rt3oFuJv3rauY3XQhA2t5L48fhoFtW7F9ZhxjfmH0KCsK80rO7edCmaQnEqpxDrNvAKzZSPcWsWJe4oNfqOwLdmX7qyfjuAKcpVrcrRKvZ2Z7vcKz
 from pathlib import Path
@@ -27,7 +28,7 @@ SECRET_KEY = 'django-insecure-s#=u-+h(ket^q9^hw4l-9(&9!n8cz!(*u^azr1ouu6$s%bi6(0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.11']
+ALLOWED_HOSTS = ['192.168.1.9']
 
 # ALLOWED_HOSTS = ['192.168.1.8']
 
@@ -85,7 +86,7 @@ ROOT_URLCONF = 'eapartmentapi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'apartments/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

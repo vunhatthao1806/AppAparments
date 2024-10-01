@@ -1,3 +1,7 @@
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.template import TemplateDoesNotExist
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from rest_framework import viewsets, generics, status, parsers, permissions
 from rest_framework.decorators import action
 from rest_framework.pagination import PageNumberPagination
@@ -9,8 +13,12 @@ import requests as external_requests
 import uuid
 import hashlib
 import hmac
-from apartments.Utils import send_survey_email, send_confirmcarcard_email
+from apartments.Utils import send_survey_email, send_confirmcarcard_email, send_resetpassword_email
+from django.shortcuts import render
+from django.utils import timezone
+from datetime import timedelta
 from django.db.models import Count
+import logging
 
 
 class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
@@ -28,14 +36,17 @@ class FlatViewSet(viewsets.ViewSet, generics.ListAPIView):
 
         return queryset
 
-class CarCardTempViewSet (viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIView, generics.RetrieveAPIView):
+
+class CarCardTempViewSet(viewsets.ViewSet, generics.CreateAPIView, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = CarCardTemp.objects.filter(active=False)
     serializer_class = serializers.CarCardTempSerializer
     pagination_class = paginators.CarCardTempPaginator
+
     def perform_create(self, serializer):
         user = self.request.user
         flat = Flat.objects.filter(user_id=user.id).first()
         serializer.save(user=user, flat=flat)
+
     def get_queryset(self):
         queryset = self.queryset
 
@@ -44,15 +55,16 @@ class CarCardTempViewSet (viewsets.ViewSet, generics.CreateAPIView, generics.Lis
             if q:
                 queryset = queryset.filter(number_plate__icontains=q)
         return queryset
+
     @action(methods=['patch'], detail=True, url_path='confirm_carcard')
     def update_carcard_status(self, request, pk):
         cardcardtemp = CarCardTemp.objects.get(pk=pk)
         try:
-            #Cập nhật active của bảng carcardtemp
+            # Cập nhật active của bảng carcardtemp
             active = request.data.get('active')
             cardcardtemp.active = active
             cardcardtemp.save()
-            #Copy dữ liệu sang carcard
+            # Copy dữ liệu sang carcard
             CarCard.objects.create(
                 user=cardcardtemp.user,
                 flat=cardcardtemp.flat,
@@ -66,12 +78,11 @@ class CarCardTempViewSet (viewsets.ViewSet, generics.CreateAPIView, generics.Lis
             )
             # Xóa dữ liệu ở bảng carcardtemp
             cardcardtemp.delete()
-            #Gửi mail xác nhận
+            # Gửi mail xác nhận
             send_confirmcarcard_email(cardcardtemp.user)
             return Response({'message': 'Duyệt thành công'}, status=status.HTTP_200_OK)
         except cardcardtemp.DoesNotExist:
             return Response({'error': 'Duyệt thất bại'}, status=status.HTTP_404_NOT_FOUND)
-
 
 
 class CarCardViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
@@ -190,8 +201,9 @@ class AddComplaintViewSet(viewsets.ViewSet, generics.CreateAPIView):
 
 
 class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.ListAPIView, generics.CreateAPIView):
-    queryset = Complaint.objects.filter(active=True) # tag lúc nào cũng cần dùng khi vào chi tiết complaint
+    queryset = Complaint.objects.filter(active=True)  # tag lúc nào cũng cần dùng khi vào chi tiết complaint
     pagination_class = paginators.ComplaintPaginator
+
     # serializer_class = serializers.ComplaintDetailSerializer
 
     def get_serializer_class(self):
@@ -225,7 +237,7 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.List
 
     @action(methods=['get'], url_path='comments', detail=True)
     def get_comments(self, request, pk):
-        comments = self.get_object().comment_set.all() # select_related('user').
+        comments = self.get_object().comment_set.all()  # select_related('user').
 
         # paginator = paginators.CommentPaginator()
         # page = paginator.paginate_queryset(comments, request)
@@ -239,7 +251,7 @@ class ComplaintViewSet(viewsets.ViewSet, generics.RetrieveAPIView, generics.List
     @action(methods=['post'], url_path='add_comment', detail=True)
     def add_comment(self, request, pk):  # chỉ chứng thực mới được vô
         c = self.get_object().comment_set.create(user=request.user, content=request.data.get('content'))
-                # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
+        # get_object() : trả về đối tượng complaint đại diện cho khóa chính mà gửi lên
         return Response(serializers.CommentSerializer(c).data, status=status.HTTP_201_CREATED)
 
     @action(methods=['post'], url_path='like', detail=True)
@@ -298,7 +310,7 @@ class UserViewSet(viewsets.ViewSet, generics.ListAPIView):
     def get_ecabinets(self, request):
         user = request.user
 
-        ecabinets =  ECabinet.objects.filter(user_id=user.id)
+        ecabinets = ECabinet.objects.filter(user_id=user.id)
         return Response(serializers.ECabinetSerializer(ecabinets, many=True).data, status=status.HTTP_200_OK);
 
     @action(methods=['get'], url_path='carcards', detail=False)
@@ -386,7 +398,7 @@ class QuestionViewSet(viewsets.ViewSet, generics.ListAPIView):
 
     @action(methods=['get'], url_path='choices', detail=True)
     def get_choices(self, request, pk):
-        c = self.get_object().choice_set.all()
+        c = self.get_object().choices.all()
 
         return Response(serializers.ChoiceSerializer(c, many=True).data, status=status.HTTP_200_OK)
 
@@ -411,6 +423,7 @@ class AnswerViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIVi
         if self.request.method == 'POST':
             return serializers.AnswerSerializer  # Sử dụng serializer để tạo mới
         return serializers.AnswerDetailSerializer  # Sử dụng serializer để lấy chi tiết
+
     def perform_create(self, serializer):
         user = self.request.user
         serializer.save(user=user)
@@ -472,8 +485,8 @@ class PaymentViewSet(viewsets.ViewSet):
         accessKey = "F8BBA842ECF85"
         secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
         orderInfo = "pay with MoMo"
-        redirectUrl = "http://192.168.2.8:8000/payments/momo-return/"
-        ipnUrl = "http://192.168.2.8:8000/payments/momo-return/"
+        redirectUrl = "http://192.168.2.8:8000/payments/momo-return/" #Sửa lại cho phù hợp với host của server hiện tại
+        ipnUrl = "http://192.168.2.8:8000/payments/momo-return/" #Sửa lại cho phù hợp với host của server hiện tại
         amount = str(total)  # Lấy số tiền từ request của client
         orderId = new_order
         requestId = str(uuid.uuid4())
@@ -534,3 +547,62 @@ class PaymentViewSet(viewsets.ViewSet):
             return Response({'message': 'Payment successful, Receipt updated successfully'})
         except Exception as e:
             return Response({'error': f'Error updating receipt status: {str(e)}'}, status=500)
+
+
+# Tạo đối tượng token và cấu hình địa chỉ url của link reset (host của server)
+token_generator = PasswordResetTokenGenerator()
+URL = "http://192.168.1.9:8000"
+
+class PasswordResetRequestViewSet(viewsets.ViewSet):
+    def create(self, request):
+        email = request.data.get('email')
+        try:
+            # Kiểm tra xem email có tồn tại không
+            user = User.objects.filter(email=email, is_staff=False).first()
+        except User.DoesNotExist:
+            return Response({"Lỗi": "Email không tồn tại"}, status=404)
+        # Tạo UID và token cho người dùng
+        uid = urlsafe_base64_encode(force_bytes(user.id))
+        token = token_generator.make_token(user)
+        # Tạo đường dẫn reset mật khẩu
+        reset_link = f"{URL}/reset-password/{uid}/{token}/"
+        # Gửi email
+        send_resetpassword_email(user, reset_link)
+        return Response({"message": "Thành công."}, status=200)
+
+#Hàm thêm "=" vào uid để nó là chuỗi % 4 (quy tắc)
+def add_base64_padding(uid):
+    if len(uid) % 4:
+        uid += '=' * (4 - len(uid) % 4)
+    return uid
+
+class PasswordResetConfirmViewSet(viewsets.ViewSet):
+
+    # Giải mã và xác thực uid và token trong link của người dùng, đúng sẽ render ra html
+    def retrieve(self, request, uid, token):
+        try:
+            uidadd = add_base64_padding(uid)
+            decoded_uid = urlsafe_base64_decode(uidadd).decode()
+            user = User.objects.get(pk=decoded_uid)
+            if token_generator.check_token(user, token):
+                return render(request, 'ResetPassword.html', {'uid': uid, 'token': token})
+            else:
+                return Response({"error": "Token không hợp lệ hoặc đã hết hạn."}, status=400)
+        except (User.DoesNotExist, ValueError):
+            return Response({"error": "Token không hợp lệ hoặc đã hết hạn."}, status=400)
+
+    # Set lại mật khẩu mới
+    def create(self, request, uid, token):
+        try:
+            uidadd = add_base64_padding(uid)
+            decoded_uid = urlsafe_base64_decode(uidadd).decode()
+            user = User.objects.get(pk=decoded_uid)
+            if token_generator.check_token(user, token):
+                new_password = request.data.get('new_password')
+                user.set_password(new_password)
+                user.save()
+                return render(request, 'ResetSuccess.html')
+            else:
+                return Response({"error": "Token không hợp lệ hoặc đã hết hạn."}, status=400)
+        except User.DoesNotExist:
+            return Response({"error": "User không tồn tại."}, status=404)

@@ -485,8 +485,8 @@ class PaymentViewSet(viewsets.ViewSet):
         accessKey = "F8BBA842ECF85"
         secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
         orderInfo = "pay with MoMo"
-        redirectUrl = "http://192.168.2.8:8000/payments/momo-return/" #Sửa lại cho phù hợp với host của server hiện tại
-        ipnUrl = "http://192.168.2.8:8000/payments/momo-return/" #Sửa lại cho phù hợp với host của server hiện tại
+        redirectUrl = "http://192.168.1.13:8000/payments/momo-return/"  # Sửa lại cho phù hợp với host của server hiện tại
+        ipnUrl = "http://192.168.1.13:8000/payments/momo-return/"  # Sửa lại cho phù hợp với host của server hiện tại
         amount = str(total)  # Lấy số tiền từ request của client
         orderId = new_order
         requestId = str(uuid.uuid4())
@@ -551,7 +551,8 @@ class PaymentViewSet(viewsets.ViewSet):
 
 # Tạo đối tượng token và cấu hình địa chỉ url của link reset (host của server)
 token_generator = PasswordResetTokenGenerator()
-URL = "http://192.168.1.9:8000"
+URL = "http://192.168.1.13:8000"
+
 
 class PasswordResetRequestViewSet(viewsets.ViewSet):
     def create(self, request):
@@ -570,11 +571,13 @@ class PasswordResetRequestViewSet(viewsets.ViewSet):
         send_resetpassword_email(user, reset_link)
         return Response({"message": "Thành công."}, status=200)
 
-#Hàm thêm "=" vào uid để nó là chuỗi % 4 (quy tắc)
+
+# Hàm thêm "=" vào uid để nó là chuỗi % 4 (quy tắc)
 def add_base64_padding(uid):
     if len(uid) % 4:
         uid += '=' * (4 - len(uid) % 4)
     return uid
+
 
 class PasswordResetConfirmViewSet(viewsets.ViewSet):
 

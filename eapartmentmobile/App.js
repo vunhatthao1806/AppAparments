@@ -240,7 +240,7 @@ const LoginStack = ({ user, onInitialSetupComplete }) => {
           <Stack.Screen
             name="ForgotPassword"
             component={ForgotPassword}
-            options={{ headerShown: false }}
+            options={{ headerShown: true }}
           />
         </>
       ) : user.first_login ? (

@@ -22,7 +22,9 @@ const Login = ({ navigation }) => {
   const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
   const [user, dispatch] = useContext(Context);
+  const [loading, setLoading] = useState(false);
   const login = async ({ navigation }) => {
+    setLoading(true);
     try {
       const data = qs.stringify({
         grant_type: "password",
@@ -49,6 +51,8 @@ const Login = ({ navigation }) => {
           onPress: () => {},
         },
       ]);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -115,6 +119,7 @@ const Login = ({ navigation }) => {
 
             <TouchableOpacity onPress={login}>
               <Button
+                loading={loading}
                 mode="contained"
                 buttonColor="rgba(60, 32, 22, 1)"
                 style={Style.buttonLogin}

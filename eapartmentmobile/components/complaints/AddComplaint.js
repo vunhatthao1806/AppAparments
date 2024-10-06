@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import {
   Checkbox,
@@ -55,7 +56,7 @@ async function registerForPushNotificationsAsync() {
 const AddComplaint = ({ navigation }) => {
   const [checkedStatus, setCheckedStatus] = useState(false);
   const [checkedComplaint, setCheckedComplaint] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState([]);
@@ -139,6 +140,7 @@ const AddComplaint = ({ navigation }) => {
   };
 
   const loadCreatComplaint = async () => {
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("title", title);
@@ -173,7 +175,9 @@ const AddComplaint = ({ navigation }) => {
         }
       );
     } catch (ex) {
-      console.error(ex);
+      Alert.alert("Đã có lỗi xảy ra ");
+    } finally {
+      setLoading(false);
     }
   };
 

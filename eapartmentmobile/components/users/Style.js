@@ -87,4 +87,7 @@ export default StyleSheet.create({
     marginTop: 10,
     marginLeft: 10,
   },
+  resetform: {
+    marginTop: 50,
+  },
 });

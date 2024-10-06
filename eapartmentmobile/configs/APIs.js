@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://192.168.1.9:8000/";
+const BASE_URL = "http://192.168.1.13:8000/";
 
 // const BASE_URL = 'http://192.168.1.8:8000/';
 
@@ -67,6 +67,8 @@ export const endpoints = {
   "receipt-detail": (receiptid) => `/receipts/${receiptid}/`,
   "create-payment": "/payments/create-payment/",
   tranferpayment: "/paymentdetails/",
+
+  "reset-password": "/reset-password/",
 };
 
 export const authAPI = (accessToken) =>

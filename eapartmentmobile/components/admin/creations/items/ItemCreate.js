@@ -22,7 +22,7 @@ import MyStyle from "../../../../styles/MyStyle";
 const ItemCreate = ({ navigation }) => {
   const [tags, setTags] = useState([]);
   const [ecabinets, setEcabinets] = useState([]);
-
+  const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [selectedTags, setSelectedTags] = useState("");
   const [checkedStatus, setCheckedStatus] = useState(false);
@@ -78,6 +78,7 @@ const ItemCreate = ({ navigation }) => {
   };
 
   const loadCreateItem = async () => {
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", name);
@@ -104,9 +105,11 @@ const ItemCreate = ({ navigation }) => {
           },
         }
       );
-      Alert.alert("Thông báo", "Đăng ký thành công!!!");
+      Alert.alert("Thông báo", "Thêm hàng thành công!!!");
     } catch (ex) {
-      console.error(ex);
+      Alert.alert("Đã xảy ra lỗi");
+    } finally {
+      setLoading(false);
     }
   };
 
